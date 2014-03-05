@@ -18,7 +18,7 @@ module ALU(src0, src1, ctrl, shamt, dst, ov , zr);
   localparam sra = 3'b111;
 
   assign {ov,unsat} = (ctrl==add) ? src0+src1:
-                    (ctrl==lhb) ? {1'b0,src1[7:0], src0[7:0]}:
+                    (ctrl==lhb) ? {1'b0,src1[15:8], src0[7:0]}:
                     (ctrl==sub) ? src0-src1:
                     (ctrl==andy)? {1'b0,src0&src1}:
                     (ctrl==nory)? {1'b0,~(src0|src1)}:

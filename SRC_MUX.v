@@ -4,6 +4,6 @@ module SRC_MUX(p1, instr, src1sel, src1);
   input src1sel;
   output[15:0] src1;
   
-  assign src1 = src1sel ? {8'h00, instr} : p1;
+  assign src1 = src1sel ? {instr, 8'h00} : p1;
   
 endmodule

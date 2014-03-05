@@ -18,8 +18,8 @@ module ID(instr, zr, p0_addr, re0, p1_addr, re1, dst_addr, we, shamt, hlt, src1s
   // llb should use the sra from the ALU with shamt 8
   localparam funcllb = 3'b111;  
   
-  // Set src0 register address as normal                                                   
-  assign p0_addr = instr[7:4];
+  // Set src0 register address as normal unless it's LHB                                                 
+  assign p0_addr = instr[15:12] == 4'b1010 ? instr[11:8] : instr[7:4];
   // Set the src1 as normal for normal alu ops, however if it is SLL, SRL, or SRA set src1 to the src0 register addr
   // That way the LLB works properly since those operations are actually hooked up to src1 for input in the ALU
   assign p1_addr = (instr[15:13] == 3'b011 || instr[15:12] == 4'b0101) ? instr[7:4] : instr[3:0];
