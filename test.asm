@@ -1,1 +1,2 @@
 	AND R1, R1, R0
+	HLT

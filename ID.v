@@ -34,7 +34,7 @@ module ID(instr, zr, p0_addr, re0, p1_addr, re1, dst_addr, we, shamt, hlt, src1s
   assign {re0, re1, we} = {!hlt, !hlt, !hlt};
   
   // If it's the HLT instruction then HALT!
-  assign hlt = |instr[15:12];
+  assign hlt = &instr[15:12];
 
   // src1 for LLB and LHB should come from the immediate bits
   assign src1sel = instr[15];
