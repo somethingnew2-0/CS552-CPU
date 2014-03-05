@@ -25,8 +25,8 @@ module ALU(src0, src1, ctrl, shamt, dst, ov , zr);
                     (ctrl==sra) ? {1'b0,$signed(src1)>>>shamt}:
                     17'h00000; // It will never reach here logically
 
-  assign dst = !src0[15] & !src1[15] & dst[15] ? 16'h7fff : dst;
-  assign dst = src0[15] & src1[15] & !dst[15] ? 16'h8000 : dst;
+  //assign dst = (!src0[15] & !src1[15] & dst[15]) ? 16'h7fff : dst;
+  //assign dst = (src0[15] & src1[15] & !dst[15]) ? 16'h8000 : dst;
 
   assign zr = ~|dst;
 endmodule;

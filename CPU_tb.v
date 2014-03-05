@@ -8,7 +8,7 @@ CPU iDUT(.clk(clk), .rst_n(rst_n), .hlt(hlt));
 
 initial begin
 	rst_n = 0;
-	#20;
+	#1;
 	rst_n = 1;
 end
 
