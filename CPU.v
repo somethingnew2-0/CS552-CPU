@@ -1,6 +1,7 @@
-module CPU(clk, rst_n);
+module CPU(clk, rst_n, hlt);
   input clk; 
   input rst_n;
+	output hlt;
   
   wire rd_en;  
   wire [15:0] iaddr, instr, p1, src0, src1, dst;
