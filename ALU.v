@@ -15,7 +15,7 @@ module ALU(src0, src1, ctrl, shamt, dst, ov , zr);
   localparam srl = 3'b110;
   localparam sra = 3'b111;
 
-  assign {ov,dst} = (ctrl==add) ? src0+src1:
+  assign {ov,unsat} = (ctrl==add) ? src0+src1:
                     (ctrl==lhb) ? {1'b0,src1[7:0], src0[7:0]}:
                     (ctrl==sub) ? src0-src1:
                     (ctrl==andy)? {1'b0,src0&src1}:
@@ -25,8 +25,8 @@ module ALU(src0, src1, ctrl, shamt, dst, ov , zr);
                     (ctrl==sra) ? {1'b0,$signed(src1)>>>shamt}:
                     17'h00000; // It will never reach here logically
 
-  //assign dst = (!src0[15] & !src1[15] & dst[15]) ? 16'h7fff : dst;
-  //assign dst = (src0[15] & src1[15] & !dst[15]) ? 16'h8000 : dst;
+  assign possat = (!src0[15] && !src1[15] && dst[15]) ? 16'h7fff : unsat;
+  assign dst = (src0[15] && src1[15] && !dst[15]) ? 16'h8000 : possat;
 
   assign zr = ~|dst;
 endmodule;
