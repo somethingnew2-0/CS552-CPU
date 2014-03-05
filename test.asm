@@ -1,2 +1,3 @@
 	AND R1, R1, R0
+	SUB R1, R3, R2
 	HLT

@@ -6,6 +6,8 @@ module ALU(src0, src1, ctrl, shamt, dst, ov , zr);
   output [15:0] dst;
   output ov, zr;
 
+	wire [15:0] unsat, possat;
+
   localparam add = 3'b000;
   localparam lhb = 3'b001;
   localparam sub = 3'b010;
