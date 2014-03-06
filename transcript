@@ -1,2 +1,34 @@
-# Reading C:/Modeltech_pe_edu_10.3/tcl/vsim/pref.tcl 
-# OpenFile {C:/Users/Matthew/SkyDrive/ECE 552/CS552-CPU/instr_mem.v} 
+# Compile of SRC_MUX.v was successful.
+# Compile of ALU.v was successful with warnings.
+# Compile of CPU.v was successful.
+# Compile of ID.v was successful.
+# Compile of instr_mem.v was successful.
+# Compile of PC.v was successful.
+# Compile of rf_single_cycle.v was successful.
+# Compile of CPU_tb.v was successful.
+# 8 compiles, 0 failed with no errors. 
+restart
+# Loading work.CPU_tb
+# Loading work.CPU
+# Loading work.PC
+# Loading work.IM
+# Loading work.ID
+# Loading work.rf
+# Loading work.SRC_MUX
+# Loading work.ALU
+run
+# R1 = 8888
+# R2 = 1111
+# R3 = 9999
+# R4 = 6666
+# R5 = 7fff
+# R6 = 9900
+# R7 = 0099
+# R8 = ff88
+# R9 = 0055
+# Ra = ffcc
+# Rb = ffbb
+# Rc = cccc
+# Rd = dddd
+# Re = eeee
+# Rf = ffff
