@@ -12,7 +12,7 @@ module CPU(clk, rst_n, hlt);
 
 	reg zreg;
 
-  always @ ( posedge clk or negedge rst_n)
+  always @ (posedge clk or negedge rst_n)
   	if(!rst_n)
       zreg <= 1'b0;
    	else

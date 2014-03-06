@@ -26,7 +26,7 @@ module ID(instr, zr, p0_addr, re0, p1_addr, re1, dst_addr, we, shamt, hlt, src1s
   assign p1_addr = (instr[15:13] == 3'b011 || instr[15:12] == 4'b0101) ? instr[7:4] : instr[3:0];
   
   // Set dst addr from instruction if instr is ADDZ and zr is set, else set dst addr to R0
-  assign dst_addr = (instr[15:12] == opaddz && zr) ? instr[11:8] : 4'b0000;
+  assign dst_addr = (instr[15:12] == opaddz && !zr) ? 4'b0000 : instr[11:8];
   
   // For SLL, SRL, and SRA use the immediate bits as normallly, for LLB shift by 8 bits with SRA
   assign shamt = !instr[15] ? instr[3:0] : 4'h8;
