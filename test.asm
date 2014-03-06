@@ -10,13 +10,16 @@
 
 	# Test ADD
 	ADD R3, R1, R2   # R3 = 0x9999 (Non-Saturating)
+	LLB R12, 0xFF
+	LHB R12, 0x6F	 # R12 has a large positive number
+	ADD R12, R12, R7 # R12 = 0x7FFF (Positive overflow / Saturation)
 
 	# Test NOR
 	NOR R4, R1, R3	 # R4 = 0x6666
 
 	# Test ADDz
 	SUB R0, R1, R1 	 # Set the zr flag
-	ADDz R5, R3, R3  # R5 = 0x8000 Should negatively overflow and saturate
+	ADDz R5, R3, R3  # R5 = 0x8000 (Negative overflow / Saturation)
 	ADDz R5, R5, R5  # R5 should be unchanged (zr == 0)
 
 	# Test SLL

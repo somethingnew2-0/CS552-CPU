@@ -6,7 +6,8 @@ module ALU(src0, src1, ctrl, shamt, dst, ov , zr);
   output [15:0] dst;
   output ov, zr;
 
-	wire [15:0] unsat, possat;
+	wire [14:0] unsat;
+	wire [15:0] possat;
 
   localparam add = 3'b000;
   localparam lhb = 3'b001;
@@ -27,9 +28,12 @@ module ALU(src0, src1, ctrl, shamt, dst, ov , zr);
                     (ctrl==sra) ? {1'b0,$signed(src1)>>>shamt}:
                     17'h00000; // It will never reach here logically
 
-  assign possat = (ov && !src0[15] && !src1[15]) ? 16'h7fff : unsat;
-  assign dst = (ov && src0[15] && src1[15]) ? 16'h8000 : possat;
-
+	 // Check for positive saturation *only* on ADD and SUB ops
+  assign possat = ((ov && !src0[15] && !src1[15]) && (ctrl==add || ctrl==sub)) ? 16'h7fff : {ov,unsat};
+   // Check for negative saturation *only* on ADD and SUB ops/ 
+  assign dst = ((ov && src0[15] && src1[15]) && (ctrl==add || ctrl==sub)) ? 16'h8000 : possat;
+	
+	// May cause points off, make sure this only triggers on the right ALU instructions
   assign zr = ~|dst;
 endmodule;
 
