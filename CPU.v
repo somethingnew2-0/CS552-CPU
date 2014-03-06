@@ -11,6 +11,7 @@ module CPU(clk, rst_n, hlt);
   wire [2:0] func;
 
 	reg zreg;
+
   always @ ( posedge clk or negedge rst_n)
   	if(!rst_n)
       zreg <= 1'b0;
@@ -26,5 +27,4 @@ module CPU(clk, rst_n, hlt);
   SRC_MUX srcmux(.p1(p1), .instr(instr[7:0]), .src1sel(src1sel), .src1(src1));  
   ALU alu(.src0(src0), .src1(src1), .ctrl(func), .shamt(shamt), .dst(dst), .ov(ov), .zr(zr)); 
 
-  
 endmodule

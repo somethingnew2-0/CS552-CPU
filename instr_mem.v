@@ -4,7 +4,7 @@ input clk;
 input [15:0] addr;
 input rd_en;			// asserted when instruction read desired
 
-output reg [15:0] instr;	//output of insturction memory
+output reg [15:0] instr;	// output of insturction memory
 
 reg [15:0]instr_mem[0:65535];
 
@@ -16,7 +16,7 @@ always @(addr,rd_en,clk)
     instr <= instr_mem[addr];
 
 initial begin
-  $readmemh("C:/Users/Peter/Documents/Github/CS552-CPU/instr.hex",instr_mem);
+  $readmemh("C:/Users/Matthew/SkyDrive/ECE 552/CS552-CPU/instr.hex",instr_mem);
 end
 
 endmodule
