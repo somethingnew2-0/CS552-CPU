@@ -8,4 +8,6 @@ module PC(clk, rst_n, hlt, iaddr);
       iaddr <= 16'h0000;
     else if (!hlt)
       iaddr <= iaddr + 1;
+	 	else
+			iaddr <= iaddr;
 endmodule  
