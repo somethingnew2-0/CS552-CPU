@@ -29,7 +29,8 @@ reg we_lat;								// have to capture we from previous cycle
 // register zero which is hardwired to be zero.       //
 ///////////////////////////////////////////////////////
 initial begin
-  $readmemh("C:/Users/Matthew/Skydrive/ECE 552/CS552-CPU/rfinit.txt",mem);
+  //$readmemh("C:/Users/Matthew/Skydrive/ECE 552/CS552-CPU/rfinit.txt",mem);
+$readmemh("C:/Users/Peter/Documents/Github/CS552-CPU/rfinit.txt",mem);
   mem[0] = 16'h0000;					// reg0 is always 0,
 end
 
