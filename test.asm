@@ -23,12 +23,17 @@
 	SLL R6, R3, 8	 # R6 = 0x9900
 
 	# Test SRL
+	SRL R7, R3, 8	 # R7 = 0x0099
 
 	# Test SRA
+	SRA R8, R8, 8	 # R8 = 0xFF88
 
 	# Test LLB
+	LLB R9, 0x55	 # R9 = 0x0055
+	LLB R10, 0xCC	 # R10 = 0xFFCC
 
 	# Test LHB
+	LHB R11, 0xFF	 # R11 = 0xFFBB
 
 	# Test HLT
-	HLT		# Printout should match what's listed above
+	HLT		 # Printout should match what's listed above
