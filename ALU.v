@@ -28,10 +28,11 @@ module ALU(src0, src1, ctrl, shamt, dst, ov , zr);
                     (ctrl==sra) ? {1'b0,$signed(src1)>>>shamt}:
                     17'h00000; // It will never reach here logically
 
-	 // Check for positive saturation *only* on ADD and SUB ops
-  assign possat = ((ov && !src0[15] && !src1[15]) && (ctrl==add || ctrl==sub)) ? 16'h7fff : {ov,unsat};
-   // Check for negative saturation *only* on ADD and SUB ops/ 
-  assign dst = ((ov && src0[15] && src1[15]) && (ctrl==add || ctrl==sub)) ? 16'h8000 : possat;
+	
+	assign positiveOverflow = src0[15] && src1[15] && ov; // ov indicates negative result
+	assign negativeOverflow = !src0[15] && !src1[15] && !ov; // !ov indicates positive result
+	assign dst = ((ctrl==add || ctrl==sub) && (positiveOverflow)) ? 16'h7fff :
+							 ((ctrl==add || ctrl==sub) && (negativeOverflow)) ? 16'h8000 : {ov, unsat};
 	
 	// Make sure this only triggers on the right ALU instructions (it does)
   assign zr = ~|dst;
