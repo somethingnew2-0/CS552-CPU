@@ -20,7 +20,7 @@
 	# Test ADDz
 	SUB R0, R1, R1 	 # Set the zr flag
 	ADDz R5, R3, R3  # R5 = 0x8000 (Negative overflow / Saturation)
-	ADDz R5, R5, R5  # R5 should be unchanged (zr == 0)
+	#ADDz R5, R5, R5  # R5 should be unchanged (zr == 0)
 
 	# Test SLL
 	SLL R6, R3, 8	 # R6 = 0x9900

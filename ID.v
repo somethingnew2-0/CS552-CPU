@@ -25,8 +25,9 @@ module ID(instr, zr, p0_addr, re0, p1_addr, re1, dst_addr, we, shamt, hlt, src1s
   // That way the LLB works properly since those operations are actually hooked up to src1 for input in the ALU
   assign p1_addr = (instr[15:13] == 3'b011 || instr[15:12] == 4'b0101) ? instr[7:4] : instr[3:0];
   
-  // Set dst addr from instruction if instr is ADDZ and zr is set, else set dst addr to R0
-  assign dst_addr = (instr[15:12] == opaddz && !zr) ? 4'b0000 : instr[11:8];
+  // Set dst addr from instruction if instr is ADDZ and zr is asserted, else set dst addr to R0
+  assign dst_addr = (!(instr[15:12] == opaddz)) ? instr[11:8] : 
+										(zr) ? instr[11:8] : 4'b0000;
   
   // For SLL, SRL, and SRA use the immediate bits as normallly, for LLB shift by 8 bits with SRA
   assign shamt = !instr[15] ? instr[3:0] : 4'h8;
@@ -42,12 +43,10 @@ module ID(instr, zr, p0_addr, re0, p1_addr, re1, dst_addr, we, shamt, hlt, src1s
    
   // Set ALU function to instruction function if opcodes start with 0, else set it to SRA for load low byte
   // Also check if opcode is ADDZ change it to ADD if it is
-  assign func = !instr[15] ? 
-                (instr[15:12] == opaddz?  funcadd:
-                                          instr[14:12]):                                                 
-                (instr[14:12] == oplhb ?  funclhb: 
-                 instr[14:12] == opllb ?  funcllb:
-                                           3'b000); // lw and sw should go here eventually
+  assign func = (!instr[15]) ? ((instr[15:12] == opaddz) ?  funcadd : instr[14:12]) :                                                 
+               								 ((instr[14:12] == oplhb) ?  funclhb : 
+																													 (instr[14:12] == opllb) ?  funcllb : 
+																																											 3'b000); // lw and sw should go here eventually
   
 
   

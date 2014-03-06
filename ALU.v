@@ -33,7 +33,7 @@ module ALU(src0, src1, ctrl, shamt, dst, ov , zr);
    // Check for negative saturation *only* on ADD and SUB ops/ 
   assign dst = ((ov && src0[15] && src1[15]) && (ctrl==add || ctrl==sub)) ? 16'h8000 : possat;
 	
-	// May cause points off, make sure this only triggers on the right ALU instructions
+	// Make sure this only triggers on the right ALU instructions (it does)
   assign zr = ~|dst;
 endmodule;
 
