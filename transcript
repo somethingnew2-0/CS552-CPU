@@ -1,3 +1,5 @@
+# Reading C:/Modeltech_pe_edu_10.3/tcl/vsim/pref.tcl 
+# Loading project CPU
 # Compile of SRC_MUX.v was successful.
 # Compile of ALU.v was successful with warnings.
 # Compile of CPU.v was successful.
@@ -7,7 +9,22 @@
 # Compile of rf_single_cycle.v was successful.
 # Compile of CPU_tb.v was successful.
 # 8 compiles, 0 failed with no errors. 
-restart
+vsim work.CPU_tb
+# //  ModelSim PE Student Edition 10.3 Jan  6 2014 
+# //
+# //  Copyright 1991-2014 Mentor Graphics Corporation
+# //  All Rights Reserved.
+# //
+# //  THIS WORK CONTAINS TRADE SECRET AND PROPRIETARY INFORMATION
+# //  WHICH IS THE PROPERTY OF MENTOR GRAPHICS CORPORATION OR ITS
+# //  LICENSORS AND IS SUBJECT TO LICENSE TERMS.
+# //
+# // NOT FOR CORPORATE OR PRODUCTION USE.
+# // THE ModelSim PE Student Edition IS NOT A SUPPORTED PRODUCT.
+# // FOR HIGHER EDUCATION PURPOSES ONLY
+# //
+# vsim work.CPU_tb 
+# Start time: 08:43:22 on Mar 06,2014
 # Loading work.CPU_tb
 # Loading work.CPU
 # Loading work.PC
@@ -21,7 +38,7 @@ run
 # R2 = 1111
 # R3 = 9999
 # R4 = 6666
-# R5 = 7fff
+# R5 = 8000
 # R6 = 9900
 # R7 = 0099
 # R8 = ff88
@@ -32,3 +49,5 @@ run
 # Rd = dddd
 # Re = eeee
 # Rf = ffff
+
+
