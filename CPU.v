@@ -17,21 +17,25 @@ module CPU(clk, rst_n, hlt);
   PC pc(.clk(clk),  
 				.hlt(hlt),
 				.rst_n(rst_n),
+				.nextAddr(nextAddr)
  
 				.iaddr(iaddr));
 
   IM im(.addr(iaddr),
 				.clk(clk),
 				.rd_en(rd_en),
- 
+ 				
+				.nextAddr(branchBase),
 				.instr(instr));
 
 	ID id(.instr(instr),
+				.addr(branchBase),
 				.zr(Z),
 				.ne(N),
 				.ov(V),
  
 				.aluOp(aluOp),
+				.nextAddr(nextAddr),
 				.dst_addr(dst_addr), 
 				.func(func),
  				.hlt(hlt), 
