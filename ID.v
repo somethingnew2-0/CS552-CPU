@@ -1,8 +1,8 @@
-module ID(instr, zr, p0_addr, re0, p1_addr, re1, dst_addr, we, shamt, hlt, src1sel, func);
+module ID(instr, zr, p0_addr, re0, p1_addr, re1, dst_addr, we, aluOp, shamt, hlt, src1sel, func);
   input [15:0] instr;
   input zr;
   output [3:0] p0_addr, p1_addr, dst_addr, shamt;
-  output re0, re1, we, hlt, src1sel;
+  output re0, re1, we, hlt, aluOp, src1sel;
   output [2:0] func;
   
   // Opcode for specified load byte
@@ -17,10 +17,12 @@ module ID(instr, zr, p0_addr, re0, p1_addr, re1, dst_addr, we, shamt, hlt, src1s
   localparam funclhb = 3'b001;
   // llb should use the sra from the ALU with shamt 8
   localparam funcllb = 3'b111;
-	// ALU func needed  
-	localparam funclw = 3'b000;
-	localparam funcsw = ;
+	// ALU func needed for loading and storing(add offset)
+	localparam funclwsw = 3'b000;
   
+	// Let the Alu know if this is a typical aluOp or special (loading, storing, branching, jumping)
+	assign aluOp = !instr[15];
+
   // Set src0 register address as normal unless it's LHB                                                 
   assign p0_addr = (instr[15:12] == 4'b1010) ? instr[11:8] : instr[7:4];
 
@@ -32,7 +34,7 @@ module ID(instr, zr, p0_addr, re0, p1_addr, re1, dst_addr, we, shamt, hlt, src1s
   assign dst_addr = (!(instr[15:12] == opaddz)) ? instr[11:8] : 
 										(zr) ? instr[11:8] : 4'b0000;
   
-  // For SLL, SRL, and SRA use the immediate bits as normallly, for LLB shift by 8 bits with SRA
+  // For SLL, SRL, and SRA use the immediate bits normallly, for LLB shift by 8 bits with SRA
   assign shamt = !instr[15] ? instr[3:0] : 4'h8;
   
   // Enable all reads and writes unless it's a HLT
@@ -47,28 +49,16 @@ module ID(instr, zr, p0_addr, re0, p1_addr, re1, dst_addr, we, shamt, hlt, src1s
   /* Sets ALU function: 
 			
 			if(instruction starts with zero)
-			{
 				if(func is opaddz)
-				{
 					change to add (same alu operation)
-				{
 				else
-				{
 					pass the bitmask from the instruction through
-				}
-			}
 			else if(func is lhb)
-			{
 				pass through lhb bitmask
-			}
 			else if(func is llb)
-			{
 				pass through llb bitmask
-			}
 			else
-			{
 				pass through 000 (lw)
-			}
 	*/
   assign func = (!instr[15]) ? ((instr[15:12] == opaddz) ?  funcadd : instr[14:12]) : 
 								((instr[14:12] == oplhb) ?  funclhb : 

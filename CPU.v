@@ -22,52 +22,63 @@ module CPU(clk, rst_n, hlt);
     
   assign rd_en = 1'b1;
 
+/* The pipeline. The blank line separates inputs from
+		outputs of each stage */
+
   PC pc(.clk(clk),  
-				.hlt(hlt), 
-				.iaddr(iaddr),
-				.rst_n(rst_n));
+				.hlt(hlt),
+				.rst_n(rst_n),
+ 
+				.iaddr(iaddr));
 
   IM im(.addr(iaddr),
-				.clk(clk), 
-				.instr(instr),
-				.rd_en(rd_en));
+				.clk(clk),
+				.rd_en(rd_en),
+ 
+				.instr(instr));
 
-	ID id(.dst_addr(dst_addr), 
+	ID id(.instr(instr),
+				.zr(zreg),
+ 
+				.dst_addr(dst_addr), 
 				.func(func),
- 				.instr(instr), 
-				.hlt(hlt), 
+ 				.hlt(hlt), 
 				.p0_addr(p0_addr), 
 				.re0(re0), 
 				.p1_addr(p1_addr), 
 				.re1(re1), 
 				.we(we), 
 				.src1sel(src1sel), 
-				.shamt(shamt),
-				.zr(zreg),);
+				.shamt(shamt));
+
+  SRC_MUX srcmux(.p1(p1), 
+								 .instr(instr[7:0]), 
+								 .src1sel(src1sel),
+ 
+								 .src1(src1));
 
   rf rf(.clk(clk), 
 				.p0_addr(p0_addr), 
 				.p1_addr(p1_addr), 
-				.p0(src0), 
-				.p1(p1), 
 				.re0(re0), 
 				.re1(re1), 
 				.dst_addr(dst_addr), 
 				.dst(dst), 
 				.we(we), 
-				.hlt(hlt));
+				.hlt(hlt),
+ 
+				.p0(src0), 
+				.p1(p1));
   
   ALU alu(.src0(src0), 
 					.src1(src1), 
 					.ctrl(func), 
-					.shamt(shamt), 
+					.shamt(shamt),
+ 
 					.dst(dst), 
 					.ov(ov), 
 					.zr(zr)); 
 
-  SRC_MUX srcmux(.p1(p1), 
-								 .instr(instr[7:0]), 
-								 .src1sel(src1sel), 
-								 .src1(src1));
+
 
 endmodule
