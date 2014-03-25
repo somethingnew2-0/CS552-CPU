@@ -2,28 +2,17 @@ module CPU(clk, rst_n, hlt);
   input clk; 
   input rst_n;
 	output hlt;
-  
-  wire rd_en;  
+   
   wire [15:0] iaddr, instr, p1, src0, src1, dst;
-  wire ov, zr;
-
   wire [3:0] p0_addr, p1_addr, dst_addr, shamt;
-
-  wire re0, re1, we, hlt, src1sel;
   wire [2:0] func;
+  wire ov, zr, ne, aluOp, rd_en;
+  wire re0, re1, we, hlt, src1sel;
 
-	reg zreg;
+  assign rd_en = 1'b1; // When should this change?
 
-  always @ (posedge clk or negedge rst_n)
-  	if(!rst_n)
-      zreg <= 1'b0;
-   	else
-      zreg <= zr;
-    
-  assign rd_en = 1'b1;
-
-/* The pipeline. The blank line separates inputs from
-		outputs of each stage */
+/* The pipeline. Each blank line separates inputs from
+		outputs of the module */
 
   PC pc(.clk(clk),  
 				.hlt(hlt),
@@ -38,8 +27,11 @@ module CPU(clk, rst_n, hlt);
 				.instr(instr));
 
 	ID id(.instr(instr),
-				.zr(zreg),
+				.zr(Z),
+				.ne(N),
+				.ov(V),
  
+				.aluOp(aluOp),
 				.dst_addr(dst_addr), 
 				.func(func),
  				.hlt(hlt), 
@@ -74,11 +66,21 @@ module CPU(clk, rst_n, hlt);
 					.src1(src1), 
 					.ctrl(func), 
 					.shamt(shamt),
+					.aluOp(aluOp),
  
 					.dst(dst), 
 					.ov(ov), 
+					.ne(ne),
 					.zr(zr)); 
 
-
+	flags flags(.clk(clk),
+							.rst_n(rst_n),
+							.ov(ov),
+							.ne(ne),
+							.zr(zr),
+							
+							.N(N),
+							.V(V),
+							.Z(Z));
 
 endmodule
