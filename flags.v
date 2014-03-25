@@ -1,7 +1,7 @@
 // Matthew Wiemer, Luke Brandl, Peter Collins
 
 // Delays signals by one instruction
-module flags (zr, ov, ne, Z, V, N);
+module flags (clk, rst_n, zr, ov, ne, Z, V, N);
 
 	input clk, rst_n, zr, ov, ne;
 	output reg Z, V, N;

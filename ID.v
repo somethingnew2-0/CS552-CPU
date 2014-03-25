@@ -1,11 +1,11 @@
-module ID(instr, zr, p0_addr, re0, p1_addr, re1, dst_addr, we, aluOp, shamt, hlt, src1sel, func);
+module ID(instr, zr, ne, ov, p0_addr, re0, p1_addr, re1, dst_addr, we, aluOp, shamt, hlt, src1sel, func);
   input [15:0] instr;
-  input zr;
+  input zr, ne, ov;
   output [3:0] p0_addr, p1_addr, dst_addr, shamt;
   output re0, re1, we, hlt, aluOp, src1sel;
   output [2:0] func;
   
-  // Opcode for specified load byte
+  // Opcode for specified byte load
   localparam oplhb = 3'b010;
   localparam opllb = 3'b011;  
   // Opcode for ADDZ
