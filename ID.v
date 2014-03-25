@@ -1,5 +1,5 @@
-module ID(instr, zr, ne, ov, p0_addr, re0, p1_addr, re1, dst_addr, we, aluOp, shamt, hlt, src1sel, func);
-  input [15:0] instr;
+module ID(instr, addr, zr, ne, ov, p0_addr, re0, p1_addr, re1, dst_addr, we, aluOp, shamt, hlt, src1sel, func);
+  input [15:0] instr, addr;
   input zr, ne, ov;
   output [3:0] p0_addr, p1_addr, dst_addr, shamt;
   output re0, re1, we, hlt, aluOp, src1sel;
@@ -19,7 +19,35 @@ module ID(instr, zr, ne, ov, p0_addr, re0, p1_addr, re1, dst_addr, we, aluOp, sh
   localparam funcllb = 3'b111;
 	// ALU func needed for loading and storing(add offset)
 	localparam funclwsw = 3'b000;
-  
+
+	// Branch Codes, straight off the quick reference
+	localparam neq 		= 3'b000;
+	localparam eq 		= 3'b001;
+	localparam gt 		= 3'b010;
+	localparam lt 		= 3'b011;
+	localparam gte 		= 3'b100;
+	localparam lte 		= 3'b101;
+	localparam ovfl 	= 3'b110;
+
+	localparam check = instr[11:9];
+ 
+	// Control instruction signals; ALU independant signals
+	assign b = &instr[15:14] && ~|instr[13:12];
+	assign jal = &instr[15:14] && ~instr[13] && instr[12];
+	assign jr = &instr[15:14] && instr[13] && ~instr[12];
+  assign hlt = &instr[15:12];
+
+	assign nextAddr = !(b || jal || jr) ? addr : 
+										(check == neq && !zr) ? addr + instr[8:0] :
+										(check == eq && zr) ? addr + instr[8:0] : 
+										(check == gt && !(zr || ne)) ? addr + instr[8:0] :
+										(check == lt && ne) ? addr + instr[8:0] :
+										(check == gte && !ne) ? addr + instr[8:0] :
+										(check == lte && (ne || zr)) ? addr + instr[8:0] :
+										(check == ovfl && ov) ? addr + instr[8:0] : addr + instr[8:0];
+										/* The check for uncond is implicit; if none of the other combinations are 
+												true, it must be an unconditional branch */
+
 	// Let the Alu know if this is a typical aluOp or special (loading, storing, branching, jumping)
 	assign aluOp = !instr[15];
 
@@ -41,7 +69,7 @@ module ID(instr, zr, ne, ov, p0_addr, re0, p1_addr, re1, dst_addr, we, aluOp, sh
   assign {re0, re1, we} = {!hlt, !hlt, !hlt};
   
   // If it's the HLT instruction then HALT!
-  assign hlt = &instr[15:12];
+
 
   // src1 for LLB and LHB should come from the immediate bits
   assign src1sel = instr[15];

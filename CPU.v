@@ -17,7 +17,7 @@ module CPU(clk, rst_n, hlt);
   PC pc(.clk(clk),  
 				.hlt(hlt),
 				.rst_n(rst_n),
-				.nextAddr(nextAddr)
+				.nextAddr(nextAddr),
  
 				.iaddr(iaddr));
 
@@ -25,11 +25,10 @@ module CPU(clk, rst_n, hlt);
 				.clk(clk),
 				.rd_en(rd_en),
  				
-				.nextAddr(branchBase),
 				.instr(instr));
 
 	ID id(.instr(instr),
-				.addr(branchBase),
+				.addr(iaddr + 1), /* Branch base is the current instruction + 1 */
 				.zr(Z),
 				.ne(N),
 				.ov(V),
