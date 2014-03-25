@@ -3,13 +3,11 @@ module ALU(src0, src1, ctrl, shamt, aluOp, dst, ov , zr, ne);
   input [15:0] src0, src1;
   input [2:0] ctrl;
   input [3:0] shamt;
-	input aluOp;
+  input aluOp;
   output [15:0] dst;
   output ov, zr, ne;
 
-	wire msb;
-	wire [14:0] unsat;
-	wire [15:0] possat;
+  wire [15:0] unsat;
 
   localparam add = 3'b000; // Accounts for both add and addz
   localparam lhb = 3'b001;
@@ -20,57 +18,32 @@ module ALU(src0, src1, ctrl, shamt, aluOp, dst, ov , zr, ne);
   localparam srl = 3'b110;
   localparam sra = 3'b111;
 
-  assign {msb,unsat} = (ctrl==add) ? src0+src1:
-                    	 (ctrl==lhb) ? {1'b0,src1[15:8], src0[7:0]}:
-                     	 (ctrl==sub) ? src0-src1:
-                    	 (ctrl==andy)? {1'b0,src0&src1}:
-                    	 (ctrl==nory)? {1'b0,~(src0|src1)}:
-                    	 (ctrl==sll) ? {1'b0,src1<<shamt}:
-                    	 (ctrl==srl) ? {1'b0,src1>>shamt}:
-                    	 (ctrl==sra) ? {1'b0,$signed(src1)>>>shamt}:
-                    	 							 17'h00000; // It will never reach here logically
+  assign unsat = (ctrl==add) ? src0+src1:
+                 (ctrl==lhb) ? {src1[15:8], src0[7:0]}:
+                 (ctrl==sub) ? src0-src1:
+                 (ctrl==andy)? src0&src1:
+                 (ctrl==nory)? ~(src0|src1):
+                 (ctrl==sll) ? src1<<shamt:
+                 (ctrl==srl) ? src1>>shamt:
+                 (ctrl==sra) ? $signed(src1)>>>shamt:
+                 17'h00000; // It will never reach here logically
 
-	assign doingMath = ctrl==add || ctrl==sub; // i.e. Should we set ov and ne?
+  assign doingMath = ctrl==add || ctrl==sub; // i.e. Should we set ov and ne?
 
   // Positive operands; Negative result
-	assign positiveOverflow = (src0[15] && src1[15] && !msb);
+  assign positiveOverflow = (src0[15] && src1[15] && !unsat[15]);
   // Negative operands; Positive result
-	assign negativeOverflow = (!src0[15] && !src1[15] && msb);
-	
-	// Set Result
-	assign dst = (positiveOverflow && doingMath) ? 16'h7fff :
-							 (negativeOverflow && doingMath) ? 16'h8000 : {msb, unsat};
+  assign negativeOverflow = (!src0[15] && !src1[15] && unsat[15]);
+  
+  // Set Result
+  assign dst = (positiveOverflow && doingMath) ? 16'h7fff :
+               (negativeOverflow && doingMath) ? 16'h8000 : unsat;
 
-	// Set Flags
-	assign ov = doingMath && (positiveOverflow || negativeOverflow) ? 1'b1 : 1'b0;
+  // Set Flags
+  assign ov = doingMath && (positiveOverflow || negativeOverflow) ? 1'b1 : 1'b0;
   assign zr = aluOp ? ~|dst : zr; // Potential infinite feedback issue for simulating?
-	assign ne = doingMath && dst[15];
+  assign ne = doingMath && dst[15];
 endmodule;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 module ALU_tb();
   reg [15:0] src0, src1;
