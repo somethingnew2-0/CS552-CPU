@@ -19,22 +19,30 @@ module ALU(src0, src1, ctrl, shamt, dst, ov , zr);
   localparam sra = 3'b111;
 
   assign {ov,unsat} = (ctrl==add) ? src0+src1:
-                    (ctrl==lhb) ? {1'b0,src1[15:8], src0[7:0]}:
-                    (ctrl==sub) ? src0-src1:
-                    (ctrl==andy)? {1'b0,src0&src1}:
-                    (ctrl==nory)? {1'b0,~(src0|src1)}:
-                    (ctrl==sll) ? {1'b0,src1<<shamt}:
-                    (ctrl==srl) ? {1'b0,src1>>shamt}:
-                    (ctrl==sra) ? {1'b0,$signed(src1)>>>shamt}:
-                    17'h00000; // It will never reach here logically
+                    	(ctrl==lhb) ? {1'b0,src1[15:8], src0[7:0]}:
+                    	(ctrl==sub) ? src0-src1:
+                    	(ctrl==andy)? {1'b0,src0&src1}:
+                    	(ctrl==nory)? {1'b0,~(src0|src1)}:
+                    	(ctrl==sll) ? {1'b0,src1<<shamt}:
+                    	(ctrl==srl) ? {1'b0,src1>>shamt}:
+                    	(ctrl==sra) ? {1'b0,$signed(src1)>>>shamt}:
+                    								17'h00000; // It will never reach here logically
 
 	
-	assign positiveOverflow = src0[15] && src1[15] && ov; // ov indicates negative result
-	assign negativeOverflow = !src0[15] && !src1[15] && !ov; // !ov indicates positive result
+	assign positiveOverflow = src0[15] && src1[15] && !ov; // Positive operands; Negative result
+	assign negativeOverflow = !src0[15] && !src1[15] && ov; // Negative operands; Positive result
+
+	/*
+		if(we're doing math and there is positive overflow)
+			set dst to positive saturation
+		else if(we're doing math and there is negative overflow)
+			set dst to negative saturation
+		else
+			set dst to whatever came out of the ALU
+	*/
 	assign dst = ((ctrl==add || ctrl==sub) && (positiveOverflow)) ? 16'h7fff :
 							 ((ctrl==add || ctrl==sub) && (negativeOverflow)) ? 16'h8000 : {ov, unsat};
-	
-	// Make sure this only triggers on the right ALU instructions (it does)
+
   assign zr = ~|dst;
 endmodule;
 

@@ -16,7 +16,10 @@ module ID(instr, zr, p0_addr, re0, p1_addr, re1, dst_addr, we, shamt, hlt, src1s
   // ALU func for specified load byte
   localparam funclhb = 3'b001;
   // llb should use the sra from the ALU with shamt 8
-  localparam funcllb = 3'b111;  
+  localparam funcllb = 3'b111;
+	// ALU func needed  
+	localparam funclw = 3'b000;
+	localparam funcsw = ;
   
   // Set src0 register address as normal unless it's LHB                                                 
   assign p0_addr = (instr[15:12] == 4'b1010) ? instr[11:8] : instr[7:4];
@@ -41,13 +44,35 @@ module ID(instr, zr, p0_addr, re0, p1_addr, re1, dst_addr, we, shamt, hlt, src1s
   // src1 for LLB and LHB should come from the immediate bits
   assign src1sel = instr[15];
    
-  // Set ALU function to instruction function if opcodes start with 0, else set it to SRA for load low byte
-  // Also check if opcode is ADDZ change it to ADD if it is
-  assign func = (!instr[15]) ? ((instr[15:12] == opaddz) ?  funcadd : instr[14:12]) :                                                 
-               								 ((instr[14:12] == oplhb) ?  funclhb : 
-																													 (instr[14:12] == opllb) ?  funcllb : 
-																																											 3'b000); // lw and sw should go here eventually
-  
-
+  /* Sets ALU function: 
+			
+			if(instruction starts with zero)
+			{
+				if(func is opaddz)
+				{
+					change to add (same alu operation)
+				{
+				else
+				{
+					pass the bitmask from the instruction through
+				}
+			}
+			else if(func is lhb)
+			{
+				pass through lhb bitmask
+			}
+			else if(func is llb)
+			{
+				pass through llb bitmask
+			}
+			else
+			{
+				pass through 000 (lw)
+			}
+	*/
+  assign func = (!instr[15]) ? ((instr[15:12] == opaddz) ?  funcadd : instr[14:12]) : 
+								((instr[14:12] == oplhb) ?  funclhb : 
+								(instr[14:12] == opllb) ?  funcllb : 
+								3'b000); // lw and sw should go here eventually
   
 endmodule
