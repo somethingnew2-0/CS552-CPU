@@ -70,20 +70,15 @@ module CPU(clk, rst_n, hlt);
 					.ctrl(func), 
 					.shamt(shamt),
 					.aluOp(aluOp),
+					.clk(clk),
+					.rst_n(rst_n),
+					.old_V(V),
+					.old_Z(Z),
+					.old_N(N),
  
 					.dst(dst), 
-					.ov(ov), 
-					.ne(ne),
-					.zr(zr)); 
-
-	flags flags(.clk(clk),
-							.rst_n(rst_n),
-							.ov(ov),
-							.ne(ne),
-							.zr(zr),
-							
-							.N(N),
-							.V(V),
-							.Z(Z));
+					.V(V), 
+					.N(N),
+					.Z(Z)); 
 
 endmodule

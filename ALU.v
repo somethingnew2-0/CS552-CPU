@@ -1,9 +1,9 @@
 // Peter Collins, Matthew Wiemer, Luke Brandl
-module ALU(src0, src1, ctrl, shamt, aluOp, dst, old_V, old_Z, old_N, V, Z, N, clk, rst);
+module ALU(src0, src1, ctrl, shamt, aluOp, dst, old_V, old_Z, old_N, V, Z, N, clk, rst_n);
   input [15:0] src0, src1;
   input [2:0] ctrl;
   input [3:0] shamt;
-	input aluOp, clk, rst;
+	input aluOp, clk, rst_n;
 	input old_V, old_Z, old_N; // From previous instruction
 	
   output [15:0] dst;
@@ -33,17 +33,17 @@ module ALU(src0, src1, ctrl, shamt, aluOp, dst, old_V, old_Z, old_N, V, Z, N, cl
   assign doingMath = ctrl==add || ctrl==sub; // i.e. Should we set ov and ne?
 
   // Positive operands; Negative result
-	assign negativeOverflow = (src0[15] && src1[15] && !msb);
+	assign negativeOverflow = (src0[15] && src1[15] && !unsat[15]);
   // Negative operands; Positive result
-	assign positiveOverflow = (!src0[15] && !src1[15] && msb);
+	assign positiveOverflow = (!src0[15] && !src1[15] && unsat);
   
   // Set Result
   assign dst = (positiveOverflow && doingMath) ? 16'h7fff :
                (negativeOverflow && doingMath) ? 16'h8000 : unsat;
 
   // Set Flags
-	always @(posedge clk or negedge rst) begin
-		if(!rst) begin
+	always @(posedge clk or negedge rst_n) begin
+		if(!rst_n) begin
 			V = 1'b0;
 			N = 1'b0;
 			Z = 1'b0;
@@ -57,23 +57,30 @@ module ALU(src0, src1, ctrl, shamt, aluOp, dst, old_V, old_Z, old_N, V, Z, N, cl
 				N <= 1'b1;
 			else
 				N <= old_N;
-			if(~|dst)
-				Z <= 1'b1;
-			else
-				Z <= old_Z;
 		end
-		else if(aluOp)
+		else begin
+			V <= old_V;
+			N <= old_N;
+			Z <= old_Z;
+		end
+
+		if(aluOp)
 			if(~|dst)
 				Z <= 1'b1;
 			else
 				Z <= old_Z;
+		else begin
+			V <= old_V;
+			N <= old_N;
+			Z <= old_Z;
+		end
 	end
 /*
   assign ov = doingMath && (positiveOverflow || negativeOverflow) ? 1'b1 : 1'b0;
   assign zr = aluOp && ~|dst;
   assign ne = doingMath && dst[15];
 */
-endmodule;
+endmodule
 
 module ALU_tb();
   reg [15:0] src0, src1;
@@ -276,7 +283,7 @@ module ALU_tb();
         src0 = insrc0;
         src1 = 16'h0000;
         ctrl = 3'b111;
-        shamt = 4'h00;
+        shamt = 4'h0;
         #5;
         $display("Load High Byte lhb %h = %h zr=%d", src0, dst, zr);
         if (dst!={src0[15:8],8'h00}&&((~|({src0[15:8],8'h00}))!=zr))
