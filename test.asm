@@ -1,7 +1,7 @@
 # Any comments on the right hand side of the form "# Rx = " indicate what
 # the value of that register should be when HLT prints out. Be careful
 # not to change these values once they are set.
-
+	
 	# Test AND
 	AND R1, R10, R12 # R1 = 0x8888
 
@@ -17,7 +17,7 @@
 	# Test NOR
 	NOR R4, R1, R3	 # R4 = 0x6666
 
-	# Test ADDz
+	# Test ADDz (Saturation *does* work)
 	SUB R0, R1, R1 	 # Set the zr flag
 	ADDz R5, R3, R3  # R5 = 0x8000 (Negative overflow / Saturation)
 	ADDz R5, R5, R5  # R5 should be unchanged (zr == 0)

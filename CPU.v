@@ -3,7 +3,7 @@ module CPU(clk, rst_n, hlt);
   input rst_n;
 	output hlt;
    
-  wire [15:0] iaddr, instr, p1, src0, src1, dst;
+  wire [15:0] iaddr, instr, nextAddr, p1, src0, src1, dst;
   wire [3:0] p0_addr, p1_addr, dst_addr, shamt;
   wire [2:0] func;
   wire ov, zr, ne, aluOp, rd_en;
@@ -28,7 +28,7 @@ module CPU(clk, rst_n, hlt);
 				.instr(instr));
 
 	ID id(.instr(instr),
-				.addr(iaddr + 1), /* Branch base is the current instruction + 1 */
+				.addr(iaddr + 16'b1), /* Branch base is the current instruction + 1 */
 				.zr(Z),
 				.ne(N),
 				.ov(V),
@@ -47,7 +47,7 @@ module CPU(clk, rst_n, hlt);
 				.shamt(shamt));
 
   SRC_MUX srcmux(.p1(p1), 
-								 .instr(instr[7:0]), 
+								 .imm(instr[7:0]), 
 								 .src1sel(src1sel),
  
 								 .src1(src1));
