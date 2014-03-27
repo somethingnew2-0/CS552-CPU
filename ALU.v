@@ -26,11 +26,13 @@ module ALU(src0, src1, ctrl, shamt, aluOp, dst, old_ov, old_zr, old_ne, ov, zr, 
                  (ctrl==nory)? ~(src0|src1):
                  (ctrl==sll) ? src1<<shamt:
                  (ctrl==srl) ? src1>>shamt:
-                 (ctrl==sra) ? ($signed(src1))>>>shamt:
-                 16'h00000; // It will never reach here logically
+                 (ctrl==sra) ? $signed(src1)>>>shamt:
+                 17'h00000; // It will never reach here logically
 
  	// When checking msbs for overflow, we need the actual bits operated on
+
 	assign op1 = ctrl==sub ? ~src1 + 1'b1 : src1;
+
   assign doingMath = ctrl==add || ctrl==sub; // i.e. set N and Z
   // Positive operands; Negative result
 	assign negativeOverflow =(src0[15] && op1[15] && !unsat[15]);
@@ -43,9 +45,18 @@ module ALU(src0, src1, ctrl, shamt, aluOp, dst, old_ov, old_zr, old_ne, ov, zr, 
   assign dst = (positiveOverflow && doingMath) ? 16'h7fff :
                (negativeOverflow && doingMath) ? 16'h8000 : unsat;
 
-  assign ov = doingMath ? (positiveOverflow || negativeOverflow) : old_ov;
-  assign zr = aluOp ? (~|dst) : old_zr;
-  assign ne = doingMath ? (dst[15]) : old_ne;
+
+  assign ov = doingMath ? (
+								positiveOverflow || negativeOverflow ? 1'b1 : 1'b0
+							) : old_ov;
+
+  assign zr = aluOp ? (
+								~|dst ? 1'b1 : 1'b0
+							) : old_zr;
+
+  assign ne = doingMath ? (
+								dst[15] ? 1'b1 : 1'b0
+							) : old_ne;
   
 endmodule
   
@@ -169,7 +180,7 @@ module ALU_tb();
      begin
         src0 = insrc0;
         src1 = insrc1;
-        ctrl = 3'b010;
+        ctrl = 3'b001;
         shamt = 4'b0000;
         #5;
         $display("Subtraction %h - %h = %h ov=%d zr=%d", src0, src1, dst, ov, zr);
@@ -187,7 +198,7 @@ module ALU_tb();
      begin
         src0 = insrc0;
         src1 = insrc1;
-        ctrl = 3'b011;
+        ctrl = 3'b010;
         shamt = 4'b0000;
         #5;
         $display("And %h & %h = %h zr=%d", src0, src1, dst, zr);
@@ -222,7 +233,7 @@ module ALU_tb();
      begin
         src0 = insrc0;
         src1 = 16'h0000;
-        ctrl = 3'b101;
+        ctrl = 3'b100;
         shamt = inshamt;
         #5;
         $display("Shift Left Logical %h << %h = %h zr=%d", src0, shamt, dst, zr);
