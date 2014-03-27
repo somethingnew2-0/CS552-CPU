@@ -1,9 +1,10 @@
-module CPU(clk, rst_n, hlt);
+module CPU(clk, rst_n, hlt, iaddr, dst, Z, N, V);
   input clk; 
   input rst_n;
-	output hlt;
+	output hlt, Z, N, V;
+	output [15:0] iaddr, dst;
    
-  wire [15:0] iaddr, instr, nextAddr, p1, src0, src1, dst;
+  wire [15:0] instr, nextAddr, p1, src0, src1, dst;
   wire [3:0] p0_addr, p1_addr, dst_addr, shamt;
   wire [2:0] func;
   wire ov, zr, ne, aluOp, rd_en;
