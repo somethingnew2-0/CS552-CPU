@@ -1,6 +1,9 @@
-module ID(instr, addr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, dst_addr, we, memwe, aluOp, shamt, hlt, src1sel, func, memtoreg);
+module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, dst_addr, we, memwe, aluOp, shamt, hlt, src1sel, func, memtoreg);
+
   input [15:0] instr, addr;
   input zr, ne, ov;
+
+  output [15:0] nextAddr;
   output [3:0] p0_addr, p1_addr, dst_addr, shamt;
   output re0, re1, memre, we, memwe, hlt, aluOp, src1sel, memtoreg;
   output [2:0] func;
@@ -34,7 +37,6 @@ module ID(instr, addr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, dst_addr, 
 	localparam gte 		= 3'b100;
 	localparam lte 		= 3'b101;
 	localparam ovfl 	= 3'b110;
-
 
  
 	// Control instruction signals; ALU independant signals

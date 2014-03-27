@@ -1,6 +1,7 @@
 module PC(clk, rst_n, hlt, iaddr, nextAddr);
   
-  input clk, rst_n, hlt, nextAddr;
+	input [15:0] nextAddr;
+  input clk, rst_n, hlt;
   output reg [15:0] iaddr;
 
   always @(posedge clk or negedge rst_n)
