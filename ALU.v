@@ -30,9 +30,7 @@ module ALU(src0, src1, ctrl, shamt, aluOp, dst, old_ov, old_zr, old_ne, ov, zr, 
                  17'h00000; // It will never reach here logically
 
  	// When checking msbs for overflow, we need the actual bits operated on
-
 	assign op1 = ctrl==sub ? ~src1 + 1'b1 : src1;
-
   assign doingMath = ctrl==add || ctrl==sub; // i.e. set N and Z
   // Positive operands; Negative result
 	assign negativeOverflow =(src0[15] && op1[15] && !unsat[15]);
