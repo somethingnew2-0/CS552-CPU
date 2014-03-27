@@ -26,7 +26,7 @@ module ALU(src0, src1, ctrl, shamt, aluOp, dst, old_ov, old_zr, old_ne, ov, zr, 
                  (ctrl==nory)? ~(src0|src1):
                  (ctrl==sll) ? src1<<shamt:
                  (ctrl==srl) ? src1>>shamt:
-                 (ctrl==sra) ? $signed(src1)>>>shamt:
+                 (ctrl==sra) ? {$signed(src1) >>> shamt}:
                  17'h00000; // It will never reach here logically
 
  	// When checking msbs for overflow, we need the actual bits operated on

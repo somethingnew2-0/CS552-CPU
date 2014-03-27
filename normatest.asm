@@ -38,7 +38,7 @@ Test:
 
 	# Test SRA
 	SRA R8, R8, 8	 # R8 = 0xFF88
-
+	
 	# Test LLB
 	LLB R9, 0x55	 # R9 = 0x0055
 	LLB R10, 0xCC	 # R10 = 0xFFCC
