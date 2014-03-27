@@ -30,15 +30,14 @@ module ALU(src0, src1, ctrl, shamt, aluOp, dst, old_V, old_Z, old_N, V, Z, N, cl
                  (ctrl==sra) ? $signed(src1)>>>shamt:
                  17'h00000; // It will never reach here logically
 
+  assign doingMath = ctrl==add || ctrl==sub; // i.e. set N and Z
   // Positive operands; Negative result
-	assign negativeOverflow = (src0[15] && src1[15] && !unsat[15]);
+	assign negativeOverflow =(src0[15] && src1[15] && !unsat[15]);
   // Negative operands; Positive result
-	assign positiveOverflow = (!src0[15] && !src1[15] && unsat);
+	assign positiveOverflow =(!src0[15] && !src1[15] && unsat);
 	// Determine zero from the unsaturated result!
 	assign zero = ~|unsat;
 
-  assign doingMath = ctrl==add || ctrl==sub; // i.e. set N and Z
-  
   // Set Result
   assign dst = (positiveOverflow && doingMath) ? 16'h7fff :
                (negativeOverflow && doingMath) ? 16'h8000 : unsat;
@@ -53,13 +52,19 @@ module ALU(src0, src1, ctrl, shamt, aluOp, dst, old_V, old_Z, old_N, V, Z, N, cl
 		else if(aluOp) begin // Set Z for sure
 			if(zero)
 				Z <= 1'b1;
+			else
+				Z <= 1'b0;
 
 			if(doingMath) begin // Check if we need to set N and V
 				if(positiveOverflow || negativeOverflow)
 					V <= 1'b1;
+				else
+					V <= 1'b0;
 
-				if(dst[15])
+				if(unsat[15] && !positiveOverflow)
 					N <= 1'b1;
+				else
+					N <= 1'b0;
 			end
 		end
 		else begin
