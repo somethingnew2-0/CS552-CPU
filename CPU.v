@@ -3,7 +3,7 @@ module CPU(clk, rst_n, hlt);
   input rst_n;
 	output hlt;
 
-  wire [15:0] iaddr, instr, nextAddr, p1, src0, src1, dst, memdst, finaldst;
+  wire [15:0] iaddr, instr, nextAddr, outNextAddr, p1, src0, src1, dst, memdst, finaldst;
   wire [3:0] p0_addr, p1_addr, dst_addr, shamt;
   wire [2:0] func;
   wire ov, zr, ne, aluOp, rd_en, memwe, memre, memtoreg;
@@ -34,7 +34,7 @@ module CPU(clk, rst_n, hlt);
 				.ov(V),
  
 				.aluOp(aluOp),
-				.nextAddr(nextAddr),
+				.nextAddr(outNextAddr),
 				.dst_addr(dst_addr), 
 				.func(func),
 				.jal(jal),
@@ -71,6 +71,8 @@ module CPU(clk, rst_n, hlt);
 				.p0(src0), 
 				.p1(p1));
   
+	assign nextAddr = jr ? src0 : outNextAddr;
+
   ALU alu(.src0(src0), 
 					.src1(src1), 
 					.ctrl(func), 
