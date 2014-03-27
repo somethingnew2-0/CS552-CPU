@@ -38,8 +38,9 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
 	localparam gte 		= 3'b100;
 	localparam lte 		= 3'b101;
 	localparam ovfl 	= 3'b110;
+	localparam uncond = 3'b111;
 
-	assign check = instr[11:9];
+	assign check = instr[11:9]; // Which branch type?
  
 	// Control instruction signals; ALU independant signals
 	assign b = &instr[15:14] && ~|instr[13:12];
@@ -47,19 +48,20 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
 	assign jr = &instr[15:13] && ~instr[12];
   assign hlt = &instr[15:12];
 
-	assign nextBranchAddr =  
+	assign nextBranchAddr = b ? (
 										(check == neq && !zr) ? addr + {{7{instr[8]}},instr[8:0]} :
 										(check == eq && zr) ? addr + {{7{instr[8]}},instr[8:0]} : 
 										(check == gt && !(zr || ne)) ? addr + {{7{instr[8]}},instr[8:0]} :
 										(check == lt && ne) ? addr + {{7{instr[8]}},instr[8:0]} :
 										(check == gte && !ne) ? addr + {{7{instr[8]}},instr[8:0]} :
 										(check == lte && (ne || zr)) ? addr + {{7{instr[8]}},instr[8:0]} :
-										(check == ovfl && ov) ? addr + {{7{instr[8]}},instr[8:0]} : addr + {{7{instr[8]}},instr[8:0]};
-										/* The check for uncond is implicit; if none of the other combinations are 
-												true, it must be an unconditional branch */
+										(check == ovfl && ov) ? addr  +{{7{instr[8]}},instr[8:0]} : 
+										(check == uncond) ? addr + {{7{instr[8]}},instr[8:0]} : addr
+															 ) : addr;
+										/* If it falls all the way to the bottom, the branch wasn't taken */
 
-	assign nextAddr = b   ? nextBranchAddr:
-										jal ? $signed(instr[11:0]) + addr: 
+	assign nextAddr = b   ? nextBranchAddr :
+										jal ? $signed(instr[11:0]) + addr : 
 										addr;
 
 
@@ -73,8 +75,20 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
   // That way the LLB works properly since those operations are actually hooked up to src1 for input in the ALU
   assign p1_addr = (instr[15:13] == 3'b011 || instr[15:12] == 4'b0101) ? instr[7:4] : instr[3:0];
   
-  // Set dst addr from instruction if instr is ADDZ and zr is asserted, else set dst addr to R0
+  /*
+		if(jal)
+			R15
+		else if(b)
+			R0
+		else if(!addz)
+			Grab from instruction
+		else if(Z)
+			Grab from instruction
+		else
+			R0
+	*/
   assign dst_addr = jal ? 4'hf:
+										b ? 4'h0 :
 										(!(instr[15:12] == opaddz)) ? instr[11:8] : 
 										(zr) ? instr[11:8] : 4'h0;
   

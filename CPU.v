@@ -5,7 +5,7 @@ module CPU(clk, rst_n, hlt, iaddr, dst, dst_addr, Z, N, V);
 	output [3:0] dst_addr;
 	output [15:0] iaddr, dst;
 
-  wire [15:0] iaddr, instr, nextAddr, p1, src0, src1, dst;
+  wire [15:0] iaddr, instr, nextAddr, outNextAddr, memdst, finaldst, p1, src0, src1, dst;
   wire [3:0] p0_addr, p1_addr, dst_addr, shamt;
   wire [2:0] func;
   wire ov, zr, ne, aluOp, rd_en, memwe, memre, memtoreg;
@@ -80,6 +80,9 @@ module CPU(clk, rst_n, hlt, iaddr, dst, dst_addr, Z, N, V);
 					.ctrl(func), 
 					.shamt(shamt),
 					.aluOp(aluOp),
+					.old_ov(V),
+					.old_ne(N),
+					.old_zr(Z),
  
 					.dst(dst), 
 					.ov(ov), 
@@ -95,12 +98,14 @@ module CPU(clk, rst_n, hlt, iaddr, dst, dst_addr, Z, N, V);
 							.N(N),
 							.V(V),
 							.Z(Z));
+
 	DM DM(.clk(clk),
 				.addr(dst),
 				.re(memre),
 				.we(memwe),
 				.wrt_data(src1),
 				.rd_data(memdst));
+
 	assign finaldst = jal ? iaddr + 16'b1 : 
 										memtoreg ? memdst: dst;
 

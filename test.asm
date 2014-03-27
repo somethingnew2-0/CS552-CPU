@@ -1,54 +1,41 @@
-# Any comments on the right hand side of the form "# Rx = " indicate what
-# the value of that register should be when HLT prints out. Be careful
-# not to change these values once they are set.
+# Test the different branch conditions (using extra wires on the CPU to see
+# the branch addresses directly)
 
-	JAL Test 		# R15 = 0x0001 now and should skip HLT
-	HLT
-Test:
-	LLB R15, 0x05   # R15 = 0x0005
-	JR R15			# Should skip HLT instruction
-	HLT
-	
-	# Test AND
-	AND R1, R10, R12 # R1 = 0x8888
-LOOP:
-	# Test SUB
-	SUB R2, R1, R7   # R2 = 0x1111
+		b neq, SkipHalt1
+		HLT #1
+Start:
+SkipHalt1:	b gt, SkipHalt2
+		HLT #2
 
-	# Test ADD
-	ADD R3, R1, R2   # R3 = 0x9999 (Non-Saturating)
-	LLB R12, 0xFF
-	LHB R12, 0x6F	 # R12 has a large positive number
-	ADD R12, R12, R7 # R12 = 0x7FFF (Positive overflow / Saturation)
+SkipHalt2:	b gte, SkipHalt3
+		HLT #3
 
-	# Test NOR
-	NOR R4, R1, R3	 # R4 = 0x6666
+SkipHalt3:			b ovfl, SkipHalt8
+SUB R0, R0, R0	# Set Z
+		b neq, SkipHalt4
+		b gt, SkipHalt4
+		b ovfl, SkipHalt4
+		b eq, SkipHalt4
+		HLT #4
 
-	# Test ADDz (Saturation *does* work)
-	SUB R0, R2, R2 	 # Set the zr flag
-	B EQ, LOOP
-	ADDz R5, R3, R3  # R5 = 0x8000 (Negative overflow / Saturation)
-	ADDz R5, R1, R2  # R5 should be unchanged (zr == 0)
+SkipHalt4:	b lte, SkipHalt5
+		HLT #5
 
-	# Test SLL
-	SLL R6, R3, 8	 # R6 = 0x9900
+SkipHalt5:	ADD R0, R1, R1 # Clear flags
+		b eq, SkipHalt6
+		SUB R2, R2, R3 # Set N
+		b ovfl, SkipHalt6
+		b lt, SkipHalt6
+		HLT #6
 
-	# Test SRL
-	SRL R7, R3, 8	 # R7 = 0x0099
+SkipHalt6:	b lte, SkipHalt7
+		HLT #7
 
-	# Test SRA
-	SRA R8, R8, 8	 # R8 = 0xFF88
+SkipHalt7:	ADD R1, R1, R0 # Clear flags
+		b lt, SkipHalt8
+		ADD R0, R10, R10 # Set V
+		b lt, SkipHalt8
+		b ovfl, SkipHalt8
+		HLT #8
 
-	# Test LLB
-	LLB R9, 0x55	 # R9 = 0x0055
-	LLB R10, 0xCC	 # R10 = 0xFFCC
-
-	# Test LHB
-	LHB R11, 0xFF	 # R11 = 0xFFBB
-
-	# Test LW and SW
-	SW R11, R0, 4	# mem[0x0004] = R11
-	LW R12, R0, 4	# R12 = R11
-
-	# Test HLT
-	HLT		 # Printout should match what's listed above
+SkipHalt8:	b uncond, Start
