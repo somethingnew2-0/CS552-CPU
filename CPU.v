@@ -1,7 +1,8 @@
-module CPU(clk, rst_n, hlt, iaddr, dst, Z, N, V);
+module CPU(clk, rst_n, hlt, iaddr, dst, dst_addr, Z, N, V);
   input clk; 
   input rst_n;
 	output hlt, Z, N, V;
+	output [3:0] dst_addr;
 	output [15:0] iaddr, dst;
    
   wire [15:0] instr, nextAddr, p1, src0, src1, dst;

@@ -34,6 +34,8 @@ module ALU(src0, src1, ctrl, shamt, aluOp, dst, old_V, old_Z, old_N, V, Z, N, cl
 	assign negativeOverflow = (src0[15] && src1[15] && !unsat[15]);
   // Negative operands; Positive result
 	assign positiveOverflow = (!src0[15] && !src1[15] && unsat);
+	// Determine zero from the unsaturated result!
+	assign zero = ~|unsat;
 
   assign doingMath = ctrl==add || ctrl==sub; // i.e. set N and Z
   
@@ -49,7 +51,7 @@ module ALU(src0, src1, ctrl, shamt, aluOp, dst, old_V, old_Z, old_N, V, Z, N, cl
 			Z = 1'b0;
 		end
 		else if(aluOp) begin // Set Z for sure
-			if(~|dst)
+			if(zero)
 				Z <= 1'b1;
 
 			if(doingMath) begin // Check if we need to set N and V
