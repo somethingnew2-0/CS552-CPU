@@ -55,9 +55,9 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
 										(check == gte && !ne) ? addr + {{7{instr[8]}},instr[8:0]} :
 										(check == lte && (ne || zr)) ? addr + {{7{instr[8]}},instr[8:0]} :
 										(check == ovfl && ov) ? addr + {{7{instr[8]}},instr[8:0]} : addr + {{7{instr[8]}},instr[8:0]};
-										addr + instr[8:0];
 										/* The check for uncond is implicit; if none of the other combinations are 
 												true, it must be an unconditional branch */
+
 	assign nextAddr = b   ? nextBranchAddr:
 										jal ? $signed(instr[11:0]) + addr: 
 										addr;
@@ -91,9 +91,6 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
 
 	// Set memtoreg
 	assign memtoreg = (instr[15] & (instr[14:12] == oplw));
-
-  // If it's the HLT instruction then HALT!
-
 
   // src1 for LLB,LHB, lw, and sw should come from the immediate bits
   assign src1sel = instr[15];
