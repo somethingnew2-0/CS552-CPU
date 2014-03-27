@@ -7,7 +7,7 @@ module CPU(clk, rst_n, hlt);
   wire [3:0] p0_addr, p1_addr, dst_addr, shamt;
   wire [2:0] func;
   wire ov, zr, ne, aluOp, rd_en, memwe, memre, memtoreg;
-  wire re0, re1, we, hlt, src1sel;
+  wire re0, re1, we, jal, jr, hlt, src1sel;
 
   assign rd_en = 1'b1; // When should this change?
 
@@ -37,6 +37,8 @@ module CPU(clk, rst_n, hlt);
 				.nextAddr(nextAddr),
 				.dst_addr(dst_addr), 
 				.func(func),
+				.jal(jal),
+				.jr(jr),
  				.hlt(hlt), 
 				.p0_addr(p0_addr), 
 				.re0(re0), 
@@ -95,6 +97,7 @@ module CPU(clk, rst_n, hlt);
 				.we(memwe),
 				.wrt_data(src1),
 				.rd_data(memdst));
-	assign finaldst = (memtoreg) ? memdst: dst;
+	assign finaldst = jal ? iaddr + 16'b1 : 
+										memtoreg ? memdst: dst;
 
 endmodule

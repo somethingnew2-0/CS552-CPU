@@ -1,13 +1,14 @@
-module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, dst_addr, we, memwe, aluOp, shamt, hlt, src1sel, func, memtoreg);
+module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, dst_addr, we, memwe, aluOp, shamt, jal, jr, hlt, src1sel, func, memtoreg);
 
   input [15:0] instr, addr;
   input zr, ne, ov;
 
   output [15:0] nextAddr;
   output [3:0] p0_addr, p1_addr, dst_addr, shamt;
-  output re0, re1, memre, we, memwe, hlt, aluOp, src1sel, memtoreg;
+  output re0, re1, memre, we, memwe, jal, jr, hlt, aluOp, src1sel, memtoreg;
   output [2:0] func;
 
+  wire [15:0] nextBranchAddr;
   
   // Opcode for specified byte load
   localparam oplhb = 3'b010;
@@ -42,19 +43,24 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
 	// Control instruction signals; ALU independant signals
 	assign b = &instr[15:14] && ~|instr[13:12];
 	assign jal = &instr[15:14] && ~instr[13] && instr[12];
-	assign jr = &instr[15:14] && instr[13] && ~instr[12];
+	assign jr = &instr[15:13] && ~instr[12];
   assign hlt = &instr[15:12];
 
-	assign nextAddr = !(b || jal || jr) ? addr : 
+	assign nextBranchAddr = 
 										(instr[11:9] == neq && !zr) ? addr + instr[8:0] :
 										(instr[11:9] == eq && zr) ? addr + instr[8:0] : 
 										(instr[11:9] == gt && !(zr || ne)) ? addr + instr[8:0] :
 										(instr[11:9] == lt && ne) ? addr + instr[8:0] :
 										(instr[11:9] == gte && !ne) ? addr + instr[8:0] :
 										(instr[11:9] == lte && (ne || zr)) ? addr + instr[8:0] :
-										(instr[11:9] == ovfl && ov) ? addr + instr[8:0] : addr + instr[8:0];
+										(instr[11:9] == ovfl && ov) ? addr + instr[8:0] : 
+										addr + instr[8:0];
 										/* The check for uncond is implicit; if none of the other combinations are 
 												true, it must be an unconditional branch */
+	assign nextAddr = b   ? nextBranchAddr:
+										jal ? $signed(instr[11:0]) + addr: 
+										addr;
+
 
 	// Let the Alu know if this is a typical aluOp or special (loading, storing, branching, jumping)
 	assign aluOp = !instr[15];
@@ -67,8 +73,9 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
   assign p1_addr = (instr[15:13] == 3'b011 || instr[15:12] == 4'b0101) ? instr[7:4] : instr[3:0];
   
   // Set dst addr from instruction if instr is ADDZ and zr is asserted, else set dst addr to R0
-  assign dst_addr = (!(instr[15:12] == opaddz)) ? instr[11:8] : 
-										(zr) ? instr[11:8] : 4'b0000;
+  assign dst_addr = jal ? 4'hf:
+										(!(instr[15:12] == opaddz)) ? instr[11:8] : 
+										(zr) ? instr[11:8] : 4'h0;
   
   // For SLL, SRL, and SRA use the immediate bits normallly, for LLB shift by 8 bits with SRA
   assign shamt = !instr[15] ? instr[3:0] : 4'h8;
