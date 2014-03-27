@@ -33,9 +33,9 @@ module ALU(src0, src1, ctrl, shamt, aluOp, dst, old_V, old_Z, old_N, V, Z, N, cl
   assign doingMath = ctrl==add || ctrl==sub; // i.e. Should we set ov and ne?
 
   // Positive operands; Negative result
-	assign negativeOverflow = (src0[15] && src1[15] && !msb);
+	assign negativeOverflow = (src0[15] && src1[15] && !unsat[15]);
   // Negative operands; Positive result
-	assign positiveOverflow = (!src0[15] && !src1[15] && msb);
+	assign positiveOverflow = (!src0[15] && !src1[15] && unsat[15]);
   
   // Set Result
   assign dst = (positiveOverflow && doingMath) ? 16'h7fff :
