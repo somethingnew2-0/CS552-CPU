@@ -28,8 +28,8 @@ module ALU(src0, src1, ctrl, shamt, aluOp, dst, ov, zr, ne);//, old_V, old_Z, ol
                  (ctrl==nory)? ~(src0|src1):
                  (ctrl==sll) ? src1<<shamt:
                  (ctrl==srl) ? src1>>shamt:
-                 (ctrl==sra) ? $signed(src1)>>>shamt:
-                 17'h00000; // It will never reach here logically
+                 (ctrl==sra) ? ($signed(src1))>>>shamt:
+                 16'h00000; // It will never reach here logically
 
   assign doingMath = ctrl==add || ctrl==sub; // i.e. Should we set ov and ne?
 
@@ -141,7 +141,7 @@ module ALU_tb();
      begin
         src0 = insrc0;
         src1 = insrc1;
-        ctrl = 3'b001;
+        ctrl = 3'b010;
         shamt = 4'b0000;
         #5;
         $display("Subtraction %h - %h = %h ov=%d zr=%d", src0, src1, dst, ov, zr);
@@ -159,7 +159,7 @@ module ALU_tb();
      begin
         src0 = insrc0;
         src1 = insrc1;
-        ctrl = 3'b010;
+        ctrl = 3'b011;
         shamt = 4'b0000;
         #5;
         $display("And %h & %h = %h zr=%d", src0, src1, dst, zr);
@@ -194,7 +194,7 @@ module ALU_tb();
      begin
         src0 = insrc0;
         src1 = 16'h0000;
-        ctrl = 3'b100;
+        ctrl = 3'b101;
         shamt = inshamt;
         #5;
         $display("Shift Left Logical %h << %h = %h zr=%d", src0, shamt, dst, zr);
