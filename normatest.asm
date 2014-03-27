@@ -47,8 +47,8 @@ LOOP:
 	LHB R11, 0xFF	 # R11 = 0xFFBB
 
 	# Test LW and SW
-	SW R11, R0, 4	# mem[0x0004] = R11
-	LW R12, R0, 4	# R12 = R11
+	SW R11, R9, 0	# mem[R9] = R11
+	LW R12, R9, 0	# R12 = R11
 
 	# Test HLT
 	HLT		 # Printout should match what's listed above
