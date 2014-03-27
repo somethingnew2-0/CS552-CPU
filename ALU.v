@@ -1,16 +1,14 @@
 // Peter Collins, Matthew Wiemer, Luke Brandl
-module ALU(src0, src1, ctrl, shamt, aluOp, dst, ov, zr, ne);//, old_V, old_Z, old_N, V, Z, N);
+module ALU(src0, src1, ctrl, shamt, aluOp, dst, old_ov, old_zr, old_ne, ov, zr, ne);
   input [15:0] src0, src1;
   input [2:0] ctrl;
   input [3:0] shamt;
-	input aluOp;
-	//input old_V, old_Z, old_N; // From previous instruction
+	input aluOp, old_ov, old_zr, old_ne;
 	
   output [15:0] dst;
 	output ov, zr, ne;
-  //output reg V, Z, N;
 
-  wire [15:0] unsat;
+  wire [15:0] unsat, op1;
 
   localparam add = 3'b000; // Accounts for both add and addz
   localparam lhb = 3'b001;
@@ -31,23 +29,53 @@ module ALU(src0, src1, ctrl, shamt, aluOp, dst, ov, zr, ne);//, old_V, old_Z, ol
                  (ctrl==sra) ? ($signed(src1))>>>shamt:
                  16'h00000; // It will never reach here logically
 
-  assign doingMath = ctrl==add || ctrl==sub; // i.e. Should we set ov and ne?
-
+ 	// When checking msbs for overflow, we need the actual bits operated on
+	assign op1 = ctrl==sub ? ~src1 + 1'b1 : src1;
+  assign doingMath = ctrl==add || ctrl==sub; // i.e. set N and Z
   // Positive operands; Negative result
-	assign negativeOverflow = (src0[15] && src1[15] && !unsat[15]);
+	assign negativeOverflow =(src0[15] && op1[15] && !unsat[15]);
   // Negative operands; Positive result
-	assign positiveOverflow = (!src0[15] && !src1[15] && unsat[15]);
-  
+	assign positiveOverflow = (!src0[15] && !op1[15] && unsat[15]);
+	// Determine zero from the unsaturated result!
+	assign zero = ~|unsat;
+
   // Set Result
   assign dst = (positiveOverflow && doingMath) ? 16'h7fff :
                (negativeOverflow && doingMath) ? 16'h8000 : unsat;
 
+  assign ov = doingMath ? (positiveOverflow || negativeOverflow) : old_ov;
+  assign zr = aluOp ? (~|dst) : old_zr;
+  assign ne = doingMath ? (dst[15]) : old_ne;
+  
+endmodule
+  
 
-  assign ov = doingMath && (positiveOverflow || negativeOverflow);
-  assign zr = aluOp && ~|dst;
-  assign ne = doingMath && dst[15];
 
-endmodule;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 module ALU_tb();
   reg [15:0] src0, src1;
@@ -250,7 +278,7 @@ module ALU_tb();
         src0 = insrc0;
         src1 = 16'h0000;
         ctrl = 3'b111;
-        shamt = 4'h00;
+        shamt = 4'h0;
         #5;
         $display("Load High Byte lhb %h = %h zr=%d", src0, dst, zr);
         if (dst!={src0[15:8],8'h00}&&((~|({src0[15:8],8'h00}))!=zr))

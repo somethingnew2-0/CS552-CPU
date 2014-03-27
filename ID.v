@@ -38,7 +38,9 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
 	localparam gte 		= 3'b100;
 	localparam lte 		= 3'b101;
 	localparam ovfl 	= 3'b110;
+	localparam uncond = 3'b111;
 
+	assign check = instr[11:9]; // Which branch type?
  
 	// Control instruction signals; ALU independant signals
 	assign b = &instr[15:14] && ~|instr[13:12];
@@ -46,19 +48,20 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
 	assign jr = &instr[15:13] && ~instr[12];
   assign hlt = &instr[15:12];
 
-	assign nextBranchAddr = 
-										(instr[11:9] == neq && !zr) ? addr + instr[8:0] :
-										(instr[11:9] == eq && zr) ? addr + instr[8:0] : 
-										(instr[11:9] == gt && !(zr || ne)) ? addr + instr[8:0] :
-										(instr[11:9] == lt && ne) ? addr + instr[8:0] :
-										(instr[11:9] == gte && !ne) ? addr + instr[8:0] :
-										(instr[11:9] == lte && (ne || zr)) ? addr + instr[8:0] :
-										(instr[11:9] == ovfl && ov) ? addr + instr[8:0] : 
-										addr + instr[8:0];
-										/* The check for uncond is implicit; if none of the other combinations are 
-												true, it must be an unconditional branch */
-	assign nextAddr = b   ? nextBranchAddr:
-										jal ? $signed(instr[11:0]) + addr: 
+	assign nextBranchAddr = b ? (
+										(check == uncond) ? addr + {{7{instr[8]}},instr[8:0]} :
+										(check == neq && !zr) ? addr + {{7{instr[8]}},instr[8:0]} :
+										(check == eq && zr) ? addr + {{7{instr[8]}},instr[8:0]} : 
+										(check == gt && !(zr || ne)) ? addr + {{7{instr[8]}},instr[8:0]} :
+										(check == lt && ne) ? addr + {{7{instr[8]}},instr[8:0]} :
+										(check == gte && !ne) ? addr + {{7{instr[8]}},instr[8:0]} :
+										(check == lte && (ne || zr)) ? addr + {{7{instr[8]}},instr[8:0]} :
+										(check == ovfl && ov) ? addr  +{{7{instr[8]}},instr[8:0]} : addr
+															 ) : addr;
+										/* If it falls all the way to the bottom, the branch wasn't taken */
+
+	assign nextAddr = b   ? nextBranchAddr :
+										jal ? $signed(instr[11:0]) + addr : 
 										addr;
 
 
@@ -72,8 +75,20 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
   // That way the LLB works properly since those operations are actually hooked up to src1 for input in the ALU
   assign p1_addr = (instr[15:13] == 3'b011 || instr[15:12] == 4'b0101) ? instr[7:4] : instr[3:0];
   
-  // Set dst addr from instruction if instr is ADDZ and zr is asserted, else set dst addr to R0
+  /*
+		if(jal)
+			R15
+		else if(b)
+			R0
+		else if(!addz)
+			Grab from instruction
+		else if(Z)
+			Grab from instruction
+		else
+			R0
+	*/
   assign dst_addr = jal ? 4'hf:
+										b ? 4'h0 :
 										(!(instr[15:12] == opaddz)) ? instr[11:8] : 
 										(zr) ? instr[11:8] : 4'h0;
   
@@ -91,9 +106,6 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
 	// Set memtoreg
 	assign memtoreg = (instr[15] & (instr[14:12] == oplw));
 
-  // If it's the HLT instruction then HALT!
-
-
   // src1 for LLB,LHB, lw, and sw should come from the immediate bits
   assign src1sel = instr[15];
    
@@ -108,12 +120,16 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
 				pass through lhb bitmask
 			else if(func is llb)
 				pass through llb bitmask
+			else if(branch)
+				anything that isn't add or sub (so it won't set flags), 
+				doesn't matter what because it will be written to R0		
 			else
 				pass through 000 (lw, sw)
 	*/
   assign func = (!instr[15]) ? ((instr[15:12] == opaddz) ?  funcadd : instr[14:12]) : 
 								((instr[14:12] == oplhb) ?  funclhb : 
 								(instr[14:12] == opllb) ?  funcllb : 
+								b ? 3'b111 :
 								3'b000); // lw and sw are included in this, as they use add op
   
 endmodule

@@ -32,6 +32,7 @@ initial begin
   //$readmemh("C:/Users/Matthew/Skydrive/ECE 552/CS552-CPU/rfinit.txt",mem);
   //$readmemh("C:/Users/Peter/Documents/Github/CS552-CPU/rfinit.txt",mem);
 		$readmemh("C:/Users/Luke Brandl/Documents/Github/CS552-CPU/rfinit.txt",mem);
+
   mem[0] = 16'h0000;					// reg0 is always 0,
 end
 

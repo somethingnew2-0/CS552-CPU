@@ -1,24 +1,29 @@
-@0000 D001	// JAL Test
+@0000 C001	// b neq, SkipHalt1
 @0001 F000	// HLT
-@0002 BF05	// LLB R15, 0x05
-@0003 E0F0	// JR R15
-@0004 F000	// HLT
-@0005 31AC	// AND R1, R10, R12
-@0006 2217	// SUB R2, R1, R7
-@0007 0312	// ADD R3, R1, R2
-@0008 BCFF	// LLB R12, 0xFF
-@0009 AC6F	// LHB R12, 0x6F
-@000a 0CC7	// ADD R12, R12, R7
-@000b 4413	// NOR R4, R1, R3
-@000c 2011	// SUB R0, R1, R1
-@000d 1533	// ADDz R5, R3, R3
-@000e 1555	// ADDz R5, R5, R5
-@000f 5638	// SLL R6, R3, 8
-@0010 6738	// SRL R7, R3, 8
-@0011 7888	// SRA R8, R8, 8
-@0012 B955	// LLB R9, 0x55
-@0013 BACC	// LLB R10, 0xCC
-@0014 ABFF	// LHB R11, 0xFF
-@0015 9B04	// SW R11, R0, 4
-@0016 8C04	// LW R12, R0, 4
-@0017 F000	// HLT
+@0002 C401	// SkipHalt1:	b gt, SkipHalt2
+@0003 F000	// HLT
+@0004 C801	// SkipHalt2:	b gte, SkipHalt3
+@0005 F000	// HLT
+@0006 2000	// SkipHalt3:	SUB R0, R0, R0
+@0007 C004	// b neq, SkipHalt4
+@0008 C403	// b gt, SkipHalt4
+@0009 CC02	// b ovfl, SkipHalt4
+@000a C201	// b eq, SkipHalt4
+@000b F000	// HLT
+@000c CA01	// SkipHalt4:	b lte, SkipHalt5
+@000d F000	// HLT
+@000e 0011	// SkipHalt5:	ADD R0, R1, R1
+@000f C204	// b eq, SkipHalt6
+@0010 CFFB	// b uncond, SkipHalt4
+@0011 2223	// SUB R2, R2, R3
+@0012 CE01	// b uncond, SkipHalt6
+@0013 F000	// HLT
+@0014 CA01	// SkipHalt6:	b lte, SkipHalt7
+@0015 F000	// HLT
+@0016 0110	// SkipHalt7:	ADD R1, R1, R0
+@0017 C604	// b lt, SkipHalt8
+@0018 00AA	// ADD R0, R10, R10
+@0019 C602	// b lt, SkipHalt8
+@001a CC01	// b ovfl, SkipHalt8
+@001b F000	// HLT
+@001c CFE5	// SkipHalt8:	b uncond, Start
