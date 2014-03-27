@@ -49,14 +49,14 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
   assign hlt = &instr[15:12];
 
 	assign nextBranchAddr = b ? (
+										(check == uncond) ? addr + {{7{instr[8]}},instr[8:0]} :
 										(check == neq && !zr) ? addr + {{7{instr[8]}},instr[8:0]} :
 										(check == eq && zr) ? addr + {{7{instr[8]}},instr[8:0]} : 
 										(check == gt && !(zr || ne)) ? addr + {{7{instr[8]}},instr[8:0]} :
 										(check == lt && ne) ? addr + {{7{instr[8]}},instr[8:0]} :
 										(check == gte && !ne) ? addr + {{7{instr[8]}},instr[8:0]} :
 										(check == lte && (ne || zr)) ? addr + {{7{instr[8]}},instr[8:0]} :
-										(check == ovfl && ov) ? addr  +{{7{instr[8]}},instr[8:0]} : 
-										(check == uncond) ? addr + {{7{instr[8]}},instr[8:0]} : addr
+										(check == ovfl && ov) ? addr  +{{7{instr[8]}},instr[8:0]} : addr
 															 ) : addr;
 										/* If it falls all the way to the bottom, the branch wasn't taken */
 
@@ -120,12 +120,16 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
 				pass through lhb bitmask
 			else if(func is llb)
 				pass through llb bitmask
+			else if(branch)
+				anything that isn't add or sub (so it won't set flags), 
+				doesn't matter what because it will be written to R0		
 			else
 				pass through 000 (lw, sw)
 	*/
   assign func = (!instr[15]) ? ((instr[15:12] == opaddz) ?  funcadd : instr[14:12]) : 
 								((instr[14:12] == oplhb) ?  funclhb : 
 								(instr[14:12] == opllb) ?  funcllb : 
+								b ? 3'b111 :
 								3'b000); // lw and sw are included in this, as they use add op
   
 endmodule

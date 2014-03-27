@@ -10,8 +10,7 @@ SkipHalt1:	b gt, SkipHalt2
 SkipHalt2:	b gte, SkipHalt3
 		HLT #3
 
-SkipHalt3:			b ovfl, SkipHalt8
-SUB R0, R0, R0	# Set Z
+SkipHalt3:	SUB R0, R0, R0	# Set Z
 		b neq, SkipHalt4
 		b gt, SkipHalt4
 		b ovfl, SkipHalt4
@@ -21,11 +20,11 @@ SUB R0, R0, R0	# Set Z
 SkipHalt4:	b lte, SkipHalt5
 		HLT #5
 
-SkipHalt5:	ADD R0, R1, R1 # Clear flags
+SkipHalt5:	ADD R0, R1, R1 # Clear flags (branches stop working after this...)
 		b eq, SkipHalt6
 		SUB R2, R2, R3 # Set N
-		b ovfl, SkipHalt6
-		b lt, SkipHalt6
+		#b ovfl, SkipHalt6
+		b uncond, SkipHalt6
 		HLT #6
 
 SkipHalt6:	b lte, SkipHalt7
