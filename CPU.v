@@ -2,12 +2,8 @@ module CPU(clk, rst_n, hlt);
   input clk; 
   input rst_n;
 	output hlt;
-   
-<<<<<<< HEAD
-  wire [15:0] iaddr, instr, p1, src0, src1, dst, memdst, finaldst;
-=======
-  wire [15:0] iaddr, instr, nextAddr, p1, src0, src1, dst;
->>>>>>> 9588edd6b33e759471f44f4d805174a2762f1360
+
+  wire [15:0] iaddr, instr, nextAddr, p1, src0, src1, dst, memdst, finaldst;
   wire [3:0] p0_addr, p1_addr, dst_addr, shamt;
   wire [2:0] func;
   wire ov, zr, ne, aluOp, rd_en, memwe, memre, memtoreg;
