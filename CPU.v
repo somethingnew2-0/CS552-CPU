@@ -3,10 +3,10 @@ module CPU(clk, rst_n, hlt);
   input rst_n;
 	output hlt;
    
-  wire [15:0] iaddr, instr, p1, src0, src1, dst;
+  wire [15:0] iaddr, instr, p1, src0, src1, dst, memdst, finaldst;
   wire [3:0] p0_addr, p1_addr, dst_addr, shamt;
   wire [2:0] func;
-  wire ov, zr, ne, aluOp, rd_en;
+  wire ov, zr, ne, aluOp, rd_en, memwe, memre, memtoreg;
   wire re0, re1, we, hlt, src1sel;
 
   assign rd_en = 1'b1; // When should this change?
@@ -42,9 +42,13 @@ module CPU(clk, rst_n, hlt);
 				.re0(re0), 
 				.p1_addr(p1_addr), 
 				.re1(re1), 
+				.memwe(memwe),
+				.memre(memre),
 				.we(we), 
 				.src1sel(src1sel), 
-				.shamt(shamt));
+				.shamt(shamt),
+				.memtoreg(memtoreg)
+				);
 
   SRC_MUX srcmux(.p1(p1), 
 								 .instr(instr[7:0]), 
@@ -58,7 +62,7 @@ module CPU(clk, rst_n, hlt);
 				.re0(re0), 
 				.re1(re1), 
 				.dst_addr(dst_addr), 
-				.dst(dst), 
+				.dst(finaldst), 
 				.we(we), 
 				.hlt(hlt),
  
@@ -85,5 +89,12 @@ module CPU(clk, rst_n, hlt);
 							.N(N),
 							.V(V),
 							.Z(Z));
+	DM DM(.clk(clk),
+				.addr(dst),
+				.re(memre),
+				.we(memwe),
+				.wrt_data(src1),
+				.rd_data(memdst));
+	assign finaldst = (memtoreg) ? memdst: dst;
 
 endmodule
