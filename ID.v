@@ -40,13 +40,13 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, dst_add
   assign hlt = &instr[15:12];
 
 	assign nextAddr = !(b || jal || jr) ? addr : 
-										(check == neq && !zr) ? addr + instr[8:0] :
-										(check == eq && zr) ? addr + instr[8:0] : 
-										(check == gt && !(zr || ne)) ? addr + instr[8:0] :
-										(check == lt && ne) ? addr + instr[8:0] :
-										(check == gte && !ne) ? addr + instr[8:0] :
-										(check == lte && (ne || zr)) ? addr + instr[8:0] :
-										(check == ovfl && ov) ? addr + instr[8:0] : addr + instr[8:0];
+										(check == neq && !zr) ? addr + {{7{instr[8]}},instr[8:0]} :
+										(check == eq && zr) ? addr + {{7{instr[8]}},instr[8:0]} : 
+										(check == gt && !(zr || ne)) ? addr + {{7{instr[8]}},instr[8:0]} :
+										(check == lt && ne) ? addr + {{7{instr[8]}},instr[8:0]} :
+										(check == gte && !ne) ? addr + {{7{instr[8]}},instr[8:0]} :
+										(check == lte && (ne || zr)) ? addr + {{7{instr[8]}},instr[8:0]} :
+										(check == ovfl && ov) ? addr + {{7{instr[8]}},instr[8:0]} : addr + {{7{instr[8]}},instr[8:0]};
 										/* The check for uncond is implicit; if none of the other combinations are 
 												true, it must be an unconditional branch */
 
