@@ -13,16 +13,17 @@
 @000c CA01	// SkipHalt4:	b lte, SkipHalt5
 @000d F000	// HLT
 @000e 0011	// SkipHalt5:	ADD R0, R1, R1
-@000f C203	// b eq, SkipHalt6
-@0010 2223	// SUB R2, R2, R3
-@0011 CE01	// b uncond, SkipHalt6
-@0012 F000	// HLT
-@0013 CA01	// SkipHalt6:	b lte, SkipHalt7
-@0014 F000	// HLT
-@0015 0110	// SkipHalt7:	ADD R1, R1, R0
-@0016 C604	// b lt, SkipHalt8
-@0017 00AA	// ADD R0, R10, R10
-@0018 C602	// b lt, SkipHalt8
-@0019 CC01	// b ovfl, SkipHalt8
-@001a F000	// HLT
-@001b CFE6	// SkipHalt8:	b uncond, Start
+@000f C204	// b eq, SkipHalt6
+@0010 CFFB	// b uncond, SkipHalt4
+@0011 2223	// SUB R2, R2, R3
+@0012 CE01	// b uncond, SkipHalt6
+@0013 F000	// HLT
+@0014 CA01	// SkipHalt6:	b lte, SkipHalt7
+@0015 F000	// HLT
+@0016 0110	// SkipHalt7:	ADD R1, R1, R0
+@0017 C604	// b lt, SkipHalt8
+@0018 00AA	// ADD R0, R10, R10
+@0019 C602	// b lt, SkipHalt8
+@001a CC01	// b ovfl, SkipHalt8
+@001b F000	// HLT
+@001c CFE5	// SkipHalt8:	b uncond, Start
