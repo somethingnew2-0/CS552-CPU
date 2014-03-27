@@ -1,13 +1,14 @@
 // Peter Collins, Matthew Wiemer, Luke Brandl
-module ALU(src0, src1, ctrl, shamt, aluOp, dst, old_V, old_Z, old_N, V, Z, N, clk, rst_n);
+module ALU(src0, src1, ctrl, shamt, aluOp, dst, ov, zr, ne);//, old_V, old_Z, old_N, V, Z, N);
   input [15:0] src0, src1;
   input [2:0] ctrl;
   input [3:0] shamt;
-	input aluOp, clk, rst_n;
-	input old_V, old_Z, old_N; // From previous instruction
+	input aluOp;
+	//input old_V, old_Z, old_N; // From previous instruction
 	
   output [15:0] dst;
-  output reg V, Z, N;
+	output ov, zr, ne;
+  //output reg V, Z, N;
 
   wire [15:0] unsat;
 
@@ -42,39 +43,13 @@ module ALU(src0, src1, ctrl, shamt, aluOp, dst, old_V, old_Z, old_N, V, Z, N, cl
   assign dst = (positiveOverflow && doingMath) ? 16'h7fff :
                (negativeOverflow && doingMath) ? 16'h8000 : unsat;
 
-  // Set Flags
-	always @(posedge clk or negedge rst_n) begin
-		if(!rst_n) begin
-			V = 1'b0;
-			N = 1'b0;
-			Z = 1'b0;
-		end
-		else if(aluOp) begin // Set Z for sure
-			if(zero)
-				Z <= 1'b1;
-			else
-				Z <= 1'b0;
 
-			if(doingMath) begin // Check if we need to set N and V
-				if(positiveOverflow || negativeOverflow)
-					V <= 1'b1;
-				else
-					V <= 1'b0;
-
-				if(unsat[15] && !positiveOverflow)
-					N <= 1'b1;
-				else
-					N <= 1'b0;
-			end
-		end
-		else begin
-			V <= old_V;
-			N <= old_N;
-			Z <= old_Z;
-		end
-	end
+  assign ov = doingMath && (positiveOverflow || negativeOverflow);
+  assign zr = aluOp && ~|dst;
+  assign ne = doingMath && dst[15];
+  
 endmodule
-
+  
 
 
 

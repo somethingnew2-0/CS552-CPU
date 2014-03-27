@@ -2,6 +2,13 @@
 # the value of that register should be when HLT prints out. Be careful
 # not to change these values once they are set.
 
+	JAL Test 		# R15 = 0x0001 now and should skip HLT
+	HLT
+Test:
+	LLB R15, 0x05   # R15 = 0x0005
+	JR R15			# Should skip HLT instruction
+	HLT
+	
 	# Test AND
 	AND R1, R10, R12 # R1 = 0x8888
 LOOP:

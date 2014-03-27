@@ -16,8 +16,8 @@ always @(addr,rd_en,clk)
     instr <= instr_mem[addr];
 
 initial begin
-  $readmemh("C:/Users/Matthew/SkyDrive/ECE 552/CS552-CPU/instr.hex",instr_mem);
-  //$readmemh("C:/Users/Peter/Documents/Github/CS552-CPU/instr.hex",instr_mem);
+  //$readmemh("C:/Users/Matthew/SkyDrive/ECE 552/CS552-CPU/instr.hex",instr_mem);
+  $readmemh("C:/Users/Peter/Documents/Github/CS552-CPU/instr.hex",instr_mem);
 end
 
 endmodule

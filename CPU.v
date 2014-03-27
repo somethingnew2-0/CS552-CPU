@@ -36,7 +36,7 @@ module CPU(clk, rst_n, hlt, iaddr, dst, dst_addr, Z, N, V);
 				.ov(V),
  
 				.aluOp(aluOp),
-				.nextAddr(nextAddr),
+				.nextAddr(outNextAddr),
 				.dst_addr(dst_addr), 
 				.func(func),
 				.jal(jal),
@@ -73,21 +73,28 @@ module CPU(clk, rst_n, hlt, iaddr, dst, dst_addr, Z, N, V);
 				.p0(src0), 
 				.p1(p1));
   
+	assign nextAddr = jr ? src0 : outNextAddr;
+
   ALU alu(.src0(src0), 
 					.src1(src1), 
 					.ctrl(func), 
 					.shamt(shamt),
 					.aluOp(aluOp),
-					.clk(clk),
-					.rst_n(rst_n),
-					.old_V(V),
-					.old_Z(Z),
-					.old_N(N),
  
 					.dst(dst), 
-					.V(V), 
-					.N(N),
-					.Z(Z)); 
+					.ov(ov), 
+					.ne(ne),
+					.zr(zr)); 
+
+	flags flags(.clk(clk),
+							.rst_n(rst_n),
+							.ov(ov),
+							.ne(ne),
+							.zr(zr),
+							
+							.N(N),
+							.V(V),
+							.Z(Z));
 	DM DM(.clk(clk),
 				.addr(dst),
 				.re(memre),
