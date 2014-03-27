@@ -49,14 +49,14 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
   assign hlt = &instr[15:12];
 
 	assign nextBranchAddr = b ? (
-										(check == uncond) ? addr + {{7{instr[8]}},instr[8:0]} :
-										(check == neq && !zr) ? addr + {{7{instr[8]}},instr[8:0]} :
-										(check == eq && zr) ? addr + {{7{instr[8]}},instr[8:0]} : 
-										(check == gt && !(zr || ne)) ? addr + {{7{instr[8]}},instr[8:0]} :
-										(check == lt && ne) ? addr + {{7{instr[8]}},instr[8:0]} :
-										(check == gte && !ne) ? addr + {{7{instr[8]}},instr[8:0]} :
-										(check == lte && (ne || zr)) ? addr + {{7{instr[8]}},instr[8:0]} :
-										(check == ovfl && ov) ? addr  +{{7{instr[8]}},instr[8:0]} : addr
+										(instr[11:9] == uncond) ? addr + {{7{instr[8]}},instr[8:0]} :
+										(instr[11:9] == neq && !zr) ? addr + {{7{instr[8]}},instr[8:0]} :
+										(instr[11:9] == eq && zr) ? addr + {{7{instr[8]}},instr[8:0]} : 
+										(instr[11:9] == gt && !(zr || ne)) ? addr + {{7{instr[8]}},instr[8:0]} :
+										(instr[11:9] == lt && ne) ? addr + {{7{instr[8]}},instr[8:0]} :
+										(instr[11:9] == gte && !ne) ? addr + {{7{instr[8]}},instr[8:0]} :
+										(instr[11:9] == lte && (ne || zr)) ? addr + {{7{instr[8]}},instr[8:0]} :
+										(instr[11:9] == ovfl && ov) ? addr  +{{7{instr[8]}},instr[8:0]} : addr
 															 ) : addr;
 										/* If it falls all the way to the bottom, the branch wasn't taken */
 

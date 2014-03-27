@@ -1,7 +1,7 @@
 module CPU(clk, rst_n, hlt, iaddr, dst, dst_addr, Z, N, V);
   input clk; 
   input rst_n;
-	output hlt, Z, N, V;
+	output hlt, Z, N, V; //Assuming these are current flag states
 	output [3:0] dst_addr;
 	output [15:0] iaddr, dst;
 
