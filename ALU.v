@@ -26,15 +26,20 @@ module ALU(src0, src1, ctrl, shamt, aluOp, dst, old_ov, old_zr, old_ne, ov, zr, 
                  (ctrl==nory)? ~(src0|src1):
                  (ctrl==sll) ? src1<<shamt:
                  (ctrl==srl) ? src1>>shamt:
-                 (ctrl==sra) ? {$signed(src1) >>> shamt}:
+		 (ctrl==sra) ? {$signed(src1) >>> shamt}:
                  17'h00000; // It will never reach here logically
 
  	// When checking msbs for overflow, we need the actual bits operated on
+	assign op1 = ctrl==sub ? ~src1 + 1'b1 : src1;
+
+             
+
+
   assign doingMath = ctrl==add || ctrl==sub; // i.e. set N and Z
   // Positive operands; Negative result
-	assign negativeOverflow =(src0[15] && src1[15] && !unsat[15]);
+	assign negativeOverflow =(src0[15] && op1[15] && !unsat[15]);
   // Negative operands; Positive result
-	assign positiveOverflow = (!src0[15] && !src1[15] && unsat[15]);
+	assign positiveOverflow = (!src0[15] && !op1[15] && unsat[15]);
 	// Determine zero from the unsaturated result!
 	//assign zero = ~|unsat;
 
@@ -43,14 +48,48 @@ module ALU(src0, src1, ctrl, shamt, aluOp, dst, old_ov, old_zr, old_ne, ov, zr, 
                (negativeOverflow && doingMath) ? 16'h8000 : unsat;
 
 
-  assign ov = doingMath ? (positiveOverflow || negativeOverflow) : old_ov;
+  assign ov = doingMath ? (
+								positiveOverflow || negativeOverflow ? 1'b1 : 1'b0
+							) : old_ov;
 
-  assign zr = aluOp ? ~|dst : old_zr;
+  assign zr = aluOp ? (
+								~|dst ? 1'b1 : 1'b0
+							) : old_zr;
 
-  assign ne = doingMath ? dst[15] : old_ne;
+  assign ne = doingMath ? (
+								dst[15] ? 1'b1 : 1'b0
+							) : old_ne;
   
 endmodule
- 
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 module ALU_tb();
   reg [15:0] src0, src1;
   reg [2:0] ctrl;
