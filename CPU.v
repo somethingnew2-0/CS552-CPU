@@ -103,7 +103,7 @@ module CPU(clk, rst_n, hlt, pc);
 				.addr(dst),
 				.re(memre),
 				.we(memwe),
-				.wrt_data(src1),
+				.wrt_data(p1),
 				.rd_data(memdst));
 
 	assign finaldst = jal ? pc + 16'b1 : 

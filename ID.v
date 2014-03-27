@@ -75,7 +75,7 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
 
   // Set the src1 as normal for normal alu ops, however if it is SLL, SRL, or SRA set src1 to the src0 register addr
   // That way the LLB works properly since those operations are actually hooked up to src1 for input in the ALU
-  assign p1_addr = (instr[15:13] == 3'b011 || instr[15:12] == 4'b0101) ? instr[7:4] : instr[3:0];
+  assign p1_addr = (memwe) ? instr[11:8] : (instr[15:13] == 3'b011 || instr[15:12] == 4'b0101 || memtoreg) ? instr[7:4] : instr[3:0];
   
   /*
 		if(jal)
