@@ -22,10 +22,9 @@ SkipHalt4:	b lte, SkipHalt5
 
 SkipHalt5:	ADD R0, R1, R1 # Clear flags (branches stop working after this...)
 		b eq, SkipHalt6
-		b uncond, SkipHalt4
 		SUB R2, R2, R3 # Set N
-		#b ovfl, SkipHalt6
-		b uncond, SkipHalt6
+		b ovfl, SkipHalt6
+		b lt, SkipHalt6
 		HLT #6
 
 SkipHalt6:	b lte, SkipHalt7
