@@ -1,15 +1,23 @@
-module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, dst_addr, we, aluOp, shamt, hlt, src1sel, func);
+module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, dst_addr, we, memwe, aluOp, shamt, jal, jr, hlt, src1sel, func, memtoreg);
+
   input [15:0] instr, addr;
   input zr, ne, ov;
 
-	output [15:0] nextAddr;
+  output [15:0] nextAddr;
   output [3:0] p0_addr, p1_addr, dst_addr, shamt;
-  output re0, re1, we, hlt, aluOp, src1sel;
+  output re0, re1, memre, we, memwe, jal, jr, hlt, aluOp, src1sel, memtoreg;
   output [2:0] func;
+
+  wire [15:0] nextBranchAddr;
   
   // Opcode for specified byte load
   localparam oplhb = 3'b010;
   localparam opllb = 3'b011;  
+
+	// Opcode for loads and stores
+	localparam oplw = 3'b000;
+	localparam opsw = 3'b001;
+
   // Opcode for ADDZ
   localparam opaddz = 4'b0001;
   
@@ -36,10 +44,10 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, dst_add
 	// Control instruction signals; ALU independant signals
 	assign b = &instr[15:14] && ~|instr[13:12];
 	assign jal = &instr[15:14] && ~instr[13] && instr[12];
-	assign jr = &instr[15:14] && instr[13] && ~instr[12];
+	assign jr = &instr[15:13] && ~instr[12];
   assign hlt = &instr[15:12];
 
-	assign nextAddr = !(b || jal || jr) ? addr : 
+	assign nextBranchAddr =  
 										(check == neq && !zr) ? addr + {{7{instr[8]}},instr[8:0]} :
 										(check == eq && zr) ? addr + {{7{instr[8]}},instr[8:0]} : 
 										(check == gt && !(zr || ne)) ? addr + {{7{instr[8]}},instr[8:0]} :
@@ -47,8 +55,13 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, dst_add
 										(check == gte && !ne) ? addr + {{7{instr[8]}},instr[8:0]} :
 										(check == lte && (ne || zr)) ? addr + {{7{instr[8]}},instr[8:0]} :
 										(check == ovfl && ov) ? addr + {{7{instr[8]}},instr[8:0]} : addr + {{7{instr[8]}},instr[8:0]};
+										addr + instr[8:0];
 										/* The check for uncond is implicit; if none of the other combinations are 
 												true, it must be an unconditional branch */
+	assign nextAddr = b   ? nextBranchAddr:
+										jal ? $signed(instr[11:0]) + addr: 
+										addr;
+
 
 	// Let the Alu know if this is a typical aluOp or special (loading, storing, branching, jumping)
 	assign aluOp = !instr[15];
@@ -61,19 +74,28 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, dst_add
   assign p1_addr = (instr[15:13] == 3'b011 || instr[15:12] == 4'b0101) ? instr[7:4] : instr[3:0];
   
   // Set dst addr from instruction if instr is ADDZ and zr is asserted, else set dst addr to R0
-  assign dst_addr = (!(instr[15:12] == opaddz)) ? instr[11:8] : 
-										(zr) ? instr[11:8] : 4'b0000;
+  assign dst_addr = jal ? 4'hf:
+										(!(instr[15:12] == opaddz)) ? instr[11:8] : 
+										(zr) ? instr[11:8] : 4'h0;
   
   // For SLL, SRL, and SRA use the immediate bits normallly, for LLB shift by 8 bits with SRA
   assign shamt = !instr[15] ? instr[3:0] : 4'h8;
   
-  // Enable all reads and writes unless it's a HLT
-  assign {re0, re1, we} = {!hlt, !hlt, !hlt};
+  // All re are always on
+  assign {re0, re1, memre} = {!hlt, !hlt, !hlt};
   
+	// Set we and memwe
+	assign we = (aluOp | (instr[15] & ((instr[14:12] == oplw) | (instr[14:12] == opllb) | (instr[14:12] == oplhb))));
+	
+	assign memwe = (instr[15] & (instr[14:12] == opsw));
+
+	// Set memtoreg
+	assign memtoreg = (instr[15] & (instr[14:12] == oplw));
+
   // If it's the HLT instruction then HALT!
 
 
-  // src1 for LLB and LHB should come from the immediate bits
+  // src1 for LLB,LHB, lw, and sw should come from the immediate bits
   assign src1sel = instr[15];
    
   /* Sets ALU function: 
@@ -88,11 +110,11 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, dst_add
 			else if(func is llb)
 				pass through llb bitmask
 			else
-				pass through 000 (lw)
+				pass through 000 (lw, sw)
 	*/
   assign func = (!instr[15]) ? ((instr[15:12] == opaddz) ?  funcadd : instr[14:12]) : 
 								((instr[14:12] == oplhb) ?  funclhb : 
 								(instr[14:12] == opllb) ?  funcllb : 
-								3'b000); // lw and sw should go here eventually
+								3'b000); // lw and sw are included in this, as they use add op
   
 endmodule

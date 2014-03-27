@@ -34,7 +34,7 @@ module ALU(src0, src1, ctrl, shamt, aluOp, dst, old_V, old_Z, old_N, V, Z, N, cl
   // Positive operands; Negative result
 	assign negativeOverflow =(src0[15] && src1[15] && !unsat[15]);
   // Negative operands; Positive result
-	assign positiveOverflow =(!src0[15] && !src1[15] && unsat);
+	assign positiveOverflow = (!src0[15] && !src1[15] && unsat[15]);
 	// Determine zero from the unsaturated result!
 	assign zero = ~|unsat;
 
