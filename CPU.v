@@ -1,14 +1,13 @@
-module CPU(clk, rst_n, hlt, iaddr, dst, dst_addr, Z, N, V);
+module CPU(clk, rst_n, hlt, pc);
   input clk; 
   input rst_n;
-	output hlt, Z, N, V; //Assuming these are current flag states
-	output [3:0] dst_addr;
-	output [15:0] iaddr, dst;
+	output hlt; //Assuming these are current flag states
+	output [15:0] pc;
 
-  wire [15:0] iaddr, instr, nextAddr, outNextAddr, memdst, finaldst, p1, src0, src1, dst;
+  wire [15:0] instr, nextAddr, outNextAddr, memdst, finaldst, p1, src0, src1, dst;
   wire [3:0] p0_addr, p1_addr, dst_addr, shamt;
   wire [2:0] func;
-  wire ov, zr, ne, aluOp, rd_en, memwe, memre, memtoreg;
+  wire ov, zr, ne, aluOp, rd_en, memwe, memre, memtoreg, memOp;
   wire re0, re1, we, jal, jr, hlt, src1sel;
 
   assign rd_en = 1'b1; // When should this change?
@@ -16,21 +15,21 @@ module CPU(clk, rst_n, hlt, iaddr, dst, dst_addr, Z, N, V);
 /* The pipeline. Each blank line separates inputs from
 		outputs of the module */
 
-  PC pc(.clk(clk),  
+  PC programCounter(.clk(clk),  
 				.hlt(hlt),
 				.rst_n(rst_n),
 				.nextAddr(nextAddr),
  
-				.iaddr(iaddr));
+				.iaddr(pc));
 
-  IM im(.addr(iaddr),
+  IM im(.addr(pc),
 				.clk(clk),
 				.rd_en(rd_en),
  				
 				.instr(instr));
 
 	ID id(.instr(instr),
-				.addr(iaddr + 16'b1), /* Branch base is the current instruction + 1 */
+				.addr(pc + 16'b1), /* Branch base is the current instruction + 1 */
 				.zr(Z),
 				.ne(N),
 				.ov(V),
@@ -48,6 +47,7 @@ module CPU(clk, rst_n, hlt, iaddr, dst, dst_addr, Z, N, V);
 				.re1(re1), 
 				.memwe(memwe),
 				.memre(memre),
+			  .memOp(memOp),
 				.we(we), 
 				.src1sel(src1sel), 
 				.shamt(shamt),
@@ -57,7 +57,7 @@ module CPU(clk, rst_n, hlt, iaddr, dst, dst_addr, Z, N, V);
   SRC_MUX srcmux(.p1(p1), 
 								 .imm(instr[7:0]), 
 								 .src1sel(src1sel),
- 
+ 								 .memOp(memOp),
 								 .src1(src1));
 
   rf rf(.clk(clk), 
@@ -106,7 +106,7 @@ module CPU(clk, rst_n, hlt, iaddr, dst, dst_addr, Z, N, V);
 				.wrt_data(src1),
 				.rd_data(memdst));
 
-	assign finaldst = jal ? iaddr + 16'b1 : 
+	assign finaldst = jal ? pc + 16'b1 : 
 										memtoreg ? memdst: dst;
 
 endmodule

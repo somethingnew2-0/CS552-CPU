@@ -1,11 +1,11 @@
-module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, dst_addr, we, memwe, aluOp, shamt, jal, jr, hlt, src1sel, func, memtoreg);
+module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, dst_addr, we, memwe, memOp, aluOp, shamt, jal, jr, hlt, src1sel, func, memtoreg);
 
   input [15:0] instr, addr;
   input zr, ne, ov;
 
   output [15:0] nextAddr;
   output [3:0] p0_addr, p1_addr, dst_addr, shamt;
-  output re0, re1, memre, we, memwe, jal, jr, hlt, aluOp, src1sel, memtoreg;
+  output re0, re1, memre, we, memwe, memOp, jal, jr, hlt, aluOp, src1sel, memtoreg;
   output [2:0] func;
 
   wire [15:0] nextBranchAddr;
@@ -68,6 +68,8 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
 	// Let the Alu know if this is a typical aluOp or special (loading, storing, branching, jumping)
 	assign aluOp = !instr[15];
 
+	assign memOp = memwe | memtoreg;
+
   // Set src0 register address as normal unless it's LHB                                                 
   assign p0_addr = (instr[15:12] == 4'b1010) ? instr[11:8] : instr[7:4];
 
@@ -96,12 +98,13 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
   assign shamt = !instr[15] ? instr[3:0] : 4'h8;
   
   // All re are always on
-  assign {re0, re1, memre} = {!hlt, !hlt, !hlt};
+  assign {re0, re1} = {!hlt, !hlt};
   
 	// Set we and memwe
 	assign we = (jal | aluOp | (instr[15] & ((instr[14:12] == oplw) | (instr[14:12] == opllb) | (instr[14:12] == oplhb))));
 	
 	assign memwe = (instr[15] & (instr[14:12] == opsw));
+	assign memre = !memwe;
 
 	// Set memtoreg
 	assign memtoreg = (instr[15] & (instr[14:12] == oplw));
