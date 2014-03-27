@@ -77,7 +77,7 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
   assign {re0, re1, memre} = {!hlt, !hlt, !hlt};
   
 	// Set we and memwe
-	assign we = (aluOp | instr[15:12] | (instr[15] & (instr[14:12] == oplw)));
+	assign we = (aluOp | (instr[15] & ((instr[14:12] == oplw) | (instr[14:12] == opllb) | (instr[14:12] == oplhb))));
 	
 	assign memwe = (instr[15] & (instr[14:12] == opsw));
 
