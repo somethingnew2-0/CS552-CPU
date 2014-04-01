@@ -97,14 +97,18 @@ module CPU(clk, rst_n, hlt, pc);
 							.V(V),
 							.Z(Z));
 
-	DM DM(.clk(clk),
+	DM dm(.clk(clk),
 				.addr(dst),
 				.re(memre),
 				.we(memwe),
 				.wrt_data(p1),
 				.rd_data(memdst));
 
-	assign finaldst = jal ? pc + 16'b1 : 
-										memtoreg ? memdst: dst;
+	WB_MUX wbmux(.jal(jal), 
+							 .pc(pc),
+							 .memtoreg(memtoreg),
+							 .memdst(memdst),
+							 .dst(dst),
+							 .finaldst(finaldst));
 
 endmodule
