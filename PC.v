@@ -1,14 +1,14 @@
-module PC(clk, rst_n, hlt, iaddr, nextAddr);
+module PC(clk, rst_n, hlt, pc, nextPC);
   
-	input [15:0] nextAddr;
+	input [15:0] nextPC;
   input clk, rst_n, hlt;
-  output reg [15:0] iaddr;
+  output reg [15:0] pc;
 
   always @(posedge clk or negedge rst_n)
     if(!rst_n)
-      iaddr <= 16'h0000;
+      pc <= 16'h0000;
     else if (!hlt)
-      iaddr <= nextAddr;
+      pc <= nextPC;
 	 	else
-			iaddr <= iaddr;
+			pc <= pc;
 endmodule  

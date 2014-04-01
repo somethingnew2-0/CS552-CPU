@@ -4,7 +4,7 @@ module CPU(clk, rst_n, hlt, pc);
 	output hlt; //Assuming these are current flag states
 	output [15:0] pc;
 
-  wire [15:0] instr, nextAddr, outNextAddr, memdst, finaldst, p0, p1, src0, src1, dst;
+  wire [15:0] instr, nextAddr, nextPC, memdst, finaldst, p0, p1, src0, src1, dst;
   wire [3:0] p0_addr, p1_addr, dst_addr, shamt;
   wire [2:0] func;
   wire ov, zr, ne, aluOp, rd_en, memwe, memre, memtoreg, memOp;
@@ -18,9 +18,8 @@ module CPU(clk, rst_n, hlt, pc);
   PC programCounter(.clk(clk),  
 				.hlt(hlt),
 				.rst_n(rst_n),
-				.nextAddr(nextAddr),
- 
-				.iaddr(pc));
+				.nextPC(nextPC), 
+				.pc(pc));
 
   IM im(.addr(pc),
 				.clk(clk),
@@ -35,7 +34,7 @@ module CPU(clk, rst_n, hlt, pc);
 				.ov(V),
  
 				.aluOp(aluOp),
-				.nextAddr(outNextAddr),
+				.nextAddr(nextAddr),
 				.dst_addr(dst_addr), 
 				.func(func),
 				.jal(jal),
@@ -66,7 +65,7 @@ module CPU(clk, rst_n, hlt, pc);
 				.p0(p0), 
 				.p1(p1));
 
-	assign nextAddr = jr ? p0 : outNextAddr;
+	JUMP_MUX jumpmux(.jr(jr), .p0(p0), .nextAddr(nextAddr), .nextPC(nextPC));
 
   SRC_MUX srcmux(.p0(p0),
                  .p1(p1), 
