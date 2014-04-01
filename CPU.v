@@ -4,11 +4,11 @@ module CPU(clk, rst_n, hlt, pc);
 	output hlt; //Assuming these are current flag states
 	output [15:0] pc;
 
-  wire [15:0] instr, nextAddr, outNextAddr, memdst, finaldst, p1, src0, src1, dst;
+  wire [15:0] instr, nextAddr, outNextAddr, memdst, finaldst, p0, p1, src0, src1, dst;
   wire [3:0] p0_addr, p1_addr, dst_addr, shamt;
   wire [2:0] func;
   wire ov, zr, ne, aluOp, rd_en, memwe, memre, memtoreg, memOp;
-  wire re0, re1, we, jal, jr, hlt, src1sel;
+  wire re0, re1, we, jal, jr, hlt, src0sel;
 
   assign rd_en = 1'b1; // When should this change?
 
@@ -49,16 +49,10 @@ module CPU(clk, rst_n, hlt, pc);
 				.memre(memre),
 			  .memOp(memOp),
 				.we(we), 
-				.src1sel(src1sel), 
+				.src0sel(src0sel), 
 				.shamt(shamt),
 				.memtoreg(memtoreg)
 				);
-
-  SRC_MUX srcmux(.p1(p1), 
-								 .imm(instr[7:0]), 
-								 .src1sel(src1sel),
- 								 .memOp(memOp),
-								 .src1(src1));
 
   rf rf(.clk(clk), 
 				.p0_addr(p0_addr), 
@@ -68,12 +62,19 @@ module CPU(clk, rst_n, hlt, pc);
 				.dst_addr(dst_addr), 
 				.dst(finaldst), 
 				.we(we), 
-				.hlt(hlt),
- 
-				.p0(src0), 
+				.hlt(hlt), 
+				.p0(p0), 
 				.p1(p1));
-  
-	assign nextAddr = jr ? src0 : outNextAddr;
+
+	assign nextAddr = jr ? p0 : outNextAddr;
+
+  SRC_MUX srcmux(.p0(p0),
+                 .p1(p1), 
+								 .imm(instr[7:0]), 
+								 .src0sel(src0sel),
+ 								 .memOp(memOp),
+								 .src0(src0),
+                 .src1(src1));
 
   ALU alu(.src0(src0), 
 					.src1(src1), 
@@ -82,8 +83,7 @@ module CPU(clk, rst_n, hlt, pc);
 					.aluOp(aluOp),
 					.old_ov(V),
 					.old_ne(N),
-					.old_zr(Z),
- 
+					.old_zr(Z), 
 					.dst(dst), 
 					.ov(ov), 
 					.ne(ne),
@@ -93,8 +93,7 @@ module CPU(clk, rst_n, hlt, pc);
 							.rst_n(rst_n),
 							.ov(ov),
 							.ne(ne),
-							.zr(zr),
-							
+							.zr(zr),							
 							.N(N),
 							.V(V),
 							.Z(Z));

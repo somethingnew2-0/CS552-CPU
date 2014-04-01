@@ -19,7 +19,7 @@ Test:
 	ADD R3, R1, R2   # R3 = 0x4444 (Non-Saturating)
 	LLB R12, 0xFF
 	LHB R12, 0x6F	 # R12 has a large positive number
-	ADD R12, R12, R7 # R12 = 0x7FFF (Positive overflow / Saturation)
+	ADD R13, R12, R7 # R13 = 0x7FFF (Positive overflow / Saturation)
 
 	# Test NOR
 	NOR R4, R1, R3	 # R4 = 0x8888

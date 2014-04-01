@@ -20,13 +20,13 @@ module ALU(src0, src1, ctrl, shamt, aluOp, dst, old_ov, old_zr, old_ne, ov, zr, 
   localparam sra = 3'b111;
 
   assign unsat = (ctrl==add) ? src0+src1:
-                 (ctrl==lhb) ? {src1[15:8], src0[7:0]}:
+                 (ctrl==lhb) ? {src0[7:0], src1[7:0]}:
                  (ctrl==sub) ? src0-src1:
                  (ctrl==andy)? src0&src1:
                  (ctrl==nory)? ~(src0|src1):
-                 (ctrl==sll) ? src1<<shamt:
-                 (ctrl==srl) ? src1>>shamt:
-		 (ctrl==sra) ? {$signed(src1) >>> shamt}:
+                 (ctrl==sll) ? src0<<shamt:
+                 (ctrl==srl) ? src0>>shamt:
+		             (ctrl==sra) ? {$signed(src0) >>> shamt}:
                  17'h00000; // It will never reach here logically
 
  	// When checking msbs for overflow, we need the actual bits operated on
@@ -37,8 +37,6 @@ module ALU(src0, src1, ctrl, shamt, aluOp, dst, old_ov, old_zr, old_ne, ov, zr, 
 	assign negativeOverflow =(src0[15] && op1[15] && !unsat[15]);
   // Negative operands; Positive result
 	assign positiveOverflow = (!src0[15] && !op1[15] && unsat[15]);
-	// Determine zero from the unsaturated result!
-	//assign zero = ~|unsat;
 
   // Set Result
   assign dst = (positiveOverflow && doingMath) ? 16'h7fff :

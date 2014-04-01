@@ -1,11 +1,11 @@
-module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, dst_addr, we, memwe, memOp, aluOp, shamt, jal, jr, hlt, src1sel, func, memtoreg);
+module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, dst_addr, we, memwe, memOp, aluOp, shamt, jal, jr, hlt, src0sel, func, memtoreg);
 
   input [15:0] instr, addr;
   input zr, ne, ov;
 
   output [15:0] nextAddr;
   output [3:0] p0_addr, p1_addr, dst_addr, shamt;
-  output re0, re1, memre, we, memwe, memOp, jal, jr, hlt, aluOp, src1sel, memtoreg;
+  output re0, re1, memre, we, memwe, memOp, jal, jr, hlt, aluOp, src0sel, memtoreg;
   output [2:0] func;
 
   wire [15:0] nextBranchAddr;
@@ -19,14 +19,12 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
 	localparam opsw = 3'b001;
 
   // Opcode for ADDZ
-  localparam opaddz = 4'b0001;
+  localparam opaddz = 3'b001;
   
   // ALU func for ADD
   localparam funcadd = 3'b000;
   // ALU func for specified load byte
   localparam funclhb = 3'b001;
-  // llb should use the sra from the ALU with shamt 8
-  localparam funcllb = 3'b111;
 	// ALU func needed for loading and storing(add offset)
 	localparam funclwsw = 3'b000;
 
@@ -48,7 +46,7 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
 	assign jr = &instr[15:13] && ~instr[12];
   assign hlt = &instr[15:12];
 
-	assign nextBranchAddr = b ? (
+	assign nextBranchAddr = 
 										(instr[11:9] == uncond) ? addr + {{7{instr[8]}},instr[8:0]} :
 										((instr[11:9] == neq) && !zr) ? addr + {{7{instr[8]}},instr[8:0]} :
 										((instr[11:9] == eq) && zr) ? addr + {{7{instr[8]}},instr[8:0]} : 
@@ -56,8 +54,7 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
 										((instr[11:9] == lt) && ne) ? addr + {{7{instr[8]}},instr[8:0]} :
 										((instr[11:9] == gte) && !ne) ? addr + {{7{instr[8]}},instr[8:0]} :
 										((instr[11:9] == lte) && (ne || zr)) ? addr + {{7{instr[8]}},instr[8:0]} :
-										((instr[11:9] == ovfl) && ov) ? addr  +{{7{instr[8]}},instr[8:0]} : addr
-															 ) : addr;
+										((instr[11:9] == ovfl) && ov) ? addr  +{{7{instr[8]}},instr[8:0]} : addr;														
 										/* If it falls all the way to the bottom, the branch wasn't taken */
 
 	assign nextAddr = b   ? nextBranchAddr :
@@ -71,11 +68,10 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
 	assign memOp = memwe | memtoreg;
 
   // Set src0 register address as normal unless it's LHB                                                 
-  assign p0_addr = (instr[15:12] == 4'b1010) ? instr[11:8] : instr[7:4];
+  assign p0_addr = (instr[15] && instr[14:12] == oplhb) ? instr[11:8] : instr[7:4];
 
-  // Set the src1 as normal for normal alu ops, however if it is SLL, SRL, or SRA set src1 to the src0 register addr
-  // That way the LLB works properly since those operations are actually hooked up to src1 for input in the ALU
-  assign p1_addr = (memwe) ? instr[11:8] : (instr[15:13] == 3'b011 || instr[15:12] == 4'b0101 || memtoreg) ? instr[7:4] : instr[3:0];
+	// For LW and SW p1 addr is different, but for ALU Ops it should be the last 4 bits
+  assign p1_addr = (memwe || (instr[15] && instr[14:12] == oplhb)) ? instr[11:8] : (memtoreg ? instr[7:4] : ((instr[15] && instr[14:12] == opllb)? 4'h0: instr[3:0]));
   
   /*
 		if(jal)
@@ -94,8 +90,8 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
 										(!(instr[15:12] == opaddz)) ? instr[11:8] : 
 										(zr) ? instr[11:8] : 4'h0;
   
-  // For SLL, SRL, and SRA use the immediate bits normallly, for LLB shift by 8 bits with SRA
-  assign shamt = !instr[15] ? instr[3:0] : 4'h8;
+  // For SLL, SRL, and SRA use the immediate bits normallly
+  assign shamt = instr[3:0];
   
   // All re are always on
   assign {re0, re1} = {!hlt, !hlt};
@@ -109,8 +105,8 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
 	// Set memtoreg
 	assign memtoreg = (instr[15] & (instr[14:12] == oplw));
 
-  // src1 for LLB,LHB, lw, and sw should come from the immediate bits
-  assign src1sel = instr[15];
+  // src1 for LLB and LHB should come from the immediate bits
+  assign src0sel = instr[15] & ((instr[14:12] == opllb) | (instr[14:12] == oplhb));
    
   /* Sets ALU function: 
 			
@@ -129,9 +125,9 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
 			else
 				pass through 000 (lw, sw)
 	*/
-  assign func = (!instr[15]) ? ((instr[15:12] == opaddz) ?  funcadd : instr[14:12]) : 
+  assign func = (!instr[15]) ? ((instr[14:12] == opaddz) ?  funcadd : instr[14:12]) : 
 								((instr[14:12] == oplhb) ?  funclhb : 
-								(instr[14:12] == opllb) ?  funcllb : 
+								(instr[14:12] == opllb) ?  funcadd : 
 								b ? 3'b111 :
 								3'b000); // lw and sw are included in this, as they use add op
   
