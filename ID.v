@@ -41,9 +41,14 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
 	assign check = instr[11:9]; // Which branch type?
  
 	// Control instruction signals; ALU independant signals
+	assign addz = !instr[15] && instr[14:12] == opaddz;
 	assign b = &instr[15:14] && ~|instr[13:12];
 	assign jal = &instr[15:14] && ~instr[13] && instr[12];
 	assign jr = &instr[15:13] && ~instr[12];
+	assign lw = instr[15] && instr[14:12] == oplw;
+	assign sw = instr[15] && instr[14:12] == opsw;
+	assign llb = instr[15] && instr[14:12] == opllb;
+	assign lhb = instr[15] && instr[14:12] == oplhb;
   assign hlt = &instr[15:12];
 
 	assign nextBranchAddr = 
@@ -65,13 +70,13 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
 	// Let the Alu know if this is a typical aluOp or special (loading, storing, branching, jumping)
 	assign aluOp = !instr[15];
 
-	assign memOp = memwe | memtoreg;
+	assign memOp = lw | sw;
 
   // Set src0 register address as normal unless it's LHB                                                 
-  assign p0_addr = (instr[15] && instr[14:12] == oplhb) ? instr[11:8] : instr[7:4];
+  assign p0_addr = lhb ? instr[11:8] : instr[7:4];
 
 	// For LW and SW p1 addr is different, but for ALU Ops it should be the last 4 bits
-  assign p1_addr = (memwe || (instr[15] && instr[14:12] == oplhb)) ? instr[11:8] : (memtoreg ? instr[7:4] : ((instr[15] && instr[14:12] == opllb)? 4'h0: instr[3:0]));
+  assign p1_addr = (sw | lhb) ? instr[11:8] : (lw ? instr[7:4] : (llb ? 4'h0: instr[3:0]));
   
   /*
 		if(jal)
@@ -87,7 +92,7 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
 	*/
   assign dst_addr = jal ? 4'hf:
 										b ? 4'h0 :
-										(!(instr[15:12] == opaddz)) ? instr[11:8] : 
+										(!addz) ? instr[11:8] : 
 										(zr) ? instr[11:8] : 4'h0;
   
   // For SLL, SRL, and SRA use the immediate bits normallly
@@ -95,18 +100,18 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
   
   // All re are always on
   assign {re0, re1} = {!hlt, !hlt};
-  
+
+  // src1 for LLB and LHB should come from the immediate bits
+  assign src0sel = llb | lhb;
+
 	// Set we and memwe
-	assign we = (jal | aluOp | (instr[15] & ((instr[14:12] == oplw) | (instr[14:12] == opllb) | (instr[14:12] == oplhb))));
-	
-	assign memwe = (instr[15] & (instr[14:12] == opsw));
+	assign we = jal | aluOp | lw | llb | lhb;
+
+	assign memwe = sw;
 	assign memre = !memwe;
 
 	// Set memtoreg
-	assign memtoreg = (instr[15] & (instr[14:12] == oplw));
-
-  // src1 for LLB and LHB should come from the immediate bits
-  assign src0sel = instr[15] & ((instr[14:12] == opllb) | (instr[14:12] == oplhb));
+	assign memtoreg = lw;
    
   /* Sets ALU function: 
 			
@@ -125,10 +130,10 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
 			else
 				pass through 000 (lw, sw)
 	*/
-  assign func = (!instr[15]) ? ((instr[14:12] == opaddz) ?  funcadd : instr[14:12]) : 
-								((instr[14:12] == oplhb) ?  funclhb : 
-								(instr[14:12] == opllb) ?  funcadd : 
+  assign func = !instr[15] ? (addz ? funcadd : instr[14:12]) : 
+								lhb ?  funclhb : 
+								llb ?  funcadd : 
 								b ? 3'b111 :
-								3'b000); // lw and sw are included in this, as they use add op
+								3'b000; // lw and sw are included in this, as they use add op
   
 endmodule
