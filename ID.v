@@ -1,34 +1,20 @@
-module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, dst_addr, we, memwe, memOp, aluOp, shamt, jal, jr, hlt, src0sel, func, memtoreg);
+module ID(instr, p0Addr, p1Addr, regAddr, shamt, aluOp, branchOp, regRe0, regRe1, regWe, memRe, memWe, memToReg, jal, jr, hlt, aluOv, aluSrc0, aluSrc1);
 
-  input [15:0] instr, addr;
-  input zr, ne, ov;
+  input [15:0] instr;
 
-  output [15:0] nextAddr;
-  output [3:0] p0_addr, p1_addr, dst_addr, shamt;
-  output re0, re1, memre, we, memwe, memOp, jal, jr, hlt, aluOp, src0sel, memtoreg;
-  output [2:0] func;
+  output [3:0] p0Addr, p1Addr, regAddr, shamt;
+  output [2:0] aluOp, branchOp;
 
-  wire [15:0] nextBranchAddr;
+  // Control signals
+  output regRe0, regRe1, regWe, memRe, memWe, memToReg, jal, jr, hlt, aluOv, aluSrc0, aluSrc1;
   
   // ALU func for ADD
-  localparam funcadd = 3'b000;
+  localparam aluAdd = 3'b000;
   // ALU func for specified load byte
-  localparam funclhb = 3'b001;
+  localparam aluLhb = 3'b001;
 	// ALU func needed for loading and storing(add offset)
-	localparam funclwsw = 3'b000;
+	localparam aluLwSw = 3'b000;
 
-	// Branch Codes, straight off the quick reference
-	localparam neq 		= 3'b000;
-	localparam eq 		= 3'b001;
-	localparam gt 		= 3'b010;
-	localparam lt 		= 3'b011;
-	localparam gte 		= 3'b100;
-	localparam lte 		= 3'b101;
-	localparam ovfl 	= 3'b110;
-	localparam uncond = 3'b111;
-
-	assign check = instr[11:9]; // Which branch type?
- 
 	// Control instruction signals; ALU independant signals
   assign addz = instr[15:12] == 4'b0001;
   assign lw = instr[15:12] == 4'b1000;
@@ -40,32 +26,11 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
   assign jr = instr[15:12] == 4'b1110;
   assign hlt = instr[15:12] == 4'b1111;
 
-	assign nextBranchAddr = 
-										(instr[11:9] == uncond) ? addr + {{7{instr[8]}},instr[8:0]} :
-										((instr[11:9] == neq) && !zr) ? addr + {{7{instr[8]}},instr[8:0]} :
-										((instr[11:9] == eq) && zr) ? addr + {{7{instr[8]}},instr[8:0]} : 
-										((instr[11:9] == gt) && !(zr || ne)) ? addr + {{7{instr[8]}},instr[8:0]} :
-										((instr[11:9] == lt) && ne) ? addr + {{7{instr[8]}},instr[8:0]} :
-										((instr[11:9] == gte) && !ne) ? addr + {{7{instr[8]}},instr[8:0]} :
-										((instr[11:9] == lte) && (ne || zr)) ? addr + {{7{instr[8]}},instr[8:0]} :
-										((instr[11:9] == ovfl) && ov) ? addr  +{{7{instr[8]}},instr[8:0]} : addr;														
-										/* If it falls all the way to the bottom, the branch wasn't taken */
-
-	assign nextAddr = b   ? nextBranchAddr :
-										jal ? $signed(instr[11:0]) + addr : 
-										addr;
-
-
-	// Let the Alu know if this is a typical aluOp or special (loading, storing, branching, jumping)
-	assign aluOp = !instr[15];
-
-	assign memOp = lw | sw;
-
   // Set src0 register address as normal unless it's LHB                                                 
-  assign p0_addr = lhb ? instr[11:8] : instr[7:4];
+  assign p0Addr = lhb ? instr[11:8] : instr[7:4];
 
 	// For LW and SW p1 addr is different, but for ALU Ops it should be the last 4 bits
-  assign p1_addr = (sw | lhb) ? instr[11:8] : (lw ? instr[7:4] : (llb ? 4'h0: instr[3:0]));
+  assign p1Addr = (sw | lhb) ? instr[11:8] : (lw ? instr[7:4] : (llb ? 4'h0: instr[3:0]));
   
   /*
 		if(jal)
@@ -79,28 +44,35 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
 		else
 			R0
 	*/
-  assign dst_addr = jal ? 4'hf:
-										b ? 4'h0 :
-										(!addz) ? instr[11:8] : 
-										(zr) ? instr[11:8] : 4'h0;
+  assign regAddr = jal ? 4'hf:
+									 b ? 4'h0 :
+									 instr[11:8]; // TODO: Handle addz
+										//(!addz) ? instr[11:8] : 
+										//(zr) ? instr[11:8] : 4'h0;
   
   // For SLL, SRL, and SRA use the immediate bits normallly
   assign shamt = instr[3:0];
   
   // All re are always on
-  assign {re0, re1} = {!hlt, !hlt};
+  assign {regRe0, regRe1} = {!hlt, !hlt};
+  
+  	// Set we and memwe
+	assign regWe = jal | aluOp | lw | llb | lhb;	
+	
+	assign memRe = !memWe;
+	assign memWe = sw;
+	
+	// Set memToReg
+	assign memToReg = lw;
+
+	// Let the Alu know if this is a typical aluOp or special (loading, storing, branching, jumping)
+	assign aluOv = !instr[15];
 
   // src1 for LLB and LHB should come from the immediate bits
-  assign src0sel = llb | lhb;
-
-	// Set we and memwe
-	assign we = jal | aluOp | lw | llb | lhb;
-
-	assign memwe = sw;
-	assign memre = !memwe;
-
-	// Set memtoreg
-	assign memtoreg = lw;
+  assign aluSrc0 = llb | lhb;	
+  assign aluSrc1 = lw | sw;
+   
+ 	assign branchOp = instr[11:9]; // Which branch type?
    
   /* Sets ALU function: 
 			
@@ -119,9 +91,9 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
 			else
 				pass through 000 (lw, sw)
 	*/
-  assign func = !instr[15] ? (addz ? funcadd : instr[14:12]) : 
-								lhb ?  funclhb : 
-								llb ?  funcadd : 
+  assign aluOp = !instr[15] ? (addz ? aluAdd : instr[14:12]) : 
+								lhb ?  aluLhb : 
+								llb ?  aluAdd : 
 								b ? 3'b111 :
 								3'b000; // lw and sw are included in this, as they use add op
   
