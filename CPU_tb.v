@@ -1,11 +1,10 @@
 module CPU_tb();
 
 reg clk, rst_n;
-wire hlt, Z, N, V;
-wire [3:0] dst_addr;
-wire [15:0] dst, addr;
+wire hlt;
+wire [15:0] addr;
 
-CPU iDUT(.clk(clk), .rst_n(rst_n), .hlt(hlt), .dst(dst), .iaddr(addr), .N(N), .V(V), .Z(Z), .dst_addr(dst_addr));
+CPU iDUT(.clk(clk), .rst_n(rst_n), .hlt(hlt), .pc(addr));
 
 initial begin
 	clk = 1'b0;
