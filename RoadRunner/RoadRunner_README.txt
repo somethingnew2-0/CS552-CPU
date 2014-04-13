@@ -33,7 +33,7 @@ Note that your .tar.gz cannot have any directories, only your design files witho
 		tar xvzf RoadRunner.tar.gz
 from that directory.
 This should give you the following resulting structure:
-		asmbl.pl*  programs/  provided_modules/  ref/  RoadRunner.py*  RoadRunner.tar.gz tars_dir/tar
+		asmbl.pl*  programs/  provided_modules/  ref/  RoadRunner.py*  RoadRunner.tar.gz tars_dir/
 3. Copy your my_tar_file_blah.tar.gz file into tars_dir/
 4. Run the following command from inside the directory you created in step 1:
 		./RoadRunner.py
