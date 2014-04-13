@@ -88,3 +88,4 @@ SW	R6, R12, 0	# Store is somewhere else
 LW	R6, R12, 0	# R6 = 10 # Why is this 0xXXXX when run again WISC.S14?
 
 
+

@@ -12,7 +12,7 @@ R0000000b = bbbb
 R0000000c = cccc
 R0000000d = dddd
 R0000000e = eeee
-R0000000f = 005d
-Time:        765
-Cycles:       76
-PC:         0061
+R0000000f = ffff
+Time:        305
+Cycles:       30
+PC:         001f

@@ -10,8 +10,8 @@ LLB R3, 51
 LHB R3, 51
 LLB R4, 68
 LHB R4, 68
-LLB R5, 88
-LHB R5, 88
+LLB R5, 85
+LHB R5, 85
 LLB R6, 102
 LHB R6, 102
 LLB R7, 119
@@ -67,14 +67,14 @@ check_001:	SUB R0, R1, R2		# Set the N flag
 	skip6:	b uncond, check_010	# Every possible branch has been tested
 	
 # !VZ!N
-check_010:	ADD R0, R0, R0		# Set the Z flag
+check_010:	SUB R0, R1, R1		# Set the Z flag
 
 			b lt, broked		#
 			b ovfl, broked		# Condition should be false
 			b neq, broked		#
 			b gt, broked		#
 			
-			b eq, skip7			# Condition's are true, HLT's should be skipped
+			b eq, skip7		# Condition's are true, HLT's should be skipped
 			HLT #7
 	skip7:	b lte, skip8
 			HLT #8
@@ -100,7 +100,7 @@ check_100:	ADD R0, R7, R7	# Set the V flag (Positive Overflow)
 	skip13:	b uncond, check_101	# Every possible branch has been tested
 
 # V!ZN
-check_101:	ADD R0, R14, R14	# Set the V and N flags (Negative Overflow)
+check_101:	ADD R0, R9, R9		# Set the V and N flags (Negative Overflow)
 
 			b eq, broked		#
 			b gt, broked		# Condition should be false
@@ -116,8 +116,10 @@ check_101:	ADD R0, R14, R14	# Set the V and N flags (Negative Overflow)
 			HLT #17
 	skip17:	b uncond, check_JAL	# Every possible branch has been tested
 
-check_JAL:	JAL JAL_works		# Should skip HLT
+check_JAL:	JAL test_works		# Should skip HLT
 		HLT #18
-JAL_works:	HLT #19			# PC should be @0x
+		HLT #19			# PC should be @0x0061 Haven't gotten this far yet
 
 broked:		HLT # Broken
+
+test_works:	HLT
