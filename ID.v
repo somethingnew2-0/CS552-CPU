@@ -10,17 +10,6 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
 
   wire [15:0] nextBranchAddr;
   
-  // Opcode for specified byte load
-  localparam oplhb = 3'b010;
-  localparam opllb = 3'b011;  
-
-	// Opcode for loads and stores
-	localparam oplw = 3'b000;
-	localparam opsw = 3'b001;
-
-  // Opcode for ADDZ
-  localparam opaddz = 3'b001;
-  
   // ALU func for ADD
   localparam funcadd = 3'b000;
   // ALU func for specified load byte
@@ -41,15 +30,15 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
 	assign check = instr[11:9]; // Which branch type?
  
 	// Control instruction signals; ALU independant signals
-	assign addz = !instr[15] && instr[14:12] == opaddz;
-	assign b = &instr[15:14] && ~|instr[13:12];
-	assign jal = &instr[15:14] && ~instr[13] && instr[12];
-	assign jr = &instr[15:13] && ~instr[12];
-	assign lw = instr[15] && instr[14:12] == oplw;
-	assign sw = instr[15] && instr[14:12] == opsw;
-	assign llb = instr[15] && instr[14:12] == opllb;
-	assign lhb = instr[15] && instr[14:12] == oplhb;
-  assign hlt = &instr[15:12];
+  assign addz = instr[15:12] == 4'b0001;
+  assign lw = instr[15:12] == 4'b1000;
+  assign sw = instr[15:12] == 4'b1001;
+  assign lhb = instr[15:12] == 4'b1001;
+  assign llb = instr[15:12] == 4'b1011;
+  assign b = instr[15:12] == 4'b1100;
+  assign jal = instr[15:12] == 4'b1101;
+  assign jr = instr[15:12] == 4'b1110;
+  assign hlt = instr[15:12] == 4'b1111;
 
 	assign nextBranchAddr = 
 										(instr[11:9] == uncond) ? addr + {{7{instr[8]}},instr[8:0]} :
@@ -116,7 +105,7 @@ module ID(instr, addr, nextAddr, zr, ne, ov, p0_addr, re0, p1_addr, re1, memre, 
   /* Sets ALU function: 
 			
 			if(instruction starts with zero)
-				if(func is opaddz)
+				if(func is addz)
 					change to add (same alu operation)
 				else
 					pass the bitmask from the instruction through
