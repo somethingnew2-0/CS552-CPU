@@ -4,11 +4,9 @@ module CPU(clk, rst_n, hlt, pc);
 	output hlt; //Assuming these are current flag states
 	output [15:0] pc;
 
-  wire [15:0] instr, nextAddr, nextPC, memdst, finaldst, IM_EX_p0, IM_EX_p1, EX_DM_result;
-  wire [3:0] p0_addr, p1_addr, dst_addr, shamt;
-  wire [2:0] func;
-  wire ov, zr, ne, aluOp, rd_en, memwe, memre, memtoreg, memOp;
-  wire re0, re1, we, jal, jr, hlt, src0sel;
+  wire [15:0] instr, nextAddr, nextPC, memdst, finaldst, p0_ID_EX, p1_ID_EX, result_EX_DM;
+  wire [3:0] p0Addr, p1Addr, regAddr, shamt_ID_EX;
+  wire [2:0] aluOp_ID_EX, branchOp_ID_EX;
 
   assign rd_en = 1'b1; // When should this change?
 
@@ -28,57 +26,53 @@ module CPU(clk, rst_n, hlt, pc);
 				.instr(instr));
 
 	ID id(.instr(instr),
-				.addr(pc + 16'b1), /* Branch base is the current instruction + 1 */
-				.zr(EX_ID_oldZr),
-				.ne(EX_ID_oldNe),
-				.ov(EX_ID_oldOv),
- 
-				.aluOp(ID_EX_aluOp),
-				.nextAddr(nextAddr),
-				.dst_addr(dst_addr), 
-				.func(ID_EX_func),
+	
+				.p0Addr(p0Addr), 
+				.p1Addr(p1Addr), 
+				.regAddr(regAddr), 
+				.shamt(shamt_ID_EX),
+				.aluOp(aluOp_ID_EX),
+				.branchOp(branchOp_ID_EX),
+				.regRe0(regRe0), 
+				.regRe1(regRe1), 
+				.regWe(regWe), 
+				.memRe(memRe),
+				.memWe(memWe),
+				.memToReg(memToReg)
 				.jal(jal),
 				.jr(jr),
  				.hlt(hlt), 
-				.p0_addr(p0_addr), 
-				.re0(re0), 
-				.p1_addr(p1_addr), 
-				.re1(re1), 
-				.we(we), 
-				.memwe(memwe),
-				.memre(memre),
-			  .memOp(ID_EX_memOp),	
-				.src0sel(ID_EX_src0sel), 
-				.shamt(ID_EX_shamt),
-				.memtoreg(memtoreg)
+			  .aluSrc0(aluSrc0_ID_EX),	
+				.aluSrc1(aluSrc1_ID_EX),
 				);
 
   rf rf(.clk(clk), 
 				.p0_addr(p0_addr), 
 				.p1_addr(p1_addr), 
-				.re0(re0), 
-				.re1(re1), 
-				.dst_addr(dst_addr), 
+				.re0(regRe0), 
+				.re1(regRe1), 
+				.dst_addr(regAddr), 
 				.dst(finaldst), 
-				.we(we), 
+				.we(regWe), 
 				.hlt(hlt), 
-				.p0(IM_EX_p0), 
-				.p1(p1));
+				.p0(p0_ID_EX), 
+				.p1(p1_ID_EX)
+				);
 
 	JUMP_MUX jumpmux(.jr(jr), .p0(IM_EX_p0), .nextAddr(nextAddr), .nextPC(nextPC));
 
-	Execute execute(.p0(ID_EX_p0),
-                  .p1(ID_EX_p1),
-                  .imm(ID_EX_imm),
-                  .src0sel(ID_EX_src0sel),
-                  .func(ID_EX_func),
-                  .shamt(ID_EX_shamt),
-                  .memOp(ID_EX_memOp),
-                  .aluOp(ID_EX_aluOp),
-                  .oldOv(EX_ID_oldOv),
-                  .oldZr(EX_ID_oldZr),
-                  .oldNe(EX_ID_oldNe),
-                  .result(EX_DM_result));
+	Execute execute(.p0(p0_ID_EX),
+                  .p1(p1_ID_EX),
+                  .imm(imm_ID_EX),
+                  .shamt(shamt_ID_EX),
+                  .aluOp(aluOp_ID_EX),
+                  .aluSrc0(aluSrc0_ID_EX),
+                  .aluSrc1(aluSrc1_ID_EX),
+                  .aluOv(aluOv_ID_EX),
+                  .ov_EX(ov_EX),
+                  .zr_EX(zr_EX),
+                  .ne_EX(ne_EX),
+                  .result(result_EX_DM));
 
 	DM dm(.clk(clk),
 				.addr(EX_DM_dst),
