@@ -4,7 +4,7 @@ module CPU(clk, rst_n, hlt, pc);
 	output hlt; //Assuming these are current flag states
 	output [15:0] pc;
 
-  wire [15:0] instr, nextAddr, nextPC, memdst, finaldst, p0, p1, src0, src1, dst;
+  wire [15:0] instr, nextAddr, nextPC, memdst, finaldst, IM_EX_p0, IM_EX_p1, EX_DM_result;
   wire [3:0] p0_addr, p1_addr, dst_addr, shamt;
   wire [2:0] func;
   wire ov, zr, ne, aluOp, rd_en, memwe, memre, memtoreg, memOp;
@@ -29,14 +29,14 @@ module CPU(clk, rst_n, hlt, pc);
 
 	ID id(.instr(instr),
 				.addr(pc + 16'b1), /* Branch base is the current instruction + 1 */
-				.zr(Z),
-				.ne(N),
-				.ov(V),
+				.zr(EX_ID_oldZr),
+				.ne(EX_ID_oldNe),
+				.ov(EX_ID_oldOv),
  
-				.aluOp(aluOp),
+				.aluOp(ID_EX_aluOp),
 				.nextAddr(nextAddr),
 				.dst_addr(dst_addr), 
-				.func(func),
+				.func(ID_EX_func),
 				.jal(jal),
 				.jr(jr),
  				.hlt(hlt), 
@@ -44,12 +44,12 @@ module CPU(clk, rst_n, hlt, pc);
 				.re0(re0), 
 				.p1_addr(p1_addr), 
 				.re1(re1), 
+				.we(we), 
 				.memwe(memwe),
 				.memre(memre),
-			  .memOp(memOp),
-				.we(we), 
-				.src0sel(src0sel), 
-				.shamt(shamt),
+			  .memOp(ID_EX_memOp),	
+				.src0sel(ID_EX_src0sel), 
+				.shamt(ID_EX_shamt),
 				.memtoreg(memtoreg)
 				);
 
@@ -62,43 +62,26 @@ module CPU(clk, rst_n, hlt, pc);
 				.dst(finaldst), 
 				.we(we), 
 				.hlt(hlt), 
-				.p0(p0), 
+				.p0(IM_EX_p0), 
 				.p1(p1));
 
-	JUMP_MUX jumpmux(.jr(jr), .p0(p0), .nextAddr(nextAddr), .nextPC(nextPC));
+	JUMP_MUX jumpmux(.jr(jr), .p0(IM_EX_p0), .nextAddr(nextAddr), .nextPC(nextPC));
 
-  SRC_MUX srcmux(.p0(p0),
-                 .p1(p1), 
-								 .imm(instr[7:0]), 
-								 .src0sel(src0sel),
- 								 .memOp(memOp),
-								 .src0(src0),
-                 .src1(src1));
-
-  ALU alu(.src0(src0), 
-					.src1(src1), 
-					.ctrl(func), 
-					.shamt(shamt),
-					.aluOp(aluOp),
-					.old_ov(V),
-					.old_ne(N),
-					.old_zr(Z), 
-					.dst(dst), 
-					.ov(ov), 
-					.ne(ne),
-					.zr(zr)); 
-
-	flags flags(.clk(clk),
-							.rst_n(rst_n),
-							.ov(ov),
-							.ne(ne),
-							.zr(zr),							
-							.N(N),
-							.V(V),
-							.Z(Z));
+	Execute execute(.p0(ID_EX_p0),
+                  .p1(ID_EX_p1),
+                  .imm(ID_EX_imm),
+                  .src0sel(ID_EX_src0sel),
+                  .func(ID_EX_func),
+                  .shamt(ID_EX_shamt),
+                  .memOp(ID_EX_memOp),
+                  .aluOp(ID_EX_aluOp),
+                  .oldOv(EX_ID_oldOv),
+                  .oldZr(EX_ID_oldZr),
+                  .oldNe(EX_ID_oldNe),
+                  .result(EX_DM_result));
 
 	DM dm(.clk(clk),
-				.addr(dst),
+				.addr(EX_DM_dst),
 				.re(memre),
 				.we(memwe),
 				.wrt_data(p1),
