@@ -38,12 +38,12 @@ module CPU(clk, rst_n, hlt, pc);
 				.regWe(regWe), 
 				.memRe(memRe),
 				.memWe(memWe),
-				.memToReg(memToReg)
+				.memToReg(memToReg),
 				.jal(jal),
 				.jr(jr),
  				.hlt(hlt), 
 			  .aluSrc0(aluSrc0_ID_EX),	
-				.aluSrc1(aluSrc1_ID_EX),
+				.aluSrc1(aluSrc1_ID_EX)
 				);
 
   rf rf(.clk(clk), 
