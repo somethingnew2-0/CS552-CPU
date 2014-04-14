@@ -1,4 +1,4 @@
-module Execute(p0, p1, imm, shamt, aluOp, aluSrc0, aluSrc1, aluOv, ov_EX, zr_EX, ne_EX, result);
+module Execute(p0, p1, imm, shamt, aluOp, aluSrc0, aluSrc1, aluOv, ov, zr, ne, result);
   input[15:0] p0, p1;
   input[7:0] imm;
  	input [3:0] shamt;
@@ -7,7 +7,7 @@ module Execute(p0, p1, imm, shamt, aluOp, aluSrc0, aluSrc1, aluOv, ov_EX, zr_EX,
   // Control signals
   input aluSrc0, aluSrc1, aluOv;
 
-	output oldOv, oldZr, oldNe;
+	output ov, zr, ne;
   output [15:0] result;
 
   wire [15:0] src0, src1;
@@ -15,16 +15,15 @@ module Execute(p0, p1, imm, shamt, aluOp, aluSrc0, aluSrc1, aluOv, ov_EX, zr_EX,
   SRC_MUX srcmux(.p0(p0),
                  .p1(p1), 
 								 .imm(imm), 
-         							 .aluSrc0(aluSrc0),
+         				 .aluSrc0(aluSrc0),
 								 .aluSrc1(aluSrc1),
 								 .src0(src0),
                  .src1(src1));
 
   ALU alu(.src0(src0), 
 					.src1(src1), 
-					.ctrl(func), 
+					.ctrl(aluOp), 
 					.shamt(shamt),
-					.aluOp(aluOp),
 					.result(result), 
 					.ov(ov), 
 					.ne(ne),
@@ -34,12 +33,4 @@ module Execute(p0, p1, imm, shamt, aluOp, aluSrc0, aluSrc1, aluOv, ov_EX, zr_EX,
 	
 	//JumpAdder()
 
-/*	flags flags(.clk(clk),
-							.rst_n(rst_n),
-							.ov(ov),
-							.ne(ne),
-							.zr(zr),
-							.oldOv(oldOv),				
-							.oldNe(oldNe),
-							.oldZr(oldZr));*/
 endmodule

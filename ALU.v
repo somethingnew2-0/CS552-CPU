@@ -1,9 +1,8 @@
 // Peter Collins, Matthew Wiemer, Luke Brandl
-module ALU(src0, src1, ctrl, shamt, aluOp, result, ov_EX, zr_EX, ne_EX, ov, zr, ne);
+module ALU(src0, src1, ctrl, shamt, result, ov, zr, ne);
   input [15:0] src0, src1;
   input [2:0] ctrl;
   input [3:0] shamt;
-	input aluOp, ov_EX, zr_EX, ne_EX;
 	
   output [15:0] result;
 	output ov, zr, ne;
@@ -42,11 +41,11 @@ module ALU(src0, src1, ctrl, shamt, aluOp, result, ov_EX, zr_EX, ne_EX, ov, zr, 
                (negativeOverflow && (ctrl==add || ctrl==sub)) ? 16'h8000 : unsat;
 
   // Only set overflow for add, addz, sub
-  assign ov = (ctrl==add || ctrl==sub) ? (positiveOverflow || negativeOverflow) : oldOv;
+  assign ov = (positiveOverflow || negativeOverflow);
 
-  assign zr = aluOp ? ~|result : oldZr;
+  assign zr = ~|result;
 
   // Only set negative for add, addz, sub 
-  assign ne = (ctrl==add || ctrl==sub) ? result[15] : oldNe;
+  assign ne = result[15];
   
 endmodule
