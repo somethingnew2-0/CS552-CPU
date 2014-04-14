@@ -1,4 +1,4 @@
-module ID(instr, p0Addr, p1Addr, regAddr, shamt, aluOp, branchOp, regRe0, regRe1, regWe, memRe, memWe, memToReg, jal, jr, hlt, aluOv, aluSrc0, aluSrc1);
+module ID(instr, p0Addr, p1Addr, regAddr, shamt, aluOp, branchOp, regRe0, regRe1, regWe, memRe, memWe, memToReg, jal, jr, hlt, aluOv, aluSrc0, aluSrc1, ovEn, zrEn, neEn);
 
   input [15:0] instr;
 
@@ -6,7 +6,7 @@ module ID(instr, p0Addr, p1Addr, regAddr, shamt, aluOp, branchOp, regRe0, regRe1
   output [2:0] aluOp, branchOp;
 
   // Control signals
-  output regRe0, regRe1, regWe, memRe, memWe, memToReg, jal, jr, hlt, aluOv, aluSrc0, aluSrc1;
+  output regRe0, regRe1, regWe, memRe, memWe, memToReg, jal, jr, hlt, aluOv, aluSrc0, aluSrc1, ovEn, zrEn, neEn;
   
   // ALU func for ADD
   localparam aluAdd = 3'b000;
@@ -16,7 +16,9 @@ module ID(instr, p0Addr, p1Addr, regAddr, shamt, aluOp, branchOp, regRe0, regRe1
 	localparam aluLwSw = 3'b000;
 
 	// Control instruction signals; ALU independant signals
+  assign add = instr[15:12] == 4'b0000;
   assign addz = instr[15:12] == 4'b0001;
+  assign sub = instr[15:12] == 4'b0010;
   assign lw = instr[15:12] == 4'b1000;
   assign sw = instr[15:12] == 4'b1001;
   assign lhb = instr[15:12] == 4'b1001;
@@ -65,8 +67,10 @@ module ID(instr, p0Addr, p1Addr, regAddr, shamt, aluOp, branchOp, regRe0, regRe1
 	// Set memToReg
 	assign memToReg = lw;
 
-	// Let the Alu know if this is a typical aluOp or special (loading, storing, branching, jumping)
-	assign aluOv = !instr[15];
+	// Should the flags be updated after EX
+	assign ovEn = add | addz | sub;
+	assign zrEn = !instr[15];
+	assign neEn = ovEn;
 
   // src1 for LLB and LHB should come from the immediate bits
   assign aluSrc0 = llb | lhb;	
