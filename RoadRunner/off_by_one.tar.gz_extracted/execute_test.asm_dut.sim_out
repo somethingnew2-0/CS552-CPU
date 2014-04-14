@@ -1,0 +1,22 @@
+Reading pref.tcl 
+
+# 10.2c
+
+# vsim -do {run -a; q} -c -novopt work.clk_and_rst_n 
+# //  ModelSim SE-64 10.2c Jul 18 2013 Linux 3.2.0-4-amd64
+# //
+# //  Copyright 1991-2013 Mentor Graphics Corporation
+# //  All Rights Reserved.
+# //
+# //  THIS WORK CONTAINS TRADE SECRET AND PROPRIETARY INFORMATION
+# //  WHICH IS THE PROPERTY OF MENTOR GRAPHICS CORPORATION OR ITS
+# //  LICENSORS AND IS SUBJECT TO LICENSE TERMS.
+# //
+# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.clk_and_rst_n
+# Loading work.clk_and_rst_n
+# ** Error: (vsim-3033) off_by_one.tar.gz_extracted/clk_and_rst_n.v(12): Instantiation of 'cpu' failed. The design unit was not found.
+#         Region: /clk_and_rst_n
+#         Searched libraries:
+#             /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib
+# Error loading design
+Error loading design
