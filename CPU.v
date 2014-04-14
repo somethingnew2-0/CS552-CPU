@@ -43,7 +43,10 @@ module CPU(clk, rst_n, hlt, pc);
 				.jr(jr),
  				.hlt(hlt), 
 			  .aluSrc0(aluSrc0_ID_EX),	
-				.aluSrc1(aluSrc1_ID_EX)
+				.aluSrc1(aluSrc1_ID_EX),
+				.ovEn(ovEn_ID_EX), 
+				.zrEn(zrEn_ID_EX), 
+				.neEn(neEn_ID_EX)
 				);
 
   rf rf(.clk(clk), 
