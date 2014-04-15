@@ -8,25 +8,24 @@ module CPU(clk, rst_n, hlt, pc);
   wire [11:0] imm_ID_EX;
   wire [3:0] p0Addr, p1Addr, regAddr, shamt_ID_EX;
   wire [2:0] aluOp_ID_EX, branchOp_ID_EX;
+	wire flush, branch;
 
+	assign flush = 0'b0;
+	assign branch = 0'b0;
   assign rd_en = 1'b1; // When should this change?
 
 /* The pipeline. Each blank line separates inputs from
 		outputs of the module */
 
-  PC programCounter(.clk(clk),  
-				.hlt(hlt),
-				.rst_n(rst_n),
-				.nextPC(nextPC), 
-				.pc(pc));
 
-  IM im(.addr(pc),
+  IF IF(.addr(pc),
 				.clk(clk),
 				.rd_en(rd_en),
  				
 				.instr(instr));
 
-	InstructionDecode id(.instr(instr),
+	InstructionDecode id(
+				.instr(instr),
 	
         .imm(imm_ID_EX), 
 				.shamt(shamt_ID_EX),
@@ -43,10 +42,8 @@ module CPU(clk, rst_n, hlt, pc);
 				.aluSrc1(aluSrc1_ID_EX),
 				.ovEn(ovEn_ID_EX), 
 				.zrEn(zrEn_ID_EX), 
-				.neEn(neEn_ID_EX)
+				.neEn(neEn_ID_EX),
 				);
-
-	JUMP_MUX jumpmux(.jr(jr), .p0(IM_EX_p0), .nextAddr(nextAddr), .nextPC(nextPC));
 
 	Execute execute(.p0(p0_ID_EX),
                   .p1(p1_ID_EX),
@@ -63,18 +60,41 @@ module CPU(clk, rst_n, hlt, pc);
                   .branchResult(branchResult_EX_DM),
                   .jumpResult(jumpResult_EX_DM));
 
-	DM dm(.clk(clk),
-				.addr(EX_DM_dst),
-				.re(memre),
-				.we(memwe),
-				.wrt_data(p1),
-				.rd_data(memdst));
+wire 	[15:0] memaddr_EX_MEM, wrt_data_EX_MEM, instr_EX_MEM; // Inputs to Memory from flops
+wire		     re_EX_MEM, we_EX_MEM, zr_EX_MEM, ne_EX_MEM, ov_EX_MEM; 
 
-	WB_MUX wbmux(.jal(jal), 
-							 .pc(pc),
-							 .memtoreg(memtoreg),
-							 .memdst(memdst),
-							 .dst(dst),
-							 .finaldst(finaldst));
+wire  [15:0] rd_data_MEM;						// Output From Memory
+	
+		 
+	Memory(				
+									.clk(clk),
+									.memaddr_EX_MEM(memaddr_EX_MEM),
+									.re_EX_MEM(re_EX_MEM),
+									.we_EX_MEM(we_EX_MEM),
+									.wrt_data_EX_MEM(wrt_data_EX_MEM),
+									.rd_data_MEM(rd_data_MEM), 
+									.zr_EX_MEM(zr_EX_MEM), 
+									.ne_EX_MEM(ne_EX_MEM), 
+									.ov_EX_MEM(ov_EX_MEM), 	
+									.instr_EX_MEM(instr_EX_MEM), 
+									.flush(flush), 
+									.branch(branch));
+
+// ID_EX/EX -> EX_MEM
+always
+	begin 
+		memaddr_EX_MEM <= memaddr_EX;
+		re_EX_MEM <= re_ID_EX;
+		we_EX_MEM <= we_ID_EX;
+		wrt_data_EX_MEM<=wrt_data_ID_EX;
+		rd_data_MEM, 
+		zr_EX_MEM, 
+		ne_EX_MEM, 
+		ov_EX_MEM, 	
+		instr_EX_MEM, 
+
+
+
+	end
 
 endmodule
