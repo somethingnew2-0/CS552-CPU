@@ -28,7 +28,7 @@ module Execute(p0, p1, pc, imm, shamt, aluOp, aluSrc0, aluSrc1, aluOv, ov, zr, n
 					.ov(ov), 
 					.ne(ne),
 					.zr(zr)); 
-					
+
 	BranchAdder branchadder(.pc(pc),
 													.offset(imm[8:0]),
                           .result(branchResult));

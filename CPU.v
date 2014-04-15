@@ -6,7 +6,7 @@ module CPU(clk, rst_n, hlt, pc);
 
   wire [15:0] instr, nextAddr, nextPC, memdst, finaldst, p0_ID_EX, p1_ID_EX, aluResult_EX_DM, branchResult_EX_DM, jumpResult_EX_DM;
   wire [11:0] imm_ID_EX;
-  wire [3:0] p0Addr, p1Addr, regAddr, shamt_ID_EX;
+  wire [3:0] regAddr, shamt_ID_EX;
   wire [2:0] aluOp_ID_EX, branchOp_ID_EX;
 	wire flush, branch;
 
@@ -28,6 +28,7 @@ module CPU(clk, rst_n, hlt, pc);
 				.instr(instr),
 	
         .imm(imm_ID_EX), 
+        .regAddr(regAddr_ID_EX),
 				.shamt(shamt_ID_EX),
 				.aluOp(aluOp_ID_EX),
 				.branchOp(branchOp_ID_EX),
