@@ -17,7 +17,6 @@ module CPU(clk, rst_n, hlt, pc);
 /* The pipeline. Each blank line separates inputs from
 		outputs of the module */
 
-
   IF IF(.addr(pc),
 				.clk(clk),
 				.rd_en(rd_en),
@@ -26,40 +25,47 @@ module CPU(clk, rst_n, hlt, pc);
 
 	InstructionDecode id(
 				.instr(instr),
+
+        .clk(clk),
+        .dstAddr(dstAddr),
+        .dst(dst),
+        .dstWe(dstWe),
 	
-        .imm(imm_ID_EX), 
-        .regAddr(regAddr_ID_EX),
-				.shamt(shamt_ID_EX),
-				.aluOp(aluOp_ID_EX),
-				.branchOp(branchOp_ID_EX),
-				.regWe(regWe), 
-				.memRe(memRe),
-				.memWe(memWe),
-				.memToReg(memToReg),
-				.jal(jal),
-				.jr(jr),
- 				.hlt(hlt), 
-			  .aluSrc0(aluSrc0_ID_EX),	
-				.aluSrc1(aluSrc1_ID_EX),
-				.ovEn(ovEn_ID_EX), 
-				.zrEn(zrEn_ID_EX), 
-				.neEn(neEn_ID_EX),
+        .p0(p0_ID),
+        .p1(p1_ID),
+        .imm(imm_ID), 
+        .regAddr(regAddr_ID),
+				.shamt(shamt_ID),
+				.aluOp(aluOp_ID),
+				.branchOp(branchOp_ID),
+				.regWe(regWe_ID), 
+				.memRe(memRe_ID),
+				.memWe(memWe_ID),
+				.memToReg(memToReg_ID),
+				.jal(jal_ID),
+				.jr(jr_ID),
+ 				.hlt(hlt_ID), 
+			  .aluSrc0(aluSrc0_ID),	
+				.aluSrc1(aluSrc1_ID),
+				.ovEn(ovEn_ID), 
+				.zrEn(zrEn_ID), 
+				.neEn(neEn_ID),
 				);
 
 	Execute execute(.p0(p0_ID_EX),
                   .p1(p1_ID_EX),
+                  .pc(pc_ID_EX),
                   .imm(imm_ID_EX),
                   .shamt(shamt_ID_EX),
                   .aluOp(aluOp_ID_EX),
                   .aluSrc0(aluSrc0_ID_EX),
                   .aluSrc1(aluSrc1_ID_EX),
-                  .aluOv(aluOv_ID_EX),
                   .ov_EX(ov_EX),
                   .zr_EX(zr_EX),
                   .ne_EX(ne_EX),
-                  .aluResult(aluResult_EX), // Luke corrected this one
-                  .branchResult(branchResult_EX_DM),
-                  .jumpResult(jumpResult_EX_DM));
+                  .aluResult(aluResult_EX),
+                  .branchResult(branchResult_EX),
+                  .jumpResult(jumpResult_EX));
 
 wire 	[15:0] memaddr_EX_MEM, aluResult_EX_MEM, instr_EX_MEM; // Inputs to Memory from flops
 wire		     re_EX_MEM, we_EX_MEM, zr_EX_MEM, ne_EX_MEM, ov_EX_MEM; 
