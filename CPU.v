@@ -66,8 +66,10 @@ wire		     re_EX_MEM, we_EX_MEM, zr_EX_MEM, ne_EX_MEM, ov_EX_MEM;
 
 wire  [15:0] rdData_MEM;						// Output From Memory
 
-wire  	MemtoReg_EX_MEM;
-	
+wire  	MemtoReg_EX_MEM;						// Just passing through signals
+wire [3:0] regAddr_EX_MEM;				//Just passing through signals
+wire 			 regWe_EX_MEM;
+
 //******************************************************
 // EX_MEM
 //
@@ -89,6 +91,8 @@ always
 	
 		//Just passing through mem start
 		MemtoReg_EX_MEM<=MemtoReg_ID_EX;
+		regAddr_EX_MEM<=regAddr_ID_EX;
+		regWe_EX_MEM<=regWe_ID_EX;
 		//Just passing through mem end
 
 	end
@@ -117,6 +121,8 @@ always
 
 	wire [15:0] writeData_WB;					//Output of writeback
 
+	wire [3:0] regAddr_MEM_WB;				//Just passing through signals
+	wire 			 regWe_MEM_WB;
 //*****************************************************
 // MEM_WB
 //
@@ -128,6 +134,9 @@ always
 		rdData_MEM_WB<=rdData_MEM;
 		aluResult_MEM_WB<=aluResult_EX_MEM;
 		MemtoReg_MEM_WB<=MemtoReg_EX_MEM;
+
+		regAddr_MEM_WB<=regAddr_EX_MEM;
+		regWe_MEM_WB<=regWe_EX_MEM;
 	
 	end
 
@@ -138,6 +147,8 @@ Writeback writeback(
 	.MemtoReg_MEM_WB(MemtoReg_MEM_WB), 
 
 	.writeData_WB(write_Data_WB));
+
+	
 
 
 
