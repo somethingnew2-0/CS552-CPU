@@ -1,6 +1,6 @@
-module Execute(p0, p1, imm, shamt, aluOp, aluSrc0, aluSrc1, aluOv, ov, zr, ne, aluResult, branchResult, jumpResult);
-  input[15:0] p0, p1;
-  input[7:0] imm;
+module Execute(p0, p1, pc, imm, shamt, aluOp, aluSrc0, aluSrc1, aluOv, ov, zr, ne, aluResult, branchResult, jumpResult);
+  input[15:0] p0, p1, pc;
+  input[11:0] imm;
  	input [3:0] shamt;
   input [2:0] aluOp;
   
@@ -14,7 +14,7 @@ module Execute(p0, p1, imm, shamt, aluOp, aluSrc0, aluSrc1, aluOv, ov, zr, ne, a
 
   SRC_MUX srcmux(.p0(p0),
                  .p1(p1), 
-								 .imm(imm), 
+								 .imm(imm[7:0]), 
          				 .aluSrc0(aluSrc0),
 								 .aluSrc1(aluSrc1),
 								 .src0(src0),
@@ -29,8 +29,12 @@ module Execute(p0, p1, imm, shamt, aluOp, aluSrc0, aluSrc1, aluOv, ov, zr, ne, a
 					.ne(ne),
 					.zr(zr)); 
 					
-	BranchAdder branchadder(.result(branchResult));
+	BranchAdder branchadder(.pc(pc),
+													.offset(imm[8:0]),
+                          .result(branchResult));
 	
-	JumpAdder jumpadder(.result(jumpResult));
+	JumpAdder jumpadder(.pc(pc),
+                      .offset(imm),
+                      .result(jumpResult));
 
 endmodule
