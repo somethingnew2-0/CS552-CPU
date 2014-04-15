@@ -61,7 +61,7 @@ module CPU(clk, rst_n, hlt, pc);
                   .branchResult(branchResult_EX_DM),
                   .jumpResult(jumpResult_EX_DM));
 
-wire 	[15:0] memaddr_EX_MEM, wrt_data_EX_MEM, instr_EX_MEM; // Inputs to Memory from flops
+wire 	[15:0] memaddr_EX_MEM, memData_EX_MEM, instr_EX_MEM; // Inputs to Memory from flops
 wire		     re_EX_MEM, we_EX_MEM, zr_EX_MEM, ne_EX_MEM, ov_EX_MEM; 
 
 wire  [15:0] rd_data_MEM;						// Output From Memory
@@ -72,7 +72,7 @@ wire  [15:0] rd_data_MEM;						// Output From Memory
 									.memaddr_EX_MEM(memaddr_EX_MEM),
 									.re_EX_MEM(re_EX_MEM),
 									.we_EX_MEM(we_EX_MEM),
-									.wrt_data_EX_MEM(wrt_data_EX_MEM),
+									.wrt_data_EX_MEM(memData_EX_MEM),
 									.rd_data_MEM(rd_data_MEM), 
 									.zr_EX_MEM(zr_EX_MEM), 
 									.ne_EX_MEM(ne_EX_MEM), 
@@ -80,22 +80,52 @@ wire  [15:0] rd_data_MEM;						// Output From Memory
 									.instr_EX_MEM(instr_EX_MEM), 
 									.flush(flush), 
 									.branch(branch));
-
+//******************************************************
 // ID_EX/EX -> EX_MEM
+//
+//******************************************************
 always
 	begin 
-		memaddr_EX_MEM <= memaddr_EX;
+		memaddr_EX_MEM <= memaddr_EX; //Used in mem start
 		re_EX_MEM <= re_ID_EX;
 		we_EX_MEM <= we_ID_EX;
-		wrt_data_EX_MEM<=wrt_data_ID_EX;
-		rd_data_MEM, 
-		zr_EX_MEM, 
-		ne_EX_MEM, 
-		ov_EX_MEM, 	
-		instr_EX_MEM, 
+		memData_EX_MEM<=memData_ID_EX; 
+		zr_EX_MEM<=zr_EX; 
+		ne_EX_MEM<=ne_EX; 
+		ov_EX_MEM<=ov_EX; 	
+		instr_EX_MEM<=instr_ID_EX; 	//Used in mem end
+	
+		//Just passing through mem start
+
+		//Just passing through mem end
+
+	end
+	
 
 
 
+
+	wire [15:0] memData_MEM_WB, result_MEM_WB;  // Inputs to writeback
+	wire				MemtoReg_MEM_WB;
+
+	wire [15:0] writeData_WB;					//Output of writeback
+
+Writeback writeback(
+	.memData_MEM_WB(memData_MEM_WB), 
+	.result_MEM_WB(result_MEM_WB), 
+	.MemtoReg_MEM_WB(MemtoReg_MEM_WB), 
+
+	.writeData_WB(write_Data_WB;))
+
+//*****************************************************
+// EX_MEM/MEM -> MEM_WB
+//
+//*****************************************************
+always
+	begin
+		memData_MEM_WB<=memData_MEM_WB;
+
+	
 	end
 
 endmodule
