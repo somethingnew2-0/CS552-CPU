@@ -1,4 +1,4 @@
-module Execute(p0, p1, imm, shamt, aluOp, aluSrc0, aluSrc1, aluOv, ov, zr, ne, result);
+module Execute(p0, p1, imm, shamt, aluOp, aluSrc0, aluSrc1, aluOv, ov, zr, ne, aluResult, branchResult, jumpResult);
   input[15:0] p0, p1;
   input[7:0] imm;
  	input [3:0] shamt;
@@ -8,7 +8,7 @@ module Execute(p0, p1, imm, shamt, aluOp, aluSrc0, aluSrc1, aluOv, ov, zr, ne, r
   input aluSrc0, aluSrc1, aluOv;
 
 	output ov, zr, ne;
-  output [15:0] result;
+  output [15:0] aluResult, branchResult, jumpResult;
 
   wire [15:0] src0, src1;
 
@@ -24,13 +24,13 @@ module Execute(p0, p1, imm, shamt, aluOp, aluSrc0, aluSrc1, aluOv, ov, zr, ne, r
 					.src1(src1), 
 					.ctrl(aluOp), 
 					.shamt(shamt),
-					.result(result), 
+					.result(aluResult), 
 					.ov(ov), 
 					.ne(ne),
 					.zr(zr)); 
 					
-	//BranchAdder()
+	BranchAdder branchadder(.result(branchResult));
 	
-	//JumpAdder()
+	JumpAdder jumpadder(.result(jumpResult));
 
 endmodule
