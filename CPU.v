@@ -26,17 +26,12 @@ module CPU(clk, rst_n, hlt, pc);
  				
 				.instr(instr));
 
-	ID id(.instr(instr),
+	InstructionDecode id(.instr(instr),
 	
-        .imm(imm_ID_EX),
-				.p0Addr(p0Addr), 
-				.p1Addr(p1Addr), 
-				.regAddr(regAddr), 
+        .imm(imm_ID_EX), 
 				.shamt(shamt_ID_EX),
 				.aluOp(aluOp_ID_EX),
 				.branchOp(branchOp_ID_EX),
-				.regRe0(regRe0), 
-				.regRe1(regRe1), 
 				.regWe(regWe), 
 				.memRe(memRe),
 				.memWe(memWe),
@@ -49,19 +44,6 @@ module CPU(clk, rst_n, hlt, pc);
 				.ovEn(ovEn_ID_EX), 
 				.zrEn(zrEn_ID_EX), 
 				.neEn(neEn_ID_EX)
-				);
-
-  rf rf(.clk(clk), 
-				.p0_addr(p0_addr), 
-				.p1_addr(p1_addr), 
-				.re0(regRe0), 
-				.re1(regRe1), 
-				.dst_addr(regAddr), 
-				.dst(finaldst), 
-				.we(regWe), 
-				.hlt(hlt), 
-				.p0(p0_ID_EX), 
-				.p1(p1_ID_EX)
 				);
 
 	JUMP_MUX jumpmux(.jr(jr), .p0(IM_EX_p0), .nextAddr(nextAddr), .nextPC(nextPC));
