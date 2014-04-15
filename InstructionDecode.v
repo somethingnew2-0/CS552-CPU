@@ -15,7 +15,6 @@ module InstructionDecode(instr, clk, dstAddr, dst, dstWe, p0, p1, imm, regAddr, 
   // Control signals
   output regWe, memRe, memWe, memToReg, jal, jr, hlt, aluSrc0, aluSrc1, ovEn, zrEn, neEn;
 
-
   wire [3:0] p0Addr, p1Addr;
 
 	ID id(.instr(instr),
