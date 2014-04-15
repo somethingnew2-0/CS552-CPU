@@ -1,11 +1,11 @@
-module Execute(p0, p1, pc, imm, shamt, aluOp, aluSrc0, aluSrc1, aluOv, ov, zr, ne, aluResult, branchResult, jumpResult);
+module Execute(p0, p1, pc, imm, shamt, aluOp, aluSrc0, aluSrc1, ov, zr, ne, aluResult, branchResult, jumpResult);
   input[15:0] p0, p1, pc;
   input[11:0] imm;
  	input [3:0] shamt;
   input [2:0] aluOp;
   
   // Control signals
-  input aluSrc0, aluSrc1, aluOv;
+  input aluSrc0, aluSrc1;
 
 	output ov, zr, ne;
   output [15:0] aluResult, branchResult, jumpResult;
