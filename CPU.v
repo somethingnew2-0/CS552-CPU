@@ -4,7 +4,8 @@ module CPU(clk, rst_n, hlt, pc);
 	output hlt; //Assuming these are current flag states
 	output [15:0] pc;
 
-  wire [15:0] instr, nextAddr, nextPC, memdst, finaldst, p0_ID_EX, p1_ID_EX, result_EX_DM;
+  wire [15:0] instr, nextAddr, nextPC, memdst, finaldst, p0_ID_EX, p1_ID_EX, aluResult_EX_DM, branchResult_EX_DM, jumpResult_EX_DM;
+  wire [11:0] imm_ID_EX;
   wire [3:0] p0Addr, p1Addr, regAddr, shamt_ID_EX;
   wire [2:0] aluOp_ID_EX, branchOp_ID_EX;
 
@@ -27,6 +28,7 @@ module CPU(clk, rst_n, hlt, pc);
 
 	ID id(.instr(instr),
 	
+        .imm(imm_ID_EX),
 				.p0Addr(p0Addr), 
 				.p1Addr(p1Addr), 
 				.regAddr(regAddr), 
@@ -75,7 +77,9 @@ module CPU(clk, rst_n, hlt, pc);
                   .ov_EX(ov_EX),
                   .zr_EX(zr_EX),
                   .ne_EX(ne_EX),
-                  .result(result_EX_DM));
+                  .aluResult(aluResult_EX_DM),
+                  .branchResult(branchResult_EX_DM),
+                  .jumpResult(jumpResult_EX_DM));
 
 	DM dm(.clk(clk),
 				.addr(EX_DM_dst),

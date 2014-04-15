@@ -1,10 +1,11 @@
 // Peter Collins, Matthew Wiemer, Luke Brandl
-module JumpAdder(addr, offset, result);
-  input [15:0] addr, offset;
+module JumpAdder(pc, offset, result);
+  input [15:0] pc;
+  input [11:0] offset;
 
   output [15:0] result;
 
   // Set Result
-  assign result = addr+offset;
+  assign result = pc+{{4{offset[11]}},offset};
   
 endmodule

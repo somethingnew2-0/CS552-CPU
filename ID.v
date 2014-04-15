@@ -1,7 +1,8 @@
-module ID(instr, p0Addr, p1Addr, regAddr, shamt, aluOp, branchOp, regRe0, regRe1, regWe, memRe, memWe, memToReg, jal, jr, hlt, aluSrc0, aluSrc1, ovEn, zrEn, neEn);
+module ID(instr, imm, p0Addr, p1Addr, regAddr, shamt, aluOp, branchOp, regRe0, regRe1, regWe, memRe, memWe, memToReg, jal, jr, hlt, aluSrc0, aluSrc1, ovEn, zrEn, neEn);
 
   input [15:0] instr;
 
+  output [11:0] imm;
   output [3:0] p0Addr, p1Addr, regAddr, shamt;
   output [2:0] aluOp, branchOp;
 
@@ -27,6 +28,8 @@ module ID(instr, p0Addr, p1Addr, regAddr, shamt, aluOp, branchOp, regRe0, regRe1
   assign jal = instr[15:12] == 4'b1101;
   assign jr = instr[15:12] == 4'b1110;
   assign hlt = instr[15:12] == 4'b1111;
+
+  assign imm = instr[11:0];
 
   // Set src0 register address as normal unless it's LHB                                                 
   assign p0Addr = lhb ? instr[11:8] : instr[7:4];
