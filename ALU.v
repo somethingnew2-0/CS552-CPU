@@ -1,9 +1,8 @@
 // Peter Collins, Matthew Wiemer, Luke Brandl
-module ALU(src0, src1, ctrl, shamt, aluOp, result, oldOv, oldZr, oldNe, ov, zr, ne);
+module ALU(src0, src1, ctrl, shamt, result, ov, zr, ne);
   input [15:0] src0, src1;
   input [2:0] ctrl;
   input [3:0] shamt;
-	input aluOp, oldOv, oldZr, oldNe;
 	
   output [15:0] result;
 	output ov, zr, ne;
@@ -32,21 +31,21 @@ module ALU(src0, src1, ctrl, shamt, aluOp, result, oldOv, oldZr, oldNe, ov, zr, 
  	// When checking msbs for overflow, we need the actual bits operated on
 	assign op1 = ctrl==sub ? ~src1 + 1'b1 : src1;          
 
-  assign doingMath = ctrl==add || ctrl==sub; // i.e. set N and Z
   // Positive operands; Negative result
 	assign negativeOverflow =(src0[15] && op1[15] && !unsat[15]);
   // Negative operands; Positive result
 	assign positiveOverflow = (!src0[15] && !op1[15] && unsat[15]);
 
   // Set Result
-  assign result = (positiveOverflow && doingMath) ? 16'h7fff :
-               (negativeOverflow && doingMath) ? 16'h8000 : unsat;
+  assign result = (positiveOverflow && (ctrl==add || ctrl==sub)) ? 16'h7fff :
+               (negativeOverflow && (ctrl==add || ctrl==sub)) ? 16'h8000 : unsat;
 
+  // Only set overflow for add, addz, sub
+  assign ov = (positiveOverflow || negativeOverflow);
 
-  assign ov = doingMath ? (positiveOverflow || negativeOverflow) : oldOv;
+  assign zr = ~|result;
 
-  assign zr = aluOp ? ~|result : oldZr;
-
-  assign ne = doingMath ? result[15] : oldNe;
+  // Only set negative for add, addz, sub 
+  assign ne = result[15];
   
 endmodule
