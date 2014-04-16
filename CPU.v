@@ -15,7 +15,7 @@ module CPU(clk, rst_n, hlt, pc);
 
   wire [15:0] instr_IF, pcNext_IF;
 
-  IF IF(.clk(clk),
+  InstructionFetch instructionfetch(.clk(clk),
         .branch(branch),
         .branchAddr(branchAddr),
         .stall(stall),
@@ -50,7 +50,7 @@ module CPU(clk, rst_n, hlt, pc);
   reg [2:0] aluOp_ID, branchOp_ID;
   reg regWe_ID, memRe_ID, memWe_ID, memToReg_ID, jal_ID, jr_ID, hlt_ID, aluSrc0_ID, aluSrc1_ID, ovEn_ID, zrEn_ID, neEn_ID;
 
-  InstructionDecode id(
+  InstructionDecode instructiondecode(
         .instr(instr_IF_ID),
 
         .clk(clk),
@@ -234,11 +234,11 @@ module CPU(clk, rst_n, hlt, pc);
     end
 
 
-Writeback writeback(
-  .memData_MEM_WB(memData_MEM_WB),
-  .aluResult_MEM_WB(aluResult_MEM_WB), 
-  .memToReg_MEM_WB(memToReg_MEM_WB), 
+  Writeback writeback(
+    .memData_MEM_WB(memData_MEM_WB),
+    .aluResult_MEM_WB(aluResult_MEM_WB), 
+    .memToReg_MEM_WB(memToReg_MEM_WB), 
 
-  .writeData_WB(dst));
+    .writeData_WB(dst));
 
 endmodule

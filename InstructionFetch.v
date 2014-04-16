@@ -1,4 +1,4 @@
-module IF(clk, branch, branchAddr, stall, pc, instr, pcNext);
+module InstructionFetch(clk, branch, branchAddr, stall, pc, instr, pcNext);
 
   input clk, branch, stall;
   input [15:0] pc, branchAddr;
