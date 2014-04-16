@@ -16,12 +16,14 @@ module CPU(clk, rst_n, hlt, pc);
   wire [15:0] instr_IF, pcNext_IF;
 
   InstructionFetch instructionfetch(.clk(clk),
+                                    .rst_n(rst_n),
+                                    .hlt(hlt),
                                     .branch(branch),
                                     .branchAddr(branchAddr),
                                     .stall(stall),
-                                    .pc(pc),
                                     .rd_en(rd_en),
                                     
+                                    .pc(pc),
                                     .instr(instr_IF),
                                     .pcNext(pcNext_IF));
 
@@ -52,7 +54,7 @@ module CPU(clk, rst_n, hlt, pc);
   wire [11:0] imm_ID;
   wire [3:0] regAddr_ID, shamt_ID;
   wire [2:0] aluOp_ID, branchOp_ID;
-  wire regWe_ID, memRe_ID, memWe_ID, memToReg_ID, jal_ID, jr_ID, hlt_ID, aluSrc0_ID, aluSrc1_ID, ovEn_ID, zrEn_ID, neEn_ID;
+  wire regWe_ID, memRe_ID, memWe_ID, memToReg_ID, jal_ID, jr_ID, aluSrc0_ID, aluSrc1_ID, ovEn_ID, zrEn_ID, neEn_ID;
 
   InstructionDecode instructiondecode(
         .instr(instr_IF_ID),
@@ -75,7 +77,7 @@ module CPU(clk, rst_n, hlt, pc);
         .memToReg(memToReg_ID),
         .jal(jal_ID),
         .jr(jr_ID),
-        .hlt(hlt_ID), 
+        .hlt(hlt), 
         .aluSrc0(aluSrc0_ID), 
         .aluSrc1(aluSrc1_ID),
         .ovEn(ovEn_ID), 
@@ -92,7 +94,7 @@ module CPU(clk, rst_n, hlt, pc);
   // Just passing through signals
   reg [3:0] regAddr_ID_EX;
   reg [2:0] branchOp_ID_EX;
-  reg regWe_ID_EX, memRe_ID_EX, memWe_ID_EX, memToReg_ID_EX, jal_ID_EX, jr_ID_EX, hlt_ID_EX, ovEn_ID_EX, zrEn_ID_EX, neEn_ID_EX;
+  reg regWe_ID_EX, memRe_ID_EX, memWe_ID_EX, memToReg_ID_EX, jal_ID_EX, jr_ID_EX, ovEn_ID_EX, zrEn_ID_EX, neEn_ID_EX;
 
   //******************************************************
   // ID_EX
@@ -122,7 +124,6 @@ module CPU(clk, rst_n, hlt, pc);
       memToReg_ID_EX <= memToReg_ID;
       jal_ID_EX <= jal_ID;
       jr_ID_EX <= jr_ID;
-      hlt_ID_EX <= hlt_ID;
       ovEn_ID_EX <= ovEn_ID;
       zrEn_ID_EX <= zrEn_ID;
       neEn_ID_EX <= neEn_ID;

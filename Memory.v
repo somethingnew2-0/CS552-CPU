@@ -7,7 +7,7 @@ module Memory(clk, memAddr_EX_MEM, memRe_EX_MEM, memWe_EX_MEM, wrtData_EX_MEM, z
   output flush, branch;
 
   wire zr, ne, ov, finalWe;
-  wire [15:0] branchOp;
+  wire [2:0] branchOp;
 
   // Branch Codes, straight off the quick reference
   localparam neq    = 3'b000;
@@ -40,13 +40,13 @@ module Memory(clk, memAddr_EX_MEM, memRe_EX_MEM, memWe_EX_MEM, wrtData_EX_MEM, z
                       branchResult_EX_MEM; 
 
   assign branch = jal_EX_MEM || jr_EX_MEM ||    
-          ((branchOp[11:9] == uncond) ||
-          ((branchOp[11:9] == neq) && !zr) ||
-          ((branchOp[11:9] == eq) && zr) ||
-          ((branchOp[11:9] == gt) && !(zr || ne)) ||
-          ((branchOp[11:9] == lt) && ne) ||
-          ((branchOp[11:9] == gte) && !ne) ||
-          ((branchOp[11:9] == lte) && (ne || zr)) ||
-          ((branchOp[11:9] == ovfl) && ov) );   
+          ((branchOp == uncond) ||
+          ((branchOp == neq) && !zr) ||
+          ((branchOp == eq) && zr) ||
+          ((branchOp == gt) && !(zr || ne)) ||
+          ((branchOp == lt) && ne) ||
+          ((branchOp == gte) && !ne) ||
+          ((branchOp == lte) && (ne || zr)) ||
+          ((branchOp == ovfl) && ov));   
 
 endmodule
