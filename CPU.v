@@ -26,7 +26,7 @@ module cpu(clk, rst_n, hlt, pc);
                                     .rd_en(rd_en),
                                     
                                     // Global outputs
-                                    .pc(pc),
+                                    .pc(pcNext_IF),
 
                                     // Pipeline stage outputs 
                                     
