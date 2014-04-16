@@ -54,7 +54,7 @@ module CPU(clk, rst_n, hlt, pc);
   wire [11:0] imm_ID;
   wire [3:0] regAddr_ID, shamt_ID;
   wire [2:0] aluOp_ID, branchOp_ID;
-  wire regWe_ID, memRe_ID, memWe_ID, memToReg_ID, jal_ID, jr_ID, aluSrc0_ID, aluSrc1_ID, ovEn_ID, zrEn_ID, neEn_ID;
+  wire regWe_ID, memRe_ID, memWe_ID, memToReg_ID, branch_ID, jal_ID, jr_ID, aluSrc0_ID, aluSrc1_ID, ovEn_ID, zrEn_ID, neEn_ID;
 
   InstructionDecode instructiondecode(
         .instr(instr_IF_ID),
@@ -75,6 +75,7 @@ module CPU(clk, rst_n, hlt, pc);
         .memRe(memRe_ID),
         .memWe(memWe_ID),
         .memToReg(memToReg_ID),
+        .branch(branch_ID),
         .jal(jal_ID),
         .jr(jr_ID),
         .hlt(hlt), 
@@ -94,7 +95,7 @@ module CPU(clk, rst_n, hlt, pc);
   // Just passing through signals
   reg [3:0] regAddr_ID_EX;
   reg [2:0] branchOp_ID_EX;
-  reg regWe_ID_EX, memRe_ID_EX, memWe_ID_EX, memToReg_ID_EX, jal_ID_EX, jr_ID_EX, ovEn_ID_EX, zrEn_ID_EX, neEn_ID_EX;
+  reg regWe_ID_EX, memRe_ID_EX, memWe_ID_EX, memToReg_ID_EX, branch_ID_EX, jal_ID_EX, jr_ID_EX, ovEn_ID_EX, zrEn_ID_EX, neEn_ID_EX;
 
   //******************************************************
   // ID_EX
@@ -122,6 +123,7 @@ module CPU(clk, rst_n, hlt, pc);
       memRe_ID_EX <= memRe_ID;
       memWe_ID_EX <= memWe_ID;
       memToReg_ID_EX <= memToReg_ID;
+      branch_ID_EX <= branch_ID;
       jal_ID_EX <= jal_ID;
       jr_ID_EX <= jr_ID;
       ovEn_ID_EX <= ovEn_ID;
@@ -153,7 +155,7 @@ module CPU(clk, rst_n, hlt, pc);
   // Inputs to Memory from flops
   reg [15:0] aluResult_EX_MEM, branchResult_EX_MEM, jumpResult_EX_MEM, p0_EX_MEM, memAddr_EX_MEM;
   reg [2:0] branchOp_EX_MEM;
-  reg memRe_EX_MEM, memWe_EX_MEM, jal_EX_MEM, jr_EX_MEM, zr_EX_MEM, ne_EX_MEM, ov_EX_MEM; 
+  reg memRe_EX_MEM, memWe_EX_MEM, branch_EX_MEM, jal_EX_MEM, jr_EX_MEM, zr_EX_MEM, ne_EX_MEM, ov_EX_MEM; 
 
   // Just passing through signals
   reg [3:0] regAddr_EX_MEM;
@@ -176,6 +178,7 @@ module CPU(clk, rst_n, hlt, pc);
       branchOp_EX_MEM <= branchOp_ID_EX;
       memRe_EX_MEM <= memRe_ID_EX;
       memWe_EX_MEM <= memWe_ID_EX;
+      branch_EX_MEM <= branch_ID_EX;
       jal_EX_MEM <= jal_ID_EX;
       jr_EX_MEM <= jr_ID_EX;
       zr_EX_MEM <= zr_EX; 
@@ -203,6 +206,7 @@ module CPU(clk, rst_n, hlt, pc);
         .zr_EX_MEM(zr_EX_MEM), 
         .ne_EX_MEM(ne_EX_MEM), 
         .ov_EX_MEM(ov_EX_MEM),  
+        .branch_EX_MEM(branch_EX_MEM),
         .jal_EX_MEM(jal_EX_MEM),
         .jr_EX_MEM(jr_EX_MEM),        
         .jalResult_EX_MEM(jumpResult_EX_MEM),

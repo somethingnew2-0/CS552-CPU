@@ -1,5 +1,5 @@
-module Memory(clk, memAddr_EX_MEM, memRe_EX_MEM, memWe_EX_MEM, wrtData_EX_MEM, zr_EX_MEM, ne_EX_MEM, ov_EX_MEM, jal_EX_MEM, jr_EX_MEM, jalResult_EX_MEM, jrResult_EX_MEM, branchResult_EX_MEM, branchOp_EX_MEM, memData_MEM, branchAddr, flush, branch);
-  input clk, memRe_EX_MEM, memWe_EX_MEM, zr_EX_MEM, ne_EX_MEM, ov_EX_MEM, jal_EX_MEM, jr_EX_MEM;
+module Memory(clk, memAddr_EX_MEM, memRe_EX_MEM, memWe_EX_MEM, wrtData_EX_MEM, zr_EX_MEM, ne_EX_MEM, ov_EX_MEM, branch_EX_MEM, jal_EX_MEM, jr_EX_MEM, jalResult_EX_MEM, jrResult_EX_MEM, branchResult_EX_MEM, branchOp_EX_MEM, memData_MEM, branchAddr, flush, branch);
+  input clk, memRe_EX_MEM, memWe_EX_MEM, zr_EX_MEM, ne_EX_MEM, ov_EX_MEM, branch_EX_MEM, jal_EX_MEM, jr_EX_MEM;
   input [15:0] memAddr_EX_MEM, wrtData_EX_MEM, jalResult_EX_MEM, jrResult_EX_MEM, branchResult_EX_MEM;
   input [2:0] branchOp_EX_MEM;
 
@@ -39,14 +39,15 @@ module Memory(clk, memAddr_EX_MEM, memRe_EX_MEM, memWe_EX_MEM, wrtData_EX_MEM, z
                       jr_EX_MEM ? jrResult_EX_MEM: // Set to P0
                       branchResult_EX_MEM; 
 
-  assign branch = jal_EX_MEM || jr_EX_MEM ||    
-          ((branchOp == uncond) ||
-          ((branchOp == neq) && !zr) ||
-          ((branchOp == eq) && zr) ||
-          ((branchOp == gt) && !(zr || ne)) ||
-          ((branchOp == lt) && ne) ||
-          ((branchOp == gte) && !ne) ||
-          ((branchOp == lte) && (ne || zr)) ||
-          ((branchOp == ovfl) && ov));   
+  assign branch = jal_EX_MEM || jr_EX_MEM || 
+                    (branch_EX_MEM &&
+                      ((branchOp == uncond) ||
+                      ((branchOp == neq) && !zr) ||
+                      ((branchOp == eq) && zr) ||
+                      ((branchOp == gt) && !(zr || ne)) ||
+                      ((branchOp == lt) && ne) ||
+                      ((branchOp == gte) && !ne) ||
+                      ((branchOp == lte) && (ne || zr)) ||
+                      ((branchOp == ovfl) && ov)));   
 
 endmodule
