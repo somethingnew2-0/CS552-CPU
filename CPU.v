@@ -16,14 +16,14 @@ module CPU(clk, rst_n, hlt, pc);
   wire [15:0] instr_IF, pcNext_IF;
 
   InstructionFetch instructionfetch(.clk(clk),
-        .branch(branch),
-        .branchAddr(branchAddr),
-        .stall(stall),
-        .pc(pc),
-        .rd_en(rd_en),
-        
-        .instr(instr_IF),
-        .pcNext(pcNext_IF));
+                                    .branch(branch),
+                                    .branchAddr(branchAddr),
+                                    .stall(stall),
+                                    .pc(pc),
+                                    .rd_en(rd_en),
+                                    
+                                    .instr(instr_IF),
+                                    .pcNext(pcNext_IF));
 
   reg [15:0] instr_IF_ID, pcNext_IF_ID;
 
@@ -44,6 +44,10 @@ module CPU(clk, rst_n, hlt, pc);
       //Just passing through id end
     end
 
+  wire [15:0] writeData;
+  wire [3:0] writeAddr;
+  wire writeEnable;
+
   reg [15:0] p0_ID, p1_ID;
   reg [11:0] imm_ID;
   reg [3:0] regAddr_ID, shamt_ID;
@@ -54,9 +58,9 @@ module CPU(clk, rst_n, hlt, pc);
         .instr(instr_IF_ID),
 
         .clk(clk),
-        .dstAddr(dstAddr),
-        .dst(dst),
-        .dstWe(dstWe),
+        .writeData(writeData),
+        .writeAddr(writeAddr),        
+        .writeEnable(writeEnable),
   
         .p0(p0_ID),
         .p1(p1_ID),
@@ -211,11 +215,8 @@ module CPU(clk, rst_n, hlt, pc);
         .flush(flush));
 
   reg [15:0] memData_MEM_WB, aluResult_MEM_WB;  // Inputs to writeback
-  reg memToReg_MEM_WB;
-
-  // Just passing through signals
   reg [3:0] regAddr_MEM_WB;
-  reg regWe_MEM_WB;
+  reg memToReg_MEM_WB, regWe_MEM_WB;
 
   //*****************************************************
   // MEM_WB
@@ -227,18 +228,22 @@ module CPU(clk, rst_n, hlt, pc);
     begin
       memData_MEM_WB <= memData_MEM;
       aluResult_MEM_WB <= aluResult_EX_MEM;
-      memToReg_MEM_WB <= memToReg_EX_MEM;
-
       regAddr_MEM_WB <= regAddr_EX_MEM;
+      memToReg_MEM_WB <= memToReg_EX_MEM;      
       regWe_MEM_WB <= regWe_EX_MEM;    
     end
 
 
   Writeback writeback(
+    .flush(flush),
+    .memToReg_MEM_WB(memToReg_MEM_WB),
+    .regWe_MEM_WB(regWe_MEM_WB),
+    .regAddr_MEM_WB(regAddr_MEM_WB),
     .memData_MEM_WB(memData_MEM_WB),
-    .aluResult_MEM_WB(aluResult_MEM_WB), 
-    .memToReg_MEM_WB(memToReg_MEM_WB), 
+    .aluResult_MEM_WB(aluResult_MEM_WB),     
 
-    .writeData_WB(dst));
+    .writeData_WB(writeData),
+    .writeAddr_WB(writeAddr),
+    .writeEnable_WB(writeEnable));
 
 endmodule
