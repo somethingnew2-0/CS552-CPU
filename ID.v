@@ -22,7 +22,7 @@ module ID(instr, imm, p0Addr, p1Addr, regAddr, shamt, aluOp, branchOp, regRe0, r
   assign sub = instr[15:12] == 4'b0010;
   assign lw = instr[15:12] == 4'b1000;
   assign sw = instr[15:12] == 4'b1001;
-  assign lhb = instr[15:12] == 4'b1001;
+  assign lhb = instr[15:12] == 4'b1010;
   assign llb = instr[15:12] == 4'b1011;
   assign branch = instr[15:12] == 4'b1100;
   assign jal = instr[15:12] == 4'b1101;
@@ -100,8 +100,7 @@ module ID(instr, imm, p0Addr, p1Addr, regAddr, shamt, aluOp, branchOp, regRe0, r
   */
   assign aluOp = !instr[15] ? (addz ? aluAdd : instr[14:12]) : 
                 lhb ?  aluLhb : 
-                llb ?  aluAdd : 
-                branch ? 3'b111 :
+                llb ?  aluAdd :
                 3'b000; // lw and sw are included in this, as they use add op
   
 endmodule
