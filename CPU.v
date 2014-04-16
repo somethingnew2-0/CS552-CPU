@@ -15,6 +15,8 @@ module cpu(clk, rst_n, hlt, pc);
 
   wire [15:0] pcNext_IF, instr_IF;
 
+	assign pc = pcNext_IF;
+
   InstructionFetch instructionfetch(
                                     // Global inputs
                                     .clk(clk),
@@ -26,7 +28,7 @@ module cpu(clk, rst_n, hlt, pc);
                                     .rd_en(rd_en),
                                     
                                     // Global outputs
-                                    .pc(pcNext_IF),
+                                    .pc(),
 
                                     // Pipeline stage outputs 
                                     
