@@ -13,13 +13,14 @@ module InstructionFetch(clk, rst_n, hlt, branch, branchAddr, stall, rd_en, pc, i
   assign effectivePc = branch ? branchAddr:
                        pcNext;
 
-  always @(posedge clk or negedge rst_n)
+  always @(posedge clk or negedge rst_n) begin
     if(!rst_n)
       pc <= 16'h0000;
     else if (!hlt)
       pc <= effectivePc;
     else
       pc <= pc;
+  end
 
   IM im(.addr(pc),
         .clk(clk),
