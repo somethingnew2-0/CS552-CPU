@@ -1,10 +1,10 @@
 module Memory(clk, hlt, memAddr, memRe, memWe, regWe, wrtData, zr, ne, ov, addz, b, jal, jr, jalResult, jrResult, branchResult, branchOp, memData, branchAddr, flush, regWriteEnable, branch);
-  input clk, hlt, memRe, memWe, regWe, zr, ne, ov, addz, b, jal, jr;
+  input clk, hlt, memRe, memWe, regWe, zr, ne, ov, addz, b, jal, jr, flush;
   input [15:0] memAddr, wrtData, jalResult, jrResult, branchResult;
   input [2:0] branchOp;
 
   output [15:0] memData, branchAddr;  //output of data memory
-  output flush, regWriteEnable, branch;
+  output regWriteEnable, branch;
 
   // Branch Codes, straight off the quick reference
   localparam neq    = 3'b000;
@@ -16,7 +16,7 @@ module Memory(clk, hlt, memAddr, memRe, memWe, regWe, wrtData, zr, ne, ov, addz,
   localparam ovfl   = 3'b110;
   localparam uncond = 3'b111;
 
-  assign flush = 0'b0;
+
 
   assign finalWe = !flush & !hlt & memWe; 
 

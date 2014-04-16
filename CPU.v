@@ -8,6 +8,7 @@ module cpu(clk, rst_n, hlt, pc);
   wire flush, stall, branch;
 
   assign stall = 0'b0;
+	assign flush = 0'b0;
   assign rd_en = 1'b1; // When should this change?
 
   /* The pipeline. Each blank line separates inputs from
@@ -26,11 +27,9 @@ module cpu(clk, rst_n, hlt, pc);
                                     .rd_en(rd_en),
                                     
                                     // Global outputs
-                                    .pc(pcNext_IF),
+                                    .pcNext(pc),
 
                                     // Pipeline stage outputs 
-                                    
-                                    .pcNext(pcNext_IF),
                                     .instr(instr_IF));
 
   reg [15:0] instr_IF_ID, pcNext_IF_ID;
@@ -47,7 +46,7 @@ module cpu(clk, rst_n, hlt, pc);
     //Used in id end
 
     //Just passing through id start
-    pcNext_IF_ID <= pcNext_IF;
+    pcNext_IF_ID <= pc;
     //Just passing through id end
   end
 
@@ -255,6 +254,7 @@ module cpu(clk, rst_n, hlt, pc);
         .jrResult(p0_EX_MEM),
         .branchResult(branchResult_EX_MEM),
         .branchOp(branchOp_EX_MEM), 
+        .flush(flush),
 
         // Pipeline stage outputs
         .memData(memData_MEM),
@@ -262,8 +262,7 @@ module cpu(clk, rst_n, hlt, pc);
 
         // Global outputs
         .branchAddr(branchAddr),
-        .branch(branch),
-        .flush(flush));
+        .branch(branch));
 
   reg [15:0] memData_MEM_WB, aluResult_MEM_WB;  // Inputs to writeback
   reg [3:0] regAddr_MEM_WB;
