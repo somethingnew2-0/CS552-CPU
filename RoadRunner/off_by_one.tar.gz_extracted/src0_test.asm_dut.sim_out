@@ -49,15 +49,15 @@ Reading pref.tcl
 # R4 = 0005
 # R5 = 000a
 # R6 = 000a
-# R7 = 7777
-# R8 = 8888
-# R9 = 9999
-# Ra = aaaa
-# Rb = bbbb
+# R7 = xxxx
+# R8 = xxxx
+# R9 = xxxx
+# Ra = xxxx
+# Rb = xxxx
 # Rc = 2121
 # Rd = 3737
 # Re = 0001
 # Rf = 0001
-# Time:        626
-# Cycles:       63
-# PC:         003e
+# Time:        326
+# Cycles:       33
+# PC:         0020

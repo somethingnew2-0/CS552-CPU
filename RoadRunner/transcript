@@ -39,21 +39,21 @@
 # Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.Writeback
 # Loading work.Writeback
 # run -a 
-# R1 = 2222
-# R2 = 1111
-# R3 = 7777
-# R4 = dddd
-# R5 = 2200
-# R6 = 0022
-# R7 = 0022
-# R8 = ffdd
-# R9 = 4444
-# Ra = aaaa
-# Rb = bbbb
-# Rc = cccc
-# Rd = dddd
-# Re = eeee
-# Rf = ffff
-# Time:        416
-# Cycles:       42
-# PC:         0029
+# R1 = 000f
+# R2 = 0014
+# R3 = 03xx
+# R4 = 000f
+# R5 = 0023
+# R6 = 0078
+# R7 = 0001
+# R8 = xxxx
+# R9 = xxxx
+# Ra = 0023
+# Rb = 0078
+# Rc = 0001
+# Rd = xxxx
+# Re = xxxx
+# Rf = xxxx
+# Time:        176
+# Cycles:       18
+# PC:         0011

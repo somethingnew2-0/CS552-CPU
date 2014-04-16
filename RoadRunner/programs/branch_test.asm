@@ -116,10 +116,9 @@ check_101:	ADD R0, R9, R9		# Set the V and N flags (Negative Overflow)
 			HLT #17
 	skip17:	b uncond, check_JAL	# Every possible branch has been tested
 
-check_JAL:	JAL test_works		# Should skip HLT
-		HLT #18
-		HLT #19			# PC should be @0x0061 Haven't gotten this far yet
+check_JAL:	JAL check_return
+		HLT # Sucess!		# PC should be @0x005e (HLT addr + 1)
 
 broked:		HLT # Broken
 
-test_works:	HLT
+check_return:	JR R15

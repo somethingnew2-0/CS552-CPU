@@ -42,7 +42,7 @@
 
 	# Test SRA
 	SRA R7, R1, 4	 # R7 = 0x0002
-	SRA R8, R4, 4	 # R8 = 0xFFFF
+	SRA R8, R4, 4	 # R8 = 0xFFFD
 
 	# Test ADDz
 	ADDz R1, R1, R1	 # R1 should remain unchanged
