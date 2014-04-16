@@ -33,7 +33,7 @@ module CPU(clk, rst_n, hlt, pc);
   // IF -> ID
   //
   //******************************************************
-  always
+  always @(*)
     begin  
       //Used in id start
       instr_IF_ID <= instr_IF;
@@ -100,7 +100,7 @@ module CPU(clk, rst_n, hlt, pc);
   // ID -> EX
   //
   //******************************************************
-  always
+  always @(*)
     begin  
       //Used in ex start
       p0_ID_EX <= p0_ID;
@@ -164,7 +164,7 @@ module CPU(clk, rst_n, hlt, pc);
   // ID_EX/EX -> MEM
   //
   //******************************************************
-  always
+  always @(*)
     begin 
       //Used in mem start
       aluResult_EX_MEM <= aluResult_EX; 
@@ -225,7 +225,7 @@ module CPU(clk, rst_n, hlt, pc);
   // EX_MEM/MEM -> WB
   //
   //*****************************************************
-  always
+  always @(*)
     begin
       memData_MEM_WB <= memData_MEM;
       aluResult_MEM_WB <= aluResult_EX_MEM;
