@@ -1,23 +1,21 @@
-module IF(pc, clk, instr, stall, baddr, branch, pcp1);
+module IF(clk, branch, stall, pc, branchAddr, instr, pcNext);
 
-	input clk, branch, stall;
-	input [15:0] pc, baddr;
+  input clk, branch, stall;
+  input [15:0] pc, branchAddr;
 
-	output [15:0] pcp1, instr; 
+  output [15:0] instr, pcNext; 
 
-	wire [15:0] effectivepc;
+  wire [15:0] effectivePc;
 
-	assign effectivepc = (branch)? baddr : pc;
-	assign pcp1 = (stall)? effectivepc : effectivepc + 1;
-	
+  assign effectivePc = branch ? branchAddr : pc;
+  assign pcNext = stall ? effectivePc : effectivePc + 1;
+  
 
-  IM im(.addr(effectivepc),
-				.clk(clk),
-				.rd_en(1'b1),
- 				
-				.instr(instr));
-
-
+  IM im(.addr(effectivePc),
+        .clk(clk),
+        .rd_en(1'b1),
+        
+        .instr(instr));
 
 endmodule
 
