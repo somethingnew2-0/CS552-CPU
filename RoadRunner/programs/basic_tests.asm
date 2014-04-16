@@ -18,7 +18,8 @@ SLL R6, R4, R3			# Test 2
 
 SRL R7, R4, R3			# Test 3
 
-
+SW  R4, R3
+LW  R4, R3 
 
 
 
