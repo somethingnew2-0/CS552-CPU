@@ -100,7 +100,7 @@ check_100:	ADD R0, R7, R7	# Set the V flag (Positive Overflow)
 	skip13:	b uncond, check_101	# Every possible branch has been tested
 
 # V!ZN
-check_101:	ADD R0, R14, R14	# Set the V and N flags (Negative Overflow)
+check_101:	ADD R0, R9, R9	# Set the V and N flags (Negative Overflow)
 
 			b eq, broked		#
 			b gt, broked		# Condition should be false
