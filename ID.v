@@ -1,4 +1,4 @@
-module ID(instr, imm, p0Addr, p1Addr, regAddr, shamt, aluOp, branchOp, regRe0, regRe1, regWe, memRe, memWe, memToReg, branch, jal, jr, hlt, aluSrc0, aluSrc1, ovEn, zrEn, neEn);
+module ID(instr, imm, p0Addr, p1Addr, regAddr, shamt, aluOp, branchOp, regRe0, regRe1, regWe, memRe, memWe, memToReg, addz, branch, jal, jr, hlt, aluSrc0, aluSrc1, ovEn, zrEn, neEn);
 
   input [15:0] instr;
 
@@ -7,7 +7,7 @@ module ID(instr, imm, p0Addr, p1Addr, regAddr, shamt, aluOp, branchOp, regRe0, r
   output [2:0] aluOp, branchOp;
 
   // Control signals
-  output regRe0, regRe1, regWe, memRe, memWe, memToReg, branch, jal, jr, hlt, aluSrc0, aluSrc1, ovEn, zrEn, neEn;
+  output regRe0, regRe1, regWe, memRe, memWe, memToReg, addz, branch, jal, jr, hlt, aluSrc0, aluSrc1, ovEn, zrEn, neEn;
   
   // ALU func for ADD
   localparam aluAdd = 3'b000;
@@ -42,18 +42,11 @@ module ID(instr, imm, p0Addr, p1Addr, regAddr, shamt, aluOp, branchOp, regRe0, r
       R15
     else if(branch)
       R0
-    else if(!addz)
-      Grab from instruction
-    else if(Z)
-      Grab from instruction
     else
-      R0
+      Grab from instruction
   */
   assign regAddr = jal ? 4'hf:
-                   branch ? 4'h0 :
-                   instr[11:8]; // TODO: Handle addz
-                    //(!addz) ? instr[11:8] : 
-                    //(zr) ? instr[11:8] : 4'h0;
+                   instr[11:8];
   
   // For SLL, SRL, and SRA use the immediate bits normallly
   assign shamt = instr[3:0];
@@ -61,8 +54,8 @@ module ID(instr, imm, p0Addr, p1Addr, regAddr, shamt, aluOp, branchOp, regRe0, r
   // All re are always on
   assign {regRe0, regRe1} = {!hlt, !hlt};
   
-    // Set we and memwe
-  assign regWe = !instr[15] | jal | lw | llb | lhb;  
+  // Set we and memwe
+  assign regWe = !addz & !sw & !branch & !jr;  // Everything except these
   
   assign memRe = !memWe;
   assign memWe = sw;

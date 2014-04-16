@@ -1,10 +1,10 @@
-module Memory(clk, memAddr, memRe, memWe, wrtData, zr, ne, ov, b, jal, jr, jalResult, jrResult, branchResult, branchOp, memData, branchAddr, flush, branch);
-  input clk, memRe, memWe, zr, ne, ov, b, jal, jr;
+module Memory(clk, hlt, memAddr, memRe, memWe, regWe, wrtData, zr, ne, ov, addz, b, jal, jr, jalResult, jrResult, branchResult, branchOp, memData, branchAddr, flush, regWriteEnable, branch);
+  input clk, hlt, memRe, memWe, regWe, zr, ne, ov, addz, b, jal, jr;
   input [15:0] memAddr, wrtData, jalResult, jrResult, branchResult;
   input [2:0] branchOp;
 
   output [15:0] memData, branchAddr;  //output of data memory
-  output flush, branch;
+  output flush, regWriteEnable, branch;
 
   // Branch Codes, straight off the quick reference
   localparam neq    = 3'b000;
@@ -18,7 +18,7 @@ module Memory(clk, memAddr, memRe, memWe, wrtData, zr, ne, ov, b, jal, jr, jalRe
 
   assign flush = 0'b0;
 
-  assign finalWe = !flush & memWe; 
+  assign finalWe = !flush & !hlt & memWe; 
 
   DM dm(.clk(clk),
         .addr(memAddr),
@@ -27,19 +27,21 @@ module Memory(clk, memAddr, memRe, memWe, wrtData, zr, ne, ov, b, jal, jr, jalRe
         .wrt_data(wrtData),
         .rd_data(memData));
 
+  assign regWriteEnable = !flush & !hlt & (regWe || (addz & zr));
+
   assign branchAddr = jal ? jalResult:
                       jr ? jrResult: // Set to P0
                       branchResult; 
 
-  assign branch = jal || jr || 
-                    (b &&
-                      ((branchOp == uncond) ||
-                      ((branchOp == neq) && !zr) ||
-                      ((branchOp == eq) && zr) ||
-                      ((branchOp == gt) && !(zr || ne)) ||
-                      ((branchOp == lt) && ne) ||
-                      ((branchOp == gte) && !ne) ||
-                      ((branchOp == lte) && (ne || zr)) ||
-                      ((branchOp == ovfl) && ov)));   
+  assign branch = jal | jr |
+                    (b &
+                      ((branchOp == uncond) |
+                      ((branchOp == neq) & !zr) |
+                      ((branchOp == eq) & zr) |
+                      ((branchOp == gt) & !(zr | ne)) |
+                      ((branchOp == lt) & ne) |
+                      ((branchOp == gte) & !ne) |
+                      ((branchOp == lte) & (ne | zr)) |
+                      ((branchOp == ovfl) & ov)));   
 
 endmodule
