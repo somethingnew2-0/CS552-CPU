@@ -1,15 +1,15 @@
-module Writeback(flush, memToReg_MEM_WB, regWe_MEM_WB, regAddr_MEM_WB, memData_MEM_WB, aluResult_MEM_WB, writeData_WB, writeAddr_WB, writeEnable_WB);
-  input flush, memToReg_MEM_WB, regWe_MEM_WB;
-  input [3:0] regAddr_MEM_WB;
-  input [15:0] memData_MEM_WB, aluResult_MEM_WB;
+module Writeback(flush, memToReg, regWe, regAddr, memData, aluResult, writeData, writeAddr, writeEnable);
+  input flush, memToReg, regWe;
+  input [3:0] regAddr;
+  input [15:0] memData, aluResult;
 
-  output [15:0] writeData_WB;
-  output [3:0] writeAddr_WB;
-  output writeEnable_WB;  
+  output [15:0] writeData;
+  output [3:0] writeAddr;
+  output writeEnable;  
 
-  assign writeData_WB =  memToReg_MEM_WB ? memData_MEM_WB : aluResult_MEM_WB;
+  assign writeData =  memToReg ? memData : aluResult;
 
-  assign writeAddr_WB = regAddr_MEM_WB;
-  assign writeEnable_WB = !flush & regWe_MEM_WB;
+  assign writeAddr = regAddr;
+  assign writeEnable = !flush & regWe;
   
 endmodule

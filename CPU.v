@@ -15,7 +15,9 @@ module CPU(clk, rst_n, hlt, pc);
 
   wire [15:0] instr_IF, pcNext_IF;
 
-  InstructionFetch instructionfetch(.clk(clk),
+  InstructionFetch instructionfetch(
+                                    // Global inputs
+                                    .clk(clk),
                                     .rst_n(rst_n),
                                     .hlt(hlt),
                                     .branch(branch),
@@ -23,7 +25,10 @@ module CPU(clk, rst_n, hlt, pc);
                                     .stall(stall),
                                     .rd_en(rd_en),
                                     
+                                    // Global outputs
                                     .pc(pc),
+
+                                    // Pipeline stage outputs 
                                     .instr(instr_IF),
                                     .pcNext(pcNext_IF));
 
@@ -57,13 +62,16 @@ module CPU(clk, rst_n, hlt, pc);
   wire regWe_ID, memRe_ID, memWe_ID, memToReg_ID, branch_ID, jal_ID, jr_ID, aluSrc0_ID, aluSrc1_ID, ovEn_ID, zrEn_ID, neEn_ID;
 
   InstructionDecode instructiondecode(
-        .instr(instr_IF_ID),
-
+        // Global inputs
         .clk(clk),
         .writeData(writeData),
         .writeAddr(writeAddr),        
         .writeEnable(writeEnable),
-  
+
+        // Pipeline stage inputs
+        .instr(instr_IF_ID),
+
+        // Pipeline stage outputs  
         .p0(p0_ID),
         .p1(p1_ID),
         .imm(imm_ID), 
@@ -78,12 +86,14 @@ module CPU(clk, rst_n, hlt, pc);
         .branch(branch_ID),
         .jal(jal_ID),
         .jr(jr_ID),
-        .hlt(hlt), 
         .aluSrc0(aluSrc0_ID), 
         .aluSrc1(aluSrc1_ID),
         .ovEn(ovEn_ID), 
         .zrEn(zrEn_ID), 
-        .neEn(neEn_ID)
+        .neEn(neEn_ID),
+
+        // Global outputs
+        .hlt(hlt)
         );
 
   reg [15:0] p0_ID_EX, p1_ID_EX, pcNext_ID_EX;
@@ -136,7 +146,9 @@ module CPU(clk, rst_n, hlt, pc);
   wire [15:0] aluResult_EX, branchResult_EX, jumpResult_EX;
   wire ov_EX, zr_EX, ne_EX;
 
-  Execute execute(.p0(p0_ID_EX),
+  Execute execute(
+                  // Pipeline stage inputs
+                  .p0(p0_ID_EX),
                   .p1(p1_ID_EX),
                   .pcNext(pcNext_ID_EX),
                   .imm(imm_ID_EX),
@@ -145,6 +157,7 @@ module CPU(clk, rst_n, hlt, pc);
                   .aluSrc0(aluSrc0_ID_EX),
                   .aluSrc1(aluSrc1_ID_EX),
 
+                  // Pipeline stage outputs
                   .ov(ov_EX),
                   .zr(zr_EX),
                   .ne(ne_EX),
@@ -196,26 +209,30 @@ module CPU(clk, rst_n, hlt, pc);
 
   wire [15:0] memData_MEM; // Output From Memory
 
-  Memory memory(       
+  Memory memory(
+        // Global inputs       
         .clk(clk),
 
-        .memAddr_EX_MEM(memAddr_EX_MEM),
-        .memRe_EX_MEM(memRe_EX_MEM),
-        .memWe_EX_MEM(memWe_EX_MEM),
-        .wrtData_EX_MEM(p0_EX_MEM),
-        .zr_EX_MEM(zr_EX_MEM), 
-        .ne_EX_MEM(ne_EX_MEM), 
-        .ov_EX_MEM(ov_EX_MEM),  
-        .branch_EX_MEM(branch_EX_MEM),
-        .jal_EX_MEM(jal_EX_MEM),
-        .jr_EX_MEM(jr_EX_MEM),        
-        .jalResult_EX_MEM(jumpResult_EX_MEM),
-        .jrResult_EX_MEM(p0_EX_MEM),
-        .branchResult_EX_MEM(branchResult_EX_MEM),
-        .branchOp_EX_MEM(branchOp_EX_MEM), 
+        // Pipeline stage inputs
+        .memAddr(memAddr_EX_MEM),
+        .memRe(memRe_EX_MEM),
+        .memWe(memWe_EX_MEM),
+        .wrtData(p0_EX_MEM),
+        .zr(zr_EX_MEM), 
+        .ne(ne_EX_MEM), 
+        .ov(ov_EX_MEM),  
+        .b(branch_EX_MEM),
+        .jal(jal_EX_MEM),
+        .jr(jr_EX_MEM),        
+        .jalResult(jumpResult_EX_MEM),
+        .jrResult(p0_EX_MEM),
+        .branchResult(branchResult_EX_MEM),
+        .branchOp(branchOp_EX_MEM), 
 
+        // Pipeline stage outputs
+        .memData(memData_MEM),
 
-        .memData_MEM(memData_MEM),
+        // Global outputs
         .branchAddr(branchAddr),
         .branch(branch),
         .flush(flush));
@@ -241,15 +258,19 @@ module CPU(clk, rst_n, hlt, pc);
 
 
   Writeback writeback(
+    // Global inputs  
     .flush(flush),
-    .memToReg_MEM_WB(memToReg_MEM_WB),
-    .regWe_MEM_WB(regWe_MEM_WB),
-    .regAddr_MEM_WB(regAddr_MEM_WB),
-    .memData_MEM_WB(memData_MEM_WB),
-    .aluResult_MEM_WB(aluResult_MEM_WB),     
 
-    .writeData_WB(writeData),
-    .writeAddr_WB(writeAddr),
-    .writeEnable_WB(writeEnable));
+    // Pipeline stage inputs
+    .memToReg(memToReg_MEM_WB),
+    .regWe(regWe_MEM_WB),
+    .regAddr(regAddr_MEM_WB),
+    .memData(memData_MEM_WB),
+    .aluResult(aluResult_MEM_WB),     
+
+    // Global outputs
+    .writeData(writeData),
+    .writeAddr(writeAddr),
+    .writeEnable(writeEnable));
 
 endmodule

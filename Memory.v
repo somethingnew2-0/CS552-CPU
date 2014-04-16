@@ -1,13 +1,10 @@
-module Memory(clk, memAddr_EX_MEM, memRe_EX_MEM, memWe_EX_MEM, wrtData_EX_MEM, zr_EX_MEM, ne_EX_MEM, ov_EX_MEM, branch_EX_MEM, jal_EX_MEM, jr_EX_MEM, jalResult_EX_MEM, jrResult_EX_MEM, branchResult_EX_MEM, branchOp_EX_MEM, memData_MEM, branchAddr, flush, branch);
-  input clk, memRe_EX_MEM, memWe_EX_MEM, zr_EX_MEM, ne_EX_MEM, ov_EX_MEM, branch_EX_MEM, jal_EX_MEM, jr_EX_MEM;
-  input [15:0] memAddr_EX_MEM, wrtData_EX_MEM, jalResult_EX_MEM, jrResult_EX_MEM, branchResult_EX_MEM;
-  input [2:0] branchOp_EX_MEM;
+module Memory(clk, memAddr, memRe, memWe, wrtData, zr, ne, ov, b, jal, jr, jalResult, jrResult, branchResult, branchOp, memData, branchAddr, flush, branch);
+  input clk, memRe, memWe, zr, ne, ov, b, jal, jr;
+  input [15:0] memAddr, wrtData, jalResult, jrResult, branchResult;
+  input [2:0] branchOp;
 
-  output [15:0] memData_MEM, branchAddr;  //output of data memory
+  output [15:0] memData, branchAddr;  //output of data memory
   output flush, branch;
-
-  wire zr, ne, ov, finalWe;
-  wire [2:0] branchOp;
 
   // Branch Codes, straight off the quick reference
   localparam neq    = 3'b000;
@@ -21,26 +18,21 @@ module Memory(clk, memAddr_EX_MEM, memRe_EX_MEM, memWe_EX_MEM, wrtData_EX_MEM, z
 
   assign flush = 0'b0;
 
-  assign finalWe = !flush & memWe_EX_MEM; 
-
-  assign zr = zr_EX_MEM;
-  assign ne = ne_EX_MEM;
-  assign ov = ov_EX_MEM;
-  assign branchOp = branchOp_EX_MEM;
+  assign finalWe = !flush & memWe; 
 
   DM dm(.clk(clk),
-        .addr(memAddr_EX_MEM),
-        .re(memRe_EX_MEM),
+        .addr(memAddr),
+        .re(memRe),
         .we(finalWe),
-        .wrt_data(wrtData_EX_MEM),
-        .rd_data(memData_MEM));
+        .wrt_data(wrtData),
+        .rd_data(memData));
 
-  assign branchAddr = jal_EX_MEM ? jalResult_EX_MEM:
-                      jr_EX_MEM ? jrResult_EX_MEM: // Set to P0
-                      branchResult_EX_MEM; 
+  assign branchAddr = jal ? jalResult:
+                      jr ? jrResult: // Set to P0
+                      branchResult; 
 
-  assign branch = jal_EX_MEM || jr_EX_MEM || 
-                    (branch_EX_MEM &&
+  assign branch = jal || jr || 
+                    (b &&
                       ((branchOp == uncond) ||
                       ((branchOp == neq) && !zr) ||
                       ((branchOp == eq) && zr) ||
