@@ -1,43 +1,47 @@
-module Memory(clk,memaddr_EX_MEM,re_EX_MEM,we_EX_MEM,wrt_data_EX_MEM,rd_data_MEM, zr_EX_MEM, ne_EX_MEM, ov_EX_MEM, instr_EX_MEM, flush, branch);
-	input clk, re_EX_MEM, we_EX_MEM, zr_EX_MEM, ne_EX_MEM, ov_EX_MEM, flush, branch;
-	input [15:0] memaddr_EX_MEM, wrt_data_EX_MEM, instr_EX_MEM;
+module Memory(clk, hlt, memAddr, memRe, memWe, regWe, wrtData, zr, ne, ov, addz, b, jal, jr, jalResult, jrResult, branchResult, branchOp, memData, branchAddr, flush, regWriteEnable, branch);
+  input clk, hlt, memRe, memWe, regWe, zr, ne, ov, addz, b, jal, jr;
+  input [15:0] memAddr, wrtData, jalResult, jrResult, branchResult;
+  input [2:0] branchOp;
 
-	output [15:0] rd_data_MEM;	//output of data memory
+  output [15:0] memData, branchAddr;  //output of data memory
+  output flush, regWriteEnable, branch;
 
-	wire zr, ne, ov, finalwe;
-	wire [15:0] instr;
+  // Branch Codes, straight off the quick reference
+  localparam neq    = 3'b000;
+  localparam eq     = 3'b001;
+  localparam gt     = 3'b010;
+  localparam lt     = 3'b011;
+  localparam gte    = 3'b100;
+  localparam lte    = 3'b101;
+  localparam ovfl   = 3'b110;
+  localparam uncond = 3'b111;
 
-	// Branch Codes, straight off the quick reference
-	localparam neq 		= 3'b000;
-	localparam eq 		= 3'b001;
-	localparam gt 		= 3'b010;
-	localparam lt 		= 3'b011;
-	localparam gte 		= 3'b100;
-	localparam lte 		= 3'b101;
-	localparam ovfl 	= 3'b110;
-	localparam uncond = 3'b111;
+  assign flush = 0'b0;
 
-	assign finalwe = flush & we_EX_MEM; 
+  assign finalWe = !flush & !hlt & memWe; 
 
-	assign zr = zr_EX_MEM;
-	assign ne = ne_EX_MEM;
-	assign ov = ov_EX_MEM;
-	assign instr = instr_EX_MEM;
+  DM dm(.clk(clk),
+        .addr(memAddr),
+        .re(memRe),
+        .we(finalWe),
+        .wrt_data(wrtData),
+        .rd_data(memData));
 
-	DM dm(.clk(clk),
-				.addr(memaddr_EX_MEM),
-				.re(re_EX_MEM),
-				.we(final_we),
-				.wrt_data(wrt_data_EX_MEM),
-				.rd_data(rd_data_MEM));
+  assign regWriteEnable = !flush & !hlt & (regWe || (addz & zr));
 
-	assign branch =		  ( (instr[11:9] == uncond) |
-  				((instr[11:9] == neq) && !zr) |
-  				((instr[11:9] == eq) && zr) |
-  				((instr[11:9] == gt) && !(zr || ne)) |
-  				((instr[11:9] == lt) && ne) |
-  				((instr[11:9] == gte) && !ne) |
-  				((instr[11:9] == lte) && (ne || zr)) |
-  				((instr[11:9] == ovfl) && ov) );		
+  assign branchAddr = jal ? jalResult:
+                      jr ? jrResult: // Set to P0
+                      branchResult; 
+
+  assign branch = jal | jr |
+                    (b &
+                      ((branchOp == uncond) |
+                      ((branchOp == neq) & !zr) |
+                      ((branchOp == eq) & zr) |
+                      ((branchOp == gt) & !(zr | ne)) |
+                      ((branchOp == lt) & ne) |
+                      ((branchOp == gte) & !ne) |
+                      ((branchOp == lte) & (ne | zr)) |
+                      ((branchOp == ovfl) & ov)));   
 
 endmodule

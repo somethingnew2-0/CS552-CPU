@@ -14,9 +14,50 @@ Reading pref.tcl
 # //
 # Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.clk_and_rst_n
 # Loading work.clk_and_rst_n
-# ** Error: (vsim-3033) off_by_one.tar.gz_extracted/clk_and_rst_n.v(12): Instantiation of 'cpu' failed. The design unit was not found.
-#         Region: /clk_and_rst_n
-#         Searched libraries:
-#             /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib
-# Error loading design
-Error loading design
+# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.cpu
+# Loading work.cpu
+# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.InstructionFetch
+# Loading work.InstructionFetch
+# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.IM
+# Loading work.IM
+# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.InstructionDecode
+# Loading work.InstructionDecode
+# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.ID
+# Loading work.ID
+# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.rf
+# Loading work.rf
+# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.Execute
+# Loading work.Execute
+# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.SRC_MUX
+# Loading work.SRC_MUX
+# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.ALU
+# Loading work.ALU
+# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.BranchAdder
+# Loading work.BranchAdder
+# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.JumpAdder
+# Loading work.JumpAdder
+# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.Memory
+# Loading work.Memory
+# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.DM
+# Loading work.DM
+# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.Writeback
+# Loading work.Writeback
+# run -a 
+# R1 = 0005
+# R2 = 0005
+# R3 = 0000
+# R4 = 0000
+# R5 = 000a
+# R6 = 000a
+# R7 = 7777
+# R8 = 8888
+# R9 = 9999
+# Ra = aaaa
+# Rb = bbbb
+# Rc = 2121
+# Rd = 3737
+# Re = 000b
+# Rf = 000b
+# Time:        626
+# Cycles:       63
+# PC:         003e

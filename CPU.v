@@ -1,4 +1,4 @@
-module CPU(clk, rst_n, hlt, pc);
+module cpu(clk, rst_n, hlt, pc);
   input clk; 
   input rst_n;
   output hlt; //Assuming these are current flag states
