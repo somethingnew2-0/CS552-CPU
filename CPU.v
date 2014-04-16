@@ -166,7 +166,7 @@ module CPU(clk, rst_n, hlt, pc);
                   .jumpResult(jumpResult_EX));
 
   // Inputs to Memory from flops
-  reg [15:0] aluResult_EX_MEM, branchResult_EX_MEM, jumpResult_EX_MEM, p0_EX_MEM, memAddr_EX_MEM;
+  reg [15:0] aluResult_EX_MEM, branchResult_EX_MEM, jumpResult_EX_MEM, p0_EX_MEM, p1_EX_MEM, memAddr_EX_MEM;
   reg [2:0] branchOp_EX_MEM;
   reg memRe_EX_MEM, memWe_EX_MEM, branch_EX_MEM, jal_EX_MEM, jr_EX_MEM, zr_EX_MEM, ne_EX_MEM, ov_EX_MEM; 
 
@@ -188,6 +188,7 @@ module CPU(clk, rst_n, hlt, pc);
       jumpResult_EX_MEM <= jumpResult_EX;
       memAddr_EX_MEM <= aluResult_EX; 
       p0_EX_MEM <= p0_ID_EX; 
+      p1_EX_MEM <= p1_ID_EX; 
       branchOp_EX_MEM <= branchOp_ID_EX;
       memRe_EX_MEM <= memRe_ID_EX;
       memWe_EX_MEM <= memWe_ID_EX;
@@ -217,7 +218,7 @@ module CPU(clk, rst_n, hlt, pc);
         .memAddr(memAddr_EX_MEM),
         .memRe(memRe_EX_MEM),
         .memWe(memWe_EX_MEM),
-        .wrtData(p0_EX_MEM),
+        .wrtData(p1_EX_MEM),
         .zr(zr_EX_MEM), 
         .ne(ne_EX_MEM), 
         .ov(ov_EX_MEM),  
