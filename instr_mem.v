@@ -17,8 +17,8 @@ always @(addr,rd_en,clk)
 
 initial begin
 
-  $readmemh("C:/Users/Matthew/SkyDrive/ECE 552/CS552-CPU/instr.hex",instr_mem);
-  //$readmemh("C:/Users/Peter/Documents/Github/CS552-CPU/instr.hex",instr_mem);
+  //$readmemh("C:/Users/Matthew/SkyDrive/ECE 552/CS552-CPU/instr.hex",instr_mem);
+  $readmemh("C:/Users/Peter/Documents/Github/CS552-CPU/instr.hex",instr_mem);
 	//$readmemh("C:/Users/Luke Brandl/Documents/Github/CS552-CPU/instr.hex",instr_mem);
 
 end

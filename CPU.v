@@ -4,10 +4,10 @@ module CPU(clk, rst_n, hlt, pc);
   output hlt; //Assuming these are current flag states
   output [15:0] pc;
 
-  wire flush, branch;
+  wire [15:0] branchAddr;
+  wire flush, stall, branch;
 
-  assign flush = 0'b0;
-  assign branch = 0'b0;
+  assign stall = 0'b0;
   assign rd_en = 1'b1; // When should this change?
 
   /* The pipeline. Each blank line separates inputs from
@@ -16,6 +16,9 @@ module CPU(clk, rst_n, hlt, pc);
   wire [15:0] instr_IF, pcNext_IF;
 
   IF IF(.clk(clk),
+        .branch(branch),
+        .branchAddr(branchAddr),
+        .stall(stall),
         .pc(pc),
         .rd_en(rd_en),
         
@@ -142,14 +145,13 @@ module CPU(clk, rst_n, hlt, pc);
                   .jumpResult(jumpResult_EX));
 
   // Inputs to Memory from flops
-  reg [15:0] aluResult_EX_MEM, memAddr_EX_MEM, wrtData_EX_MEM;
+  reg [15:0] aluResult_EX_MEM, branchResult_EX_MEM, jumpResult_EX_MEM, p0_EX_MEM, memAddr_EX_MEM;
   reg [2:0] branchOp_EX_MEM;
-  reg memRe_EX_MEM, memWe_EX_MEM, zr_EX_MEM, ne_EX_MEM, ov_EX_MEM; 
+  reg memRe_EX_MEM, memWe_EX_MEM, jal_EX_MEM, jr_EX_MEM, zr_EX_MEM, ne_EX_MEM, ov_EX_MEM; 
 
   // Just passing through signals
-  reg memToReg_EX_MEM;     
   reg [3:0] regAddr_EX_MEM;
-  reg regWe_EX_MEM;
+  reg regWe_EX_MEM, memToReg_EX_MEM;
 
   //******************************************************
   // EX_MEM
@@ -161,42 +163,52 @@ module CPU(clk, rst_n, hlt, pc);
     begin 
       //Used in mem start
       aluResult_EX_MEM <= aluResult_EX; 
+      branchResult_EX_MEM <= branchResult_EX;
+      jumpResult_EX_MEM <= jumpResult_EX;
       memAddr_EX_MEM <= aluResult_EX; 
-      wrtData_EX_MEM <= p0_ID_EX; 
+      p0_EX_MEM <= p0_ID_EX; 
+      branchOp_EX_MEM <= branchOp_ID_EX;
       memRe_EX_MEM <= memRe_ID_EX;
       memWe_EX_MEM <= memWe_ID_EX;
+      jal_EX_MEM <= jal_ID_EX;
+      jr_EX_MEM <= jr_ID_EX;
       zr_EX_MEM <= zr_EX; 
       ne_EX_MEM <= ne_EX; 
       ov_EX_MEM <= ov_EX;   
-      branchOp_EX_MEM <= branchOp_ID_EX;
       //Used in mem end    
     
       //Just passing through mem start
-      memToReg_EX_MEM <= memToReg_ID_EX;
       regAddr_EX_MEM <= regAddr_ID_EX;
       regWe_EX_MEM <= regWe_ID_EX;
+      memToReg_EX_MEM <= memToReg_ID_EX;
       //Just passing through mem end
 
     end
 
-  reg  [15:0] memData_MEM;            // Output From Memory
+  reg [15:0] memData_MEM; // Output From Memory
 
-  Memory(       
+  Memory memory(       
         .clk(clk),
 
         .memAddr_EX_MEM(memAddr_EX_MEM),
         .memRe_EX_MEM(memRe_EX_MEM),
         .memWe_EX_MEM(memWe_EX_MEM),
-        .wrt_data_EX_MEM(wrtData_EX_MEM),
+        .wrtData_EX_MEM(p0_EX_MEM),
         .zr_EX_MEM(zr_EX_MEM), 
         .ne_EX_MEM(ne_EX_MEM), 
         .ov_EX_MEM(ov_EX_MEM),  
+        .jal_EX_MEM(jal_EX_MEM),
+        .jr_EX_MEM(jr_EX_MEM),        
+        .jalResult_EX_MEM(jumpResult_EX_MEM),
+        .jrResult_EX_MEM(p0_EX_MEM),
+        .branchResult_EX_MEM(branchResult_EX_MEM),
         .branchOp_EX_MEM(branchOp_EX_MEM), 
 
-        .rd_data_MEM(memData_MEM),
 
-        .flush(flush), 
-        .branch(branch));
+        .memData_MEM(memData_MEM),
+        .branchAddr(branchAddr),
+        .branch(branch),
+        .flush(flush));
 
   reg [15:0] memData_MEM_WB, aluResult_MEM_WB;  // Inputs to writeback
   reg memToReg_MEM_WB;
