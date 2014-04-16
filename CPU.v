@@ -13,7 +13,7 @@ module CPU(clk, rst_n, hlt, pc);
   /* The pipeline. Each blank line separates inputs from
     outputs of the module */
 
-  wire [15:0] instr_IF, pcNext_IF;
+  wire [15:0] pcNext_IF, instr_IF;
 
   InstructionFetch instructionfetch(
                                     // Global inputs
@@ -29,8 +29,9 @@ module CPU(clk, rst_n, hlt, pc);
                                     .pc(pc),
 
                                     // Pipeline stage outputs 
-                                    .instr(instr_IF),
-                                    .pcNext(pcNext_IF));
+                                    
+                                    .pcNext(pcNext_IF),
+                                    .instr(instr_IF));
 
   reg [15:0] instr_IF_ID, pcNext_IF_ID;
 
