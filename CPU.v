@@ -48,11 +48,11 @@ module CPU(clk, rst_n, hlt, pc);
   wire [3:0] writeAddr;
   wire writeEnable;
 
-  reg [15:0] p0_ID, p1_ID;
-  reg [11:0] imm_ID;
-  reg [3:0] regAddr_ID, shamt_ID;
-  reg [2:0] aluOp_ID, branchOp_ID;
-  reg regWe_ID, memRe_ID, memWe_ID, memToReg_ID, jal_ID, jr_ID, hlt_ID, aluSrc0_ID, aluSrc1_ID, ovEn_ID, zrEn_ID, neEn_ID;
+  wire [15:0] p0_ID, p1_ID;
+  wire [11:0] imm_ID;
+  wire [3:0] regAddr_ID, shamt_ID;
+  wire [2:0] aluOp_ID, branchOp_ID;
+  wire regWe_ID, memRe_ID, memWe_ID, memToReg_ID, jal_ID, jr_ID, hlt_ID, aluSrc0_ID, aluSrc1_ID, ovEn_ID, zrEn_ID, neEn_ID;
 
   InstructionDecode instructiondecode(
         .instr(instr_IF_ID),
@@ -83,7 +83,7 @@ module CPU(clk, rst_n, hlt, pc);
         .neEn(neEn_ID)
         );
 
-  reg [15:0] p0_ID_EX, p1_ID_EX;
+  reg [15:0] p0_ID_EX, p1_ID_EX, pcNext_ID_EX;
   reg [11:0] imm_ID_EX;
   reg [3:0] shamt_ID_EX;
   reg [2:0] aluOp_ID_EX;
@@ -105,6 +105,7 @@ module CPU(clk, rst_n, hlt, pc);
       //Used in ex start
       p0_ID_EX <= p0_ID;
       p1_ID_EX <= p1_ID;
+      pcNext_ID_EX <= pcNext_IF_ID;
       imm_ID_EX <= imm_ID;
       shamt_ID_EX <= shamt_ID;
       aluOp_ID_EX <= aluOp_ID;
@@ -129,12 +130,12 @@ module CPU(clk, rst_n, hlt, pc);
     end
 
 
-  reg [15:0] aluResult_EX, branchResult_EX, jumpResult_EX;
-  reg ov_EX, zr_EX, ne_EX;
+  wire [15:0] aluResult_EX, branchResult_EX, jumpResult_EX;
+  wire ov_EX, zr_EX, ne_EX;
 
   Execute execute(.p0(p0_ID_EX),
                   .p1(p1_ID_EX),
-                  .pc(pc_ID_EX),
+                  .pcNext(pcNext_ID_EX),
                   .imm(imm_ID_EX),
                   .shamt(shamt_ID_EX),
                   .aluOp(aluOp_ID_EX),
@@ -189,7 +190,7 @@ module CPU(clk, rst_n, hlt, pc);
 
     end
 
-  reg [15:0] memData_MEM; // Output From Memory
+  wire [15:0] memData_MEM; // Output From Memory
 
   Memory memory(       
         .clk(clk),

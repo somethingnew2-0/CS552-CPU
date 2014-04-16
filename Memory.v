@@ -1,5 +1,5 @@
-module Memory(clk, memAddr_EX_MEM, re_EX_MEM, we_EX_MEM, wrtData_EX_MEM, zr_EX_MEM, ne_EX_MEM, ov_EX_MEM, jal_EX_MEM, jr_EX_MEM, jalResult_EX_MEM, jrResult_EX_MEM, branchResult_EX_MEM, branchOp_EX_MEM, memData_MEM, branchAddr, flush, branch);
-  input clk, re_EX_MEM, we_EX_MEM, zr_EX_MEM, ne_EX_MEM, ov_EX_MEM, jal_EX_MEM, jr_EX_MEM;
+module Memory(clk, memAddr_EX_MEM, memRe_EX_MEM, memWe_EX_MEM, wrtData_EX_MEM, zr_EX_MEM, ne_EX_MEM, ov_EX_MEM, jal_EX_MEM, jr_EX_MEM, jalResult_EX_MEM, jrResult_EX_MEM, branchResult_EX_MEM, branchOp_EX_MEM, memData_MEM, branchAddr, flush, branch);
+  input clk, memRe_EX_MEM, memWe_EX_MEM, zr_EX_MEM, ne_EX_MEM, ov_EX_MEM, jal_EX_MEM, jr_EX_MEM;
   input [15:0] memAddr_EX_MEM, wrtData_EX_MEM, jalResult_EX_MEM, jrResult_EX_MEM, branchResult_EX_MEM;
   input [2:0] branchOp_EX_MEM;
 
@@ -21,7 +21,7 @@ module Memory(clk, memAddr_EX_MEM, re_EX_MEM, we_EX_MEM, wrtData_EX_MEM, zr_EX_M
 
   assign flush = 0'b0;
 
-  assign finalWe = !flush & we_EX_MEM; 
+  assign finalWe = !flush & memWe_EX_MEM; 
 
   assign zr = zr_EX_MEM;
   assign ne = ne_EX_MEM;
@@ -30,7 +30,7 @@ module Memory(clk, memAddr_EX_MEM, re_EX_MEM, we_EX_MEM, wrtData_EX_MEM, zr_EX_M
 
   DM dm(.clk(clk),
         .addr(memAddr_EX_MEM),
-        .re(re_EX_MEM),
+        .re(memRe_EX_MEM),
         .we(finalWe),
         .wrt_data(wrtData_EX_MEM),
         .rd_data(memData_MEM));
