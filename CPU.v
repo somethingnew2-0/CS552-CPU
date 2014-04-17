@@ -68,7 +68,7 @@ module cpu(clk, rst_n, hlt, pc);
 
   wire [15:0] p0_ID, p1_ID;
   wire [11:0] imm_ID;
-  wire [3:0] regAddr_ID, shamt_ID;
+  wire [3:0] p0Addr_ID, p1Addr_ID, regAddr_ID, shamt_ID;
   wire [2:0] aluOp_ID, branchOp_ID;
   wire regWe_ID, memRe_ID, memWe_ID, memToReg_ID, addz_ID, branch_ID, jal_ID, jr_ID, aluSrc0_ID, aluSrc1_ID, ovEn_ID, zrEn_ID, neEn_ID;
 
@@ -87,7 +87,9 @@ module cpu(clk, rst_n, hlt, pc);
         // Pipeline stage outputs  
         .p0(p0_ID),
         .p1(p1_ID),
-        .imm(imm_ID), 
+        .imm(imm_ID),
+        .p0Addr(p0Addr_ID), 
+        .p1Addr(p1Addr_ID),
         .regAddr(regAddr_ID),
         .shamt(shamt_ID),
         .aluOp(aluOp_ID),
@@ -109,7 +111,7 @@ module cpu(clk, rst_n, hlt, pc);
 
   reg [15:0] p0_ID_EX, p1_ID_EX, pcNext_ID_EX;
   reg [11:0] imm_ID_EX;
-  reg [3:0] shamt_ID_EX;
+  reg [3:0] p0Addr_ID_EX, p1Addr_ID_EX, shamt_ID_EX;
   reg [2:0] aluOp_ID_EX;
   reg aluSrc0_ID_EX, aluSrc1_ID_EX;
 
@@ -130,6 +132,8 @@ module cpu(clk, rst_n, hlt, pc);
     p1_ID_EX <= p1_ID;
     pcNext_ID_EX <= pcNext_IF_ID;
     imm_ID_EX <= imm_ID;
+    p0Addr_ID_EX <= p0Addr_ID;
+    p1Addr_ID_EX <= p1Addr_ID;
     shamt_ID_EX <= shamt_ID;
     aluOp_ID_EX <= aluOp_ID;
     aluSrc0_ID_EX <= aluSrc0_ID;
@@ -169,12 +173,23 @@ module cpu(clk, rst_n, hlt, pc);
     //Just passing through ex end
   end
 
+  // Forwarding signals
   wire [15:0] forwardP0_EX, forwardP1_EX;
+  reg [15:0] aluResult_EX_MEM, pcNext_EX_MEM;
+  reg [3:0] regAddr_EX_MEM;
+  reg regWe_EX_MEM, jal_EX_MEM;
 
   Forwarding forwarding(
                   // Forwarding inputs
                   .p0(p0_ID_EX),
                   .p1(p1_ID_EX),
+                  .p0Addr(p0Addr_ID_EX),
+                  .p1Addr(p1Addr_ID_EX),
+                  .regAddr_EX_MEM(regAddr_EX_MEM), 
+                  .regWe_EX_MEM(regWe_EX_MEM),
+                  .aluResult_EX_MEM(aluResult_EX_MEM),
+                  .jal_EX_MEM(jal_EX_MEM),
+                  .pcNext_EX_MEM(pcNext_EX_MEM),
 
                   // Forwarding outputs
                   .forwardP0(forwardP0_EX),
@@ -204,16 +219,14 @@ module cpu(clk, rst_n, hlt, pc);
                   .jumpResult(jumpResult_EX));
 
   // Inputs to Memory from flops
-  reg [15:0] aluResult_EX_MEM, branchResult_EX_MEM, jumpResult_EX_MEM, p0_EX_MEM, p1_EX_MEM, memAddr_EX_MEM;
+  reg [15:0] branchResult_EX_MEM, jumpResult_EX_MEM, p0_EX_MEM, p1_EX_MEM, memAddr_EX_MEM;
   reg [2:0] branchOp_EX_MEM;
-  reg memRe_EX_MEM, memWe_EX_MEM, addz_EX_MEM, branch_EX_MEM, jal_EX_MEM, jr_EX_MEM, ov_EX_MEM, zr_EX_MEM, ovEn_EX_MEM, ne_EX_MEM, zrEn_EX_MEM, neEn_EX_MEM; 
+  reg memRe_EX_MEM, memWe_EX_MEM, addz_EX_MEM, branch_EX_MEM, jr_EX_MEM, ov_EX_MEM, zr_EX_MEM, ovEn_EX_MEM, ne_EX_MEM, zrEn_EX_MEM, neEn_EX_MEM; 
   // From the WB stage
   reg ov_MEM_WB, zr_MEM_WB, ne_MEM_WB;
 
   // Just passing through signals
-  reg [15:0] pcNext_EX_MEM;
-  reg [3:0] regAddr_EX_MEM;
-  reg regWe_EX_MEM, memToReg_EX_MEM;
+  reg memToReg_EX_MEM;
 
   //******************************************************
   // EX_MEM
