@@ -134,31 +134,31 @@ module cpu(clk, rst_n, hlt, pc);
       regAddr_ID_EX <= regAddr_ID;
       branchOp_ID_EX <= branchOp_ID;
       
-      if(!flush)
+      if(!flush) begin
         regWe_ID_EX <= regWe_ID;
-      else 
-        regWe_ID_EX <= 1'b0;
-
-      memRe_ID_EX <= memRe_ID;
-
-      if(!flush)
         memWe_ID_EX <= memWe_ID;
-      else 
-        memWe_ID_EX <= 1'b0;
+        branch_ID_EX <= branch_ID;
 
+        ovEn_ID_EX <= ovEn_ID;
+        zrEn_ID_EX <= zrEn_ID;
+        neEn_ID_EX <= neEn_ID;
+      end
+      else begin
+        regWe_ID_EX <= 1'b0;
+        memWe_ID_EX <= 1'b0;
+        branch_ID_EX <= 1'b0;
+
+        ovEn_ID_EX <= 1'b0;
+        zrEn_ID_EX <= 1'b0;
+        neEn_ID_EX <= 1'b0;
+      end 
+
+      memRe_ID_EX <= memRe_ID;      
       memToReg_ID_EX <= memToReg_ID;
       addz_ID_EX <= addz_ID;
 
-      if(!flush)
-        branch_ID_EX <= branch_ID;
-      else 
-        branch_ID_EX <= 1'b0;
-
       jal_ID_EX <= jal_ID;
       jr_ID_EX <= jr_ID;
-      ovEn_ID_EX <= ovEn_ID;
-      zrEn_ID_EX <= zrEn_ID;
-      neEn_ID_EX <= neEn_ID;
       //Just passing through ex end
     end
   end
@@ -216,18 +216,26 @@ module cpu(clk, rst_n, hlt, pc);
       branchOp_EX_MEM <= branchOp_ID_EX;
       memRe_EX_MEM <= memRe_ID_EX;
 
-      if(!flush)
+      if(!flush) begin
         memWe_EX_MEM <= memWe_ID_EX;
-      else 
-        memWe_EX_MEM <= 1'b0;
-        
-      addz_EX_MEM <= addz_ID_EX;
-
-      if(!flush)
         branch_EX_MEM <= branch_ID_EX;
-      else
-        branch_EX_MEM <= 1'b0;
+        regWe_EX_MEM <= regWe_ID_EX;
 
+        ovEn_EX_MEM <= ovEn_ID_EX;
+        zrEn_EX_MEM <= zrEn_ID_EX;
+        neEn_EX_MEM <= neEn_ID_EX; 
+      end
+      else begin
+        memWe_EX_MEM <= 1'b0;
+        branch_EX_MEM <= 1'b0;
+        regWe_EX_MEM <= 1'b0;
+
+        ovEn_EX_MEM <= 1'b0;
+        zrEn_EX_MEM <= 1'b0;
+        neEn_EX_MEM <= 1'b0; 
+      end
+
+      addz_EX_MEM <= addz_ID_EX;
       jal_EX_MEM <= jal_ID_EX;
       jr_EX_MEM <= jr_ID_EX;
       //Used in mem end    
@@ -235,17 +243,8 @@ module cpu(clk, rst_n, hlt, pc);
       //Just passing through mem start
       pcNext_EX_MEM <= pcNext_ID_EX;
       regAddr_EX_MEM <= regAddr_ID_EX;
-
-      if(!flush)
-        regWe_EX_MEM <= regWe_ID_EX;
-      else
-        regWe_EX_MEM <= 1'b0;
-
       memToReg_EX_MEM <= memToReg_ID_EX;
 
-      ovEn_EX_MEM <= ovEn_ID_EX;
-      zrEn_EX_MEM <= zrEn_ID_EX;
-      neEn_EX_MEM <= neEn_ID_EX; 
       ov_EX_MEM <= ov_EX;
       zr_EX_MEM <= zr_EX;
       ne_EX_MEM <= ne_EX; 
