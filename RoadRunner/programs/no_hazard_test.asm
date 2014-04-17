@@ -52,5 +52,8 @@
 	# Test SW
 	SW R10, R12, 5	 # mem[R12 + 5] <= R10
 	LW R11, R12, 5	 # R11 <= mem[R12 + 5] (should match R10, 0xFFAA) 
+	LLB R13, 0xAB	# R13 = 0xFFAB
+	LLB R14, 0x56	# R14 = 0xFF56
+	LLB R15, 0xED	# R15 = 0xFFED
 
 	HLT		 # Printout should match what's listed above

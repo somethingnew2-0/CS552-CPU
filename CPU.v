@@ -14,7 +14,7 @@ module cpu(clk, rst_n, hlt, pc);
   /* The pipeline. Each blank line separates inputs from
     outputs of the module */
 
-  wire [15:0] instr_IF;
+  wire [15:0] pcNext_IF, instr_IF;
 
   InstructionFetch instructionfetch(
                                     // Global inputs
@@ -27,9 +27,10 @@ module cpu(clk, rst_n, hlt, pc);
                                     .rd_en(rd_en),
                                     
                                     // Global outputs
-                                    .pcNext(pc),
+                                    .pc(pc),
 
                                     // Pipeline stage outputs 
+                                    .pcNext(pcNext_IF),
                                     .instr(instr_IF));
 
   reg [15:0] instr_IF_ID, pcNext_IF_ID;
@@ -47,7 +48,7 @@ module cpu(clk, rst_n, hlt, pc);
       //Used in id end
 
       //Just passing through id start
-      pcNext_IF_ID <= pc;
+      pcNext_IF_ID <= pcNext_IF;
       //Just passing through id end
     end
   end
@@ -116,7 +117,7 @@ module cpu(clk, rst_n, hlt, pc);
   // ID -> EX
   //
   //******************************************************
-  always @(*) begin 
+  always @(posedge clk) begin 
     if(!hlt) begin 
       //Used in ex start
       p0_ID_EX <= p0_ID;
@@ -174,6 +175,8 @@ module cpu(clk, rst_n, hlt, pc);
   reg [15:0] aluResult_EX_MEM, branchResult_EX_MEM, jumpResult_EX_MEM, p0_EX_MEM, p1_EX_MEM, memAddr_EX_MEM;
   reg [2:0] branchOp_EX_MEM;
   reg memRe_EX_MEM, memWe_EX_MEM, addz_EX_MEM, branch_EX_MEM, jal_EX_MEM, jr_EX_MEM, ov_EX_MEM, zr_EX_MEM, ovEn_EX_MEM, ne_EX_MEM, zrEn_EX_MEM, neEn_EX_MEM; 
+  // From the WB stage
+  reg ov_MEM_WB, zr_MEM_WB, ne_MEM_WB;
 
   // Just passing through signals
   reg [15:0] pcNext_EX_MEM;
@@ -186,7 +189,7 @@ module cpu(clk, rst_n, hlt, pc);
   // ID_EX/EX -> MEM
   //
   //******************************************************
-  always @(*) begin 
+  always @(posedge clk) begin 
     if(!hlt) begin
       //Used in mem start
       aluResult_EX_MEM <= aluResult_EX; 
@@ -202,9 +205,6 @@ module cpu(clk, rst_n, hlt, pc);
       branch_EX_MEM <= branch_ID_EX;
       jal_EX_MEM <= jal_ID_EX;
       jr_EX_MEM <= jr_ID_EX;
-      ovEn_EX_MEM <= ovEn_ID_EX;
-      zrEn_EX_MEM <= zrEn_ID_EX;
-      neEn_EX_MEM <= neEn_ID_EX; 
       //Used in mem end    
     
       //Just passing through mem start
@@ -212,29 +212,14 @@ module cpu(clk, rst_n, hlt, pc);
       regAddr_EX_MEM <= regAddr_ID_EX;
       regWe_EX_MEM <= regWe_ID_EX;
       memToReg_EX_MEM <= memToReg_ID_EX;
-      //Just passing through mem end
-    end
-  end
 
-  always @(posedge clk or negedge rst_n) begin
-    if(!rst_n) begin
-      zr_EX_MEM <= 1'b0; 
-      ne_EX_MEM <= 1'b0;  
-      ov_EX_MEM <= 1'b0;  
-    end
-    else begin
-      if(ovEn_EX_MEM)
-        ov_EX_MEM <= ov_EX; 
-      else
-        ov_EX_MEM <= ov_EX_MEM;
-      if (zrEn_EX_MEM)
-        zr_EX_MEM <= zr_EX; 
-      else
-        zr_EX_MEM <= zr_EX_MEM;
-      if (neEn_EX_MEM)
-        ne_EX_MEM <= ne_EX; 
-      else
-        ne_EX_MEM <= ne_EX_MEM; 
+      ovEn_EX_MEM <= ovEn_ID_EX;
+      zrEn_EX_MEM <= zrEn_ID_EX;
+      neEn_EX_MEM <= neEn_ID_EX; 
+      ov_EX_MEM <= ov_EX;
+      zr_EX_MEM <= zr_EX;
+      ne_EX_MEM <= ne_EX; 
+      //Just passing through mem end
     end
   end
 
@@ -252,9 +237,9 @@ module cpu(clk, rst_n, hlt, pc);
         .memWe(memWe_EX_MEM),
         .regWe(regWe_EX_MEM),
         .wrtData(p1_EX_MEM),
-        .zr(zr_EX_MEM), 
-        .ne(ne_EX_MEM), 
-        .ov(ov_EX_MEM),  
+        .zr(zr_MEM_WB), 
+        .ne(ne_MEM_WB), 
+        .ov(ov_MEM_WB),  
         .addz(addz_EX_MEM),
         .b(branch_EX_MEM),
         .jal(jal_EX_MEM),
@@ -275,7 +260,8 @@ module cpu(clk, rst_n, hlt, pc);
 
   reg [15:0] pcNext_MEM_WB, memData_MEM_WB, aluResult_MEM_WB;  // Inputs to writeback
   reg [3:0] regAddr_MEM_WB;
-  reg jal_MEM_WB, memToReg_MEM_WB, regWe_MEM_WB;
+  reg jal_MEM_WB, memToReg_MEM_WB, regWe_MEM_WB, ovEn_MEM_WB, zrEn_MEM_WB, neEn_MEM_WB; 
+
 
   //*****************************************************
   // MEM_WB
@@ -283,7 +269,7 @@ module cpu(clk, rst_n, hlt, pc);
   // EX_MEM/MEM -> WB
   //
   //*****************************************************
-  always @(*) begin
+  always @(posedge clk) begin
     if(!hlt) begin
       pcNext_MEM_WB <= pcNext_EX_MEM;
       memData_MEM_WB <= memData_MEM;
@@ -292,9 +278,36 @@ module cpu(clk, rst_n, hlt, pc);
       jal_MEM_WB <= jal_EX_MEM;
       memToReg_MEM_WB <= memToReg_EX_MEM;      
       regWe_MEM_WB <= regWe_MEM;    
+
+      ovEn_MEM_WB <= ovEn_EX_MEM;
+      zrEn_MEM_WB <= zrEn_EX_MEM;
+      neEn_MEM_WB <= neEn_EX_MEM; 
     end
   end
 
+  always @(posedge clk or negedge rst_n) begin
+    if(!rst_n) begin
+      zr_MEM_WB <= 1'b0; 
+      ne_MEM_WB <= 1'b0;  
+      ov_MEM_WB <= 1'b0;  
+    end
+    else begin
+      if(ovEn_MEM_WB)
+        ov_MEM_WB <= ov_EX_MEM; 
+      else
+        ov_MEM_WB <= ov_MEM_WB;
+
+      if (zrEn_MEM_WB)
+        zr_MEM_WB <= zr_EX_MEM; 
+      else
+        zr_MEM_WB <= zr_MEM_WB;
+
+      if (neEn_MEM_WB)
+        ne_MEM_WB <= ne_EX_MEM; 
+      else
+        ne_MEM_WB <= ne_MEM_WB; 
+    end
+  end
 
   Writeback writeback(
     // Global inputs  
