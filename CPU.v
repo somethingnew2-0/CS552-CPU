@@ -280,7 +280,7 @@ module cpu(clk, rst_n, hlt, pc);
 
   reg [15:0] pcNext_MEM_WB, memData_MEM_WB, aluResult_MEM_WB;  // Inputs to writeback
   reg [3:0] regAddr_MEM_WB;
-  reg jal_MEM_WB, memToReg_MEM_WB, regWe_MEM_WB, ovEn_MEM_WB, zrEn_MEM_WB, neEn_MEM_WB; 
+  reg jal_MEM_WB, memToReg_MEM_WB, regWe_MEM_WB; 
 
 
   //*****************************************************
@@ -297,10 +297,6 @@ module cpu(clk, rst_n, hlt, pc);
     jal_MEM_WB <= jal_EX_MEM;
     memToReg_MEM_WB <= memToReg_EX_MEM;      
     regWe_MEM_WB <= regWe_MEM;    
-
-    ovEn_MEM_WB <= ovEn_EX_MEM;
-    zrEn_MEM_WB <= zrEn_EX_MEM;
-    neEn_MEM_WB <= neEn_EX_MEM; 
 
     if(!rst_n) begin
       zr_MEM_WB <= 1'b0; 
