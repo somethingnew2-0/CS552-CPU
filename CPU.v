@@ -171,6 +171,7 @@ module cpu(clk, rst_n, hlt, pc);
   reg memRe_EX_MEM, memWe_EX_MEM, addz_EX_MEM, branch_EX_MEM, jal_EX_MEM, jr_EX_MEM, ov_EX_MEM, zr_EX_MEM, ovEn_EX_MEM, ne_EX_MEM, zrEn_EX_MEM, neEn_EX_MEM; 
 
   // Just passing through signals
+  reg [15:0] pcNext_EX_MEM;
   reg [3:0] regAddr_EX_MEM;
   reg regWe_EX_MEM, memToReg_EX_MEM;
 
@@ -201,6 +202,7 @@ module cpu(clk, rst_n, hlt, pc);
     //Used in mem end    
   
     //Just passing through mem start
+    pcNext_EX_MEM <= pcNext_ID_EX;
     regAddr_EX_MEM <= regAddr_ID_EX;
     regWe_EX_MEM <= regWe_ID_EX;
     memToReg_EX_MEM <= memToReg_ID_EX;
@@ -264,9 +266,9 @@ module cpu(clk, rst_n, hlt, pc);
         .branchAddr(branchAddr),
         .branch(branch));
 
-  reg [15:0] memData_MEM_WB, aluResult_MEM_WB;  // Inputs to writeback
+  reg [15:0] pcNext_MEM_WB, memData_MEM_WB, aluResult_MEM_WB;  // Inputs to writeback
   reg [3:0] regAddr_MEM_WB;
-  reg memToReg_MEM_WB, regWe_MEM_WB;
+  reg jal_MEM_WB, memToReg_MEM_WB, regWe_MEM_WB;
 
   //*****************************************************
   // MEM_WB
@@ -275,9 +277,11 @@ module cpu(clk, rst_n, hlt, pc);
   //
   //*****************************************************
   always @(*) begin
+    pcNext_MEM_WB <= pcNext_EX_MEM;
     memData_MEM_WB <= memData_MEM;
     aluResult_MEM_WB <= aluResult_EX_MEM;
     regAddr_MEM_WB <= regAddr_EX_MEM;
+    jal_MEM_WB <= jal_EX_MEM;
     memToReg_MEM_WB <= memToReg_EX_MEM;      
     regWe_MEM_WB <= regWe_MEM;    
   end
@@ -288,9 +292,11 @@ module cpu(clk, rst_n, hlt, pc);
     .flush(flush),
 
     // Pipeline stage inputs
+    .jal(jal_MEM_WB),
     .memToReg(memToReg_MEM_WB),
     .regWe(regWe_MEM_WB),
     .regAddr(regAddr_MEM_WB),
+    .pcNext(pcNext_MEM_WB),
     .memData(memData_MEM_WB),
     .aluResult(aluResult_MEM_WB),     
 
