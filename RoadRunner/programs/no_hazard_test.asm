@@ -5,21 +5,21 @@
 # This test is dependency free
 
 # Initialize the registers for testing ease
-	LLB R1, 17	# R1 = 0x0011
-	LLB R2, 34	# R2 = 0x0022
-	LLB R3, 51	# R3 = 0x0033
-	LLB R4, 68	# R4 = 0x0044
-	LLB R5, 85	# R5 = 0x0055
-	LLB R6, 102	# R6 = 0x0066
-	LLB R7, 119	# R7 = 0x0077
-	LLB R8, 136	# R8 = 0xFF88
-	LLB R9, 153	# R9 = 0xFF99
-	LLB R10, 170	# R10 = 0xFFAA
-	LLB R11, 187	# R11 = 0xFFBB
-	LLB R12, 204	# R12 = 0xFFCC
-	LLB R13, 221	# R13 = 0xFFDD
-	LLB R14, 238	# R14 = 0xFFEE
-	LLB R15, 255	# R15 = 0xFFFF
+	LLB R1, 0x11	# R1 = 0x0011
+	LLB R2, 0x22	# R2 = 0x0022
+	LLB R3, 0x33	# R3 = 0x0033
+	LLB R4, 0x44	# R4 = 0x0044
+	LLB R5, 0x55	# R5 = 0x0055
+	LLB R6, 0x66	# R6 = 0x0066
+	LLB R7, 0x77	# R7 = 0x0077
+	LLB R8, 0x88	# R8 = 0xFF88
+	LLB R9, 0x99	# R9 = 0xFF99
+	LLB R10, 0xAA	# R10 = 0xFFAA
+	LLB R11, 0xBB	# R11 = 0xFFBB
+	LLB R12, 0xCC	# R12 = 0xFFCC
+	LLB R13, 0xDD	# R13 = 0xFFDD
+	LLB R14, 0xEE	# R14 = 0xFFEE
+	LLB R15, 0xFF	# R15 = 0xFFFF
 ############
 
 	# Test AND
