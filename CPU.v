@@ -16,8 +16,6 @@ module cpu(clk, rst_n, hlt, pc);
 
   wire [15:0] pcNext_IF, instr_IF;
 
-	assign pc = pcNext_IF;
-
   InstructionFetch instructionfetch(
                                     // Global inputs
                                     .clk(clk),
@@ -29,11 +27,9 @@ module cpu(clk, rst_n, hlt, pc);
                                     .rd_en(rd_en),
                                     
                                     // Global outputs
-                                    .pc(),
+                                    .pcNext(pc),
 
                                     // Pipeline stage outputs 
-                                    
-                                    .pcNext(pcNext_IF),
                                     .instr(instr_IF));
 
   reg [15:0] instr_IF_ID, pcNext_IF_ID;
@@ -50,7 +46,7 @@ module cpu(clk, rst_n, hlt, pc);
     //Used in id end
 
     //Just passing through id start
-    pcNext_IF_ID <= pcNext_IF;
+    pcNext_IF_ID <= pc;
     //Just passing through id end
   end
 

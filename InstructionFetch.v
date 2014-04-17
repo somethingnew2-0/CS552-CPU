@@ -1,11 +1,11 @@
-module InstructionFetch(clk, rst_n, hlt, branch, branchAddr, stall, rd_en, pc, instr, pcNext);
+module InstructionFetch(clk, rst_n, hlt, branch, branchAddr, stall, rd_en, instr, pcNext);
 
   input clk, rst_n, hlt, branch, stall, rd_en;
   input [15:0] branchAddr;
-
-  output reg [15:0] pc;
+  
   output [15:0] instr, pcNext; 
 
+  reg [15:0] pc;
   wire [15:0] effectivePc;
 
   assign pcNext = stall ? pc : pc + 1; 
