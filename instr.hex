@@ -29,83 +29,68 @@
 @001c AEEE	// LHB R14, 238
 @001d AFFF	// LHB R15, 255
 @001e 0011	// check_000:	ADD R0, R1, R1
-@001f C24D	// b eq, broked
-@0020 C64C	// b lt, broked
-@0021 CC4B	// b ovfl, broked
-@0022 CA4A	// b lte, broked
+@001f C23E	// b eq, broked
+@0020 C63D	// b lt, broked
+@0021 CC3C	// b ovfl, broked
+@0022 CA3B	// b lte, broked
 @0023 C001	// b neq, skip1
 @0024 F000	// HLT
 @0025 C401	// skip1:	b gt, skip2
 @0026 F000	// HLT
 @0027 C801	// skip2:	b gte, skip3
 @0028 F000	// HLT
-@0029 CE03	// skip3:	b uncond, check_001
-@002a A0DD	// LHB R0, 221
-@002b A0EE	// LHB R0, 238
-@002c A0FF	// LHB R0, 255
-@002d 2012	// check_001:	SUB R0, R1, R2
-@002e C23E	// b eq, broked
-@002f C43D	// b gt, broked
-@0030 CC3C	// b ovfl, broked
-@0031 C83B	// b gte, broked
-@0032 C601	// b lt, skip4
-@0033 F000	// HLT
-@0034 CA01	// skip4:	b lte, skip5
-@0035 F000	// HLT
-@0036 C001	// skip5:	b neq, skip6
-@0037 F000	// HLT
-@0038 CE03	// skip6:	b uncond, check_010
-@0039 A0DD	// LHB R0, 221
-@003a A0EE	// LHB R0, 238
-@003b A0FF	// LHB R0, 255
-@003c 2011	// check_010:	SUB R0, R1, R1
-@003d C62F	// b lt, broked
-@003e CC2E	// b ovfl, broked
-@003f C02D	// b neq, broked
-@0040 C42C	// b gt, broked
-@0041 C201	// b eq, skip7
-@0042 F000	// HLT
-@0043 CA01	// skip7:	b lte, skip8
-@0044 F000	// HLT
-@0045 C801	// skip8:	b gte, skip9
-@0046 F000	// HLT
-@0047 CE03	// skip9:	b uncond, check_100
-@0048 A0DD	// LHB R0, 221
-@0049 A0EE	// LHB R0, 238
-@004a A0FF	// LHB R0, 255
-@004b 0077	// check_100:	ADD R0, R7, R7
-@004c C220	// b eq, broked
-@004d C61F	// b lt, broked
-@004e CA1E	// b lte, broked
-@004f CC01	// b ovfl, skip10
-@0050 F000	// HLT
-@0051 C001	// skip10:	b neq, skip11
-@0052 F000	// HLT
-@0053 C401	// skip11:	b gt, skip12
+@0029 CE00	// skip3:	b uncond, check_001
+@002a 2012	// check_001:	SUB R0, R1, R2
+@002b C232	// b eq, broked
+@002c C431	// b gt, broked
+@002d CC30	// b ovfl, broked
+@002e C82F	// b gte, broked
+@002f C601	// b lt, skip4
+@0030 F000	// HLT
+@0031 CA01	// skip4:	b lte, skip5
+@0032 F000	// HLT
+@0033 C001	// skip5:	b neq, skip6
+@0034 F000	// HLT
+@0035 CE00	// skip6:	b uncond, check_010
+@0036 2011	// check_010:	SUB R0, R1, R1
+@0037 C626	// b lt, broked
+@0038 CC25	// b ovfl, broked
+@0039 C024	// b neq, broked
+@003a C423	// b gt, broked
+@003b C201	// b eq, skip7
+@003c F000	// HLT
+@003d CA01	// skip7:	b lte, skip8
+@003e F000	// HLT
+@003f C801	// skip8:	b gte, skip9
+@0040 F000	// HLT
+@0041 CE00	// skip9:	b uncond, check_100
+@0042 0077	// check_100:	ADD R0, R7, R7
+@0043 C21A	// b eq, broked
+@0044 C619	// b lt, broked
+@0045 CA18	// b lte, broked
+@0046 CC01	// b ovfl, skip10
+@0047 F000	// HLT
+@0048 C001	// skip10:	b neq, skip11
+@0049 F000	// HLT
+@004a C401	// skip11:	b gt, skip12
+@004b F000	// HLT
+@004c C801	// skip12:	b gte, skip13
+@004d F000	// HLT
+@004e CE00	// skip13:	b uncond, check_101
+@004f 0099	// check_101:	ADD R0, R9, R9
+@0050 C20D	// b eq, broked
+@0051 C40C	// b gt, broked
+@0052 C80B	// b gte, broked
+@0053 C601	// b lt, skip14
 @0054 F000	// HLT
-@0055 C801	// skip12:	b gte, skip13
+@0055 CA01	// skip14:	b lte, skip15
 @0056 F000	// HLT
-@0057 CE03	// skip13:	b uncond, check_101
-@0058 A0DD	// LHB R0, 221
-@0059 A0EE	// LHB R0, 238
-@005a A0FF	// LHB R0, 255
-@005b 0099	// check_101:	ADD R0, R9, R9
-@005c C210	// b eq, broked
-@005d C40F	// b gt, broked
-@005e C80E	// b gte, broked
-@005f C601	// b lt, skip14
-@0060 F000	// HLT
-@0061 CA01	// skip14:	b lte, skip15
-@0062 F000	// HLT
-@0063 CC01	// skip15:	b ovfl, skip16
-@0064 F000	// HLT
-@0065 C001	// skip16:	b neq, skip17
-@0066 F000	// HLT
-@0067 CE03	// skip17:	b uncond, check_JAL
-@0068 A0DD	// LHB R0, 221
-@0069 A0EE	// LHB R0, 238
-@006a A0FF	// LHB R0, 255
-@006b D002	// check_JAL:	JAL check_return
-@006c F000	// HLT
-@006d F000	// broked:		HLT
-@006e E0F0	// check_return:	JR R15
+@0057 CC01	// skip15:	b ovfl, skip16
+@0058 F000	// HLT
+@0059 C001	// skip16:	b neq, skip17
+@005a F000	// HLT
+@005b CE00	// skip17:	b uncond, check_JAL
+@005c D002	// check_JAL:	JAL check_return
+@005d F000	// HLT
+@005e F000	// broked:		HLT
+@005f E0F0	// check_return:	JR R15

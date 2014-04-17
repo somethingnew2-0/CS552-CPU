@@ -49,9 +49,6 @@ check_000:	ADD R0, R1, R1		# Clear all three
 	skip2:	b gte, skip3
 			HLT #3
 	skip3:	b uncond, check_001	# Every possible branch has been tested
-	LHB R0, 221
-	LHB R0, 238
-	LHB R0, 255
 # !V!ZN
 check_001:	SUB R0, R1, R2		# Set the N flag
 			
@@ -67,9 +64,6 @@ check_001:	SUB R0, R1, R2		# Set the N flag
 	skip5:	b neq, skip6
 			HLT #6
 	skip6:	b uncond, check_010	# Every possible branch has been tested
-	LHB R0, 221
-	LHB R0, 238
-	LHB R0, 255
 # !VZ!N
 check_010:	SUB R0, R1, R1		# Set the Z flag
 
@@ -85,9 +79,6 @@ check_010:	SUB R0, R1, R1		# Set the Z flag
 	skip8:	b gte, skip9
 			HLT #9
 	skip9:	b uncond, check_100	# Every possible branch has been tested
-	LHB R0, 221
-	LHB R0, 238
-	LHB R0, 255
 # V!Z!N
 check_100:	ADD R0, R7, R7	# Set the V flag (Positive Overflow)
 
@@ -104,9 +95,6 @@ check_100:	ADD R0, R7, R7	# Set the V flag (Positive Overflow)
 	skip12:	b gte, skip13
 			HLT #13
 	skip13:	b uncond, check_101	# Every possible branch has been tested
-	LHB R0, 221
-	LHB R0, 238
-	LHB R0, 255
 # V!ZN
 check_101:	ADD R0, R9, R9		# Set the V and N flags (Negative Overflow)
 
@@ -123,9 +111,6 @@ check_101:	ADD R0, R9, R9		# Set the V and N flags (Negative Overflow)
 	skip16:	b neq, skip17
 			HLT #17
 	skip17:	b uncond, check_JAL	# Every possible branch has been tested
-	LHB R0, 221
-	LHB R0, 238
-	LHB R0, 255
 check_JAL:	JAL check_return
 		HLT # Sucess!		# PC should be @0x005e (HLT addr + 1)
 

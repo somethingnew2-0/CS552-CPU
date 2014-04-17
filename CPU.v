@@ -308,17 +308,17 @@ module cpu(clk, rst_n, hlt, pc);
       ov_MEM_WB <= 1'b0;  
     end
     else begin
-      if(ovEn_MEM_WB)
+      if(ovEn_EX_MEM)
         ov_MEM_WB <= ov_EX_MEM; 
       else
         ov_MEM_WB <= ov_MEM_WB;
 
-      if (zrEn_MEM_WB)
+      if (zrEn_EX_MEM)
         zr_MEM_WB <= zr_EX_MEM; 
       else
         zr_MEM_WB <= zr_MEM_WB;
 
-      if (neEn_MEM_WB)
+      if (neEn_EX_MEM)
         ne_MEM_WB <= ne_EX_MEM; 
       else
         ne_MEM_WB <= ne_MEM_WB; 
