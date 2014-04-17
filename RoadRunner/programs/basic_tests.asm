@@ -18,11 +18,10 @@
 
 	SRL R7, R4, 3			# Test 3
 
-	SUB R0, R5, R10				# Check whether it worked
-	ADDZ R14, R14, R3
 
-	SUB R0, R6, R11
-	ADDZ R14, R14, R3
+SW  R4, R3
+LW  R4, R3 
+
 
 	SUB R0, R7, R12
 	ADDZ R14, R14, R3
