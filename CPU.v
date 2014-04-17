@@ -175,9 +175,9 @@ module cpu(clk, rst_n, hlt, pc);
 
   // Forwarding signals
   wire [15:0] forwardP0_EX, forwardP1_EX;
-  reg [15:0] aluResult_EX_MEM, pcNext_EX_MEM;
-  reg [3:0] regAddr_EX_MEM;
-  reg regWe_EX_MEM, jal_EX_MEM;
+  reg [15:0] aluResult_EX_MEM, pcNext_EX_MEM, aluResult_MEM_WB, pcNext_MEM_WB;
+  reg [3:0] regAddr_EX_MEM, regAddr_MEM_WB;
+  reg regWe_EX_MEM, jal_EX_MEM, regWe_MEM_WB, jal_MEM_WB;
 
   Forwarding forwarding(
                   // Forwarding inputs
@@ -185,11 +185,18 @@ module cpu(clk, rst_n, hlt, pc);
                   .p1(p1_ID_EX),
                   .p0Addr(p0Addr_ID_EX),
                   .p1Addr(p1Addr_ID_EX),
+                  // Forwarding EX_MEM inputs
                   .regAddr_EX_MEM(regAddr_EX_MEM), 
                   .regWe_EX_MEM(regWe_EX_MEM),
                   .aluResult_EX_MEM(aluResult_EX_MEM),
                   .jal_EX_MEM(jal_EX_MEM),
                   .pcNext_EX_MEM(pcNext_EX_MEM),
+                  // Forwarding MEM_WB inputs
+                  .regAddr_MEM_WB(regAddr_MEM_WB), 
+                  .regWe_MEM_WB(regWe_MEM_WB),
+                  .aluResult_MEM_WB(aluResult_MEM_WB),
+                  .jal_MEM_WB(jal_MEM_WB),
+                  .pcNext_MEM_WB(pcNext_MEM_WB),
 
                   // Forwarding outputs
                   .forwardP0(forwardP0_EX),
@@ -316,9 +323,8 @@ module cpu(clk, rst_n, hlt, pc);
         .branchAddr(branchAddr),
         .branch(branch));
 
-  reg [15:0] pcNext_MEM_WB, memData_MEM_WB, aluResult_MEM_WB;  // Inputs to writeback
-  reg [3:0] regAddr_MEM_WB;
-  reg jal_MEM_WB, memToReg_MEM_WB, regWe_MEM_WB; 
+  reg [15:0] memData_MEM_WB;  // Inputs to writeback
+  reg memToReg_MEM_WB; 
 
 
   //*****************************************************
