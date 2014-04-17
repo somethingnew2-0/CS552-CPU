@@ -133,12 +133,27 @@ module cpu(clk, rst_n, hlt, pc);
       //Just passing through ex start
       regAddr_ID_EX <= regAddr_ID;
       branchOp_ID_EX <= branchOp_ID;
-      regWe_ID_EX <= regWe_ID;
+      
+      if(!flush)
+        regWe_ID_EX <= regWe_ID;
+      else 
+        regWe_ID_EX <= 1'b0;
+
       memRe_ID_EX <= memRe_ID;
-      memWe_ID_EX <= memWe_ID;
+
+      if(!flush)
+        memWe_ID_EX <= memWe_ID;
+      else 
+        memWe_ID_EX <= 1'b0;
+
       memToReg_ID_EX <= memToReg_ID;
       addz_ID_EX <= addz_ID;
-      branch_ID_EX <= branch_ID;
+
+      if(!flush)
+        branch_ID_EX <= branch_ID;
+      else 
+        branch_ID_EX <= 1'b0;
+
       jal_ID_EX <= jal_ID;
       jr_ID_EX <= jr_ID;
       ovEn_ID_EX <= ovEn_ID;
@@ -200,9 +215,19 @@ module cpu(clk, rst_n, hlt, pc);
       p1_EX_MEM <= p1_ID_EX; 
       branchOp_EX_MEM <= branchOp_ID_EX;
       memRe_EX_MEM <= memRe_ID_EX;
-      memWe_EX_MEM <= memWe_ID_EX;
+
+      if(!flush)
+        memWe_EX_MEM <= memWe_ID_EX;
+      else 
+        memWe_EX_MEM <= 1'b0;
+        
       addz_EX_MEM <= addz_ID_EX;
-      branch_EX_MEM <= branch_ID_EX;
+
+      if(!flush)
+        branch_EX_MEM <= branch_ID_EX;
+      else
+        branch_EX_MEM <= 1'b0;
+
       jal_EX_MEM <= jal_ID_EX;
       jr_EX_MEM <= jr_ID_EX;
       //Used in mem end    
@@ -210,7 +235,12 @@ module cpu(clk, rst_n, hlt, pc);
       //Just passing through mem start
       pcNext_EX_MEM <= pcNext_ID_EX;
       regAddr_EX_MEM <= regAddr_ID_EX;
-      regWe_EX_MEM <= regWe_ID_EX;
+
+      if(!flush)
+        regWe_EX_MEM <= regWe_ID_EX;
+      else
+        regWe_EX_MEM <= 1'b0;
+
       memToReg_EX_MEM <= memToReg_ID_EX;
 
       ovEn_EX_MEM <= ovEn_ID_EX;
