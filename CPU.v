@@ -157,14 +157,25 @@ module cpu(clk, rst_n, hlt, pc);
     //Just passing through ex end
   end
 
+  wire [15:0] forwardP0_EX, forwardP1_EX;
+
+  Forwarding forwarding(
+                  // Forwarding inputs
+                  .p0(p0_ID_EX),
+                  .p1(p1_ID_EX),
+
+                  // Forwarding outputs
+                  .forwardP0(forwardP0_EX),
+                  .forwardP1(forwardP1_EX));
+
 
   wire [15:0] aluResult_EX, branchResult_EX, jumpResult_EX;
   wire ov_EX, zr_EX, ne_EX;
 
   Execute execute(
                   // Pipeline stage inputs
-                  .p0(p0_ID_EX),
-                  .p1(p1_ID_EX),
+                  .p0(forwardP0_EX),
+                  .p1(forwardP1_EX),
                   .pcNext(pcNext_ID_EX),
                   .imm(imm_ID_EX),
                   .shamt(shamt_ID_EX),
@@ -204,8 +215,8 @@ module cpu(clk, rst_n, hlt, pc);
     branchResult_EX_MEM <= branchResult_EX;
     jumpResult_EX_MEM <= jumpResult_EX;
     memAddr_EX_MEM <= aluResult_EX; 
-    p0_EX_MEM <= p0_ID_EX; 
-    p1_EX_MEM <= p1_ID_EX; 
+    p0_EX_MEM <= forwardP0_EX; 
+    p1_EX_MEM <= forwardP1_EX; 
     branchOp_EX_MEM <= branchOp_ID_EX;
     memRe_EX_MEM <= memRe_ID_EX;
 

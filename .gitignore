@@ -3,3 +3,6 @@ work/**
 *.bak
 *.mti
 *.wlf
+wlf*
+*.v.bak
+*.txt~
