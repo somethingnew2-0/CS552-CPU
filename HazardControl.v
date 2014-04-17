@@ -1,9 +1,8 @@
-module HazardControl(branch, flush)
-	input branch;
+module HazardControl(branch, branchInit, flush);
+	input branch, branchInit;
 
 	output flush;
 
-	assign flush = branch;
-
+	assign flush = branchInit ? branch: 1'b0;
 
 endmodule

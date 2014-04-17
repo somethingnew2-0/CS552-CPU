@@ -5,10 +5,16 @@ module cpu(clk, rst_n, hlt, pc);
   output [15:0] pc;
 
   wire [15:0] branchAddr;
-  wire flush, stall, branch;
+  wire flush, stall, branch, branchInit;
+
+  HazardControl hazardcontrol(
+                              // Global inputs
+                              .branch(branch),
+                              .branchInit(branchInit),
+                              // Global outputs
+                              .flush(flush));
 
   assign stall = 0'b0;
-	assign flush = 0'b0;
   assign rd_en = 1'b1; // When should this change?
 
   /* The pipeline. Each blank line separates inputs from
@@ -28,6 +34,7 @@ module cpu(clk, rst_n, hlt, pc);
                                     // Global outputs
                                     .pc(pc),
                                     .hlt(hlt),
+                                    .branchInit(branchInit),
 
                                     // Pipeline stage outputs 
                                     .pcNext(pcNext_IF),
@@ -43,7 +50,11 @@ module cpu(clk, rst_n, hlt, pc);
   //******************************************************
   always @(posedge clk) begin  
     //Used in id start
-    instr_IF_ID <= instr_IF;
+    if(!flush) begin
+      instr_IF_ID <= instr_IF;
+    end else begin
+      instr_IF_ID <= 16'hB0FF;
+    end
     //Used in id end
 
     //Just passing through id start

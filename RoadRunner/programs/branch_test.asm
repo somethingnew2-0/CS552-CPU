@@ -33,7 +33,6 @@ LHB R13, 221
 LHB R14, 238
 LHB R15, 255
 ############
-
 # !V!Z!N
 check_000:	ADD R0, R1, R1		# Clear all three
 
