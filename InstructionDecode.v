@@ -1,8 +1,8 @@
-module InstructionDecode(instr, clk, writeAddr, writeData, writeEnable, p0, p1, imm, regAddr, shamt, aluOp, branchOp, regWe, memRe, memWe, memToReg, addz, branch, jal, jr, hlt, aluSrc0, aluSrc1, ovEn, zrEn, neEn);
+module InstructionDecode(instr, clk, rst_n, writeAddr, writeData, writeEnable, p0, p1, imm, regAddr, shamt, aluOp, branchOp, regWe, memRe, memWe, memToReg, addz, branch, jal, jr, hlt, aluSrc0, aluSrc1, ovEn, zrEn, neEn);
   input [15:0] instr;
 
   // For register writeback
-  input clk;  
+  input clk, rst_n;  
   input [15:0] writeData;           // dst bus
   input [3:0] writeAddr;          // dst address
   input writeEnable;
@@ -18,6 +18,7 @@ module InstructionDecode(instr, clk, writeAddr, writeData, writeEnable, p0, p1, 
   wire [3:0] p0Addr, p1Addr;
 
   ID id(.instr(instr),
+        .rst_n(rst_n),
   
         .imm(imm),
         .p0Addr(p0Addr), 

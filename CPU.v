@@ -14,7 +14,7 @@ module cpu(clk, rst_n, hlt, pc);
   /* The pipeline. Each blank line separates inputs from
     outputs of the module */
 
-  wire [15:0] pcNext_IF, instr_IF;
+  wire [15:0] instr_IF;
 
   InstructionFetch instructionfetch(
                                     // Global inputs
@@ -40,14 +40,16 @@ module cpu(clk, rst_n, hlt, pc);
   // IF -> ID
   //
   //******************************************************
-  always @(*) begin  
-    //Used in id start
-    instr_IF_ID <= instr_IF;
-    //Used in id end
+  always @(posedge clk) begin  
+    if(!hlt) begin
+      //Used in id start
+      instr_IF_ID <= instr_IF;
+      //Used in id end
 
-    //Just passing through id start
-    pcNext_IF_ID <= pc;
-    //Just passing through id end
+      //Just passing through id start
+      pcNext_IF_ID <= pc;
+      //Just passing through id end
+    end
   end
 
   wire [15:0] writeData;
@@ -63,6 +65,7 @@ module cpu(clk, rst_n, hlt, pc);
   InstructionDecode instructiondecode(
         // Global inputs
         .clk(clk),
+        .rst_n(rst_n),
         .writeData(writeData),
         .writeAddr(writeAddr),        
         .writeEnable(writeEnable),
@@ -113,33 +116,35 @@ module cpu(clk, rst_n, hlt, pc);
   // ID -> EX
   //
   //******************************************************
-  always @(*) begin  
-    //Used in ex start
-    p0_ID_EX <= p0_ID;
-    p1_ID_EX <= p1_ID;
-    pcNext_ID_EX <= pcNext_IF_ID;
-    imm_ID_EX <= imm_ID;
-    shamt_ID_EX <= shamt_ID;
-    aluOp_ID_EX <= aluOp_ID;
-    aluSrc0_ID_EX <= aluSrc0_ID;
-    aluSrc1_ID_EX <= aluSrc1_ID;
-    //Used in ex end
-  
-    //Just passing through ex start
-    regAddr_ID_EX <= regAddr_ID;
-    branchOp_ID_EX <= branchOp_ID;
-    regWe_ID_EX <= regWe_ID;
-    memRe_ID_EX <= memRe_ID;
-    memWe_ID_EX <= memWe_ID;
-    memToReg_ID_EX <= memToReg_ID;
-    addz_ID_EX <= addz_ID;
-    branch_ID_EX <= branch_ID;
-    jal_ID_EX <= jal_ID;
-    jr_ID_EX <= jr_ID;
-    ovEn_ID_EX <= ovEn_ID;
-    zrEn_ID_EX <= zrEn_ID;
-    neEn_ID_EX <= neEn_ID;
-    //Just passing through ex end
+  always @(*) begin 
+    if(!hlt) begin 
+      //Used in ex start
+      p0_ID_EX <= p0_ID;
+      p1_ID_EX <= p1_ID;
+      pcNext_ID_EX <= pcNext_IF_ID;
+      imm_ID_EX <= imm_ID;
+      shamt_ID_EX <= shamt_ID;
+      aluOp_ID_EX <= aluOp_ID;
+      aluSrc0_ID_EX <= aluSrc0_ID;
+      aluSrc1_ID_EX <= aluSrc1_ID;
+      //Used in ex end
+    
+      //Just passing through ex start
+      regAddr_ID_EX <= regAddr_ID;
+      branchOp_ID_EX <= branchOp_ID;
+      regWe_ID_EX <= regWe_ID;
+      memRe_ID_EX <= memRe_ID;
+      memWe_ID_EX <= memWe_ID;
+      memToReg_ID_EX <= memToReg_ID;
+      addz_ID_EX <= addz_ID;
+      branch_ID_EX <= branch_ID;
+      jal_ID_EX <= jal_ID;
+      jr_ID_EX <= jr_ID;
+      ovEn_ID_EX <= ovEn_ID;
+      zrEn_ID_EX <= zrEn_ID;
+      neEn_ID_EX <= neEn_ID;
+      //Just passing through ex end
+    end
   end
 
 
@@ -182,31 +187,33 @@ module cpu(clk, rst_n, hlt, pc);
   //
   //******************************************************
   always @(*) begin 
-    //Used in mem start
-    aluResult_EX_MEM <= aluResult_EX; 
-    branchResult_EX_MEM <= branchResult_EX;
-    jumpResult_EX_MEM <= jumpResult_EX;
-    memAddr_EX_MEM <= aluResult_EX; 
-    p0_EX_MEM <= p0_ID_EX; 
-    p1_EX_MEM <= p1_ID_EX; 
-    branchOp_EX_MEM <= branchOp_ID_EX;
-    memRe_EX_MEM <= memRe_ID_EX;
-    memWe_EX_MEM <= memWe_ID_EX;
-    addz_EX_MEM <= addz_ID_EX;
-    branch_EX_MEM <= branch_ID_EX;
-    jal_EX_MEM <= jal_ID_EX;
-    jr_EX_MEM <= jr_ID_EX;
-    ovEn_EX_MEM <= ovEn_ID_EX;
-    zrEn_EX_MEM <= zrEn_ID_EX;
-    neEn_EX_MEM <= neEn_ID_EX; 
-    //Used in mem end    
-  
-    //Just passing through mem start
-    pcNext_EX_MEM <= pcNext_ID_EX;
-    regAddr_EX_MEM <= regAddr_ID_EX;
-    regWe_EX_MEM <= regWe_ID_EX;
-    memToReg_EX_MEM <= memToReg_ID_EX;
-    //Just passing through mem end
+    if(!hlt) begin
+      //Used in mem start
+      aluResult_EX_MEM <= aluResult_EX; 
+      branchResult_EX_MEM <= branchResult_EX;
+      jumpResult_EX_MEM <= jumpResult_EX;
+      memAddr_EX_MEM <= aluResult_EX; 
+      p0_EX_MEM <= p0_ID_EX; 
+      p1_EX_MEM <= p1_ID_EX; 
+      branchOp_EX_MEM <= branchOp_ID_EX;
+      memRe_EX_MEM <= memRe_ID_EX;
+      memWe_EX_MEM <= memWe_ID_EX;
+      addz_EX_MEM <= addz_ID_EX;
+      branch_EX_MEM <= branch_ID_EX;
+      jal_EX_MEM <= jal_ID_EX;
+      jr_EX_MEM <= jr_ID_EX;
+      ovEn_EX_MEM <= ovEn_ID_EX;
+      zrEn_EX_MEM <= zrEn_ID_EX;
+      neEn_EX_MEM <= neEn_ID_EX; 
+      //Used in mem end    
+    
+      //Just passing through mem start
+      pcNext_EX_MEM <= pcNext_ID_EX;
+      regAddr_EX_MEM <= regAddr_ID_EX;
+      regWe_EX_MEM <= regWe_ID_EX;
+      memToReg_EX_MEM <= memToReg_ID_EX;
+      //Just passing through mem end
+    end
   end
 
   always @(posedge clk or negedge rst_n) begin
@@ -277,13 +284,15 @@ module cpu(clk, rst_n, hlt, pc);
   //
   //*****************************************************
   always @(*) begin
-    pcNext_MEM_WB <= pcNext_EX_MEM;
-    memData_MEM_WB <= memData_MEM;
-    aluResult_MEM_WB <= aluResult_EX_MEM;
-    regAddr_MEM_WB <= regAddr_EX_MEM;
-    jal_MEM_WB <= jal_EX_MEM;
-    memToReg_MEM_WB <= memToReg_EX_MEM;      
-    regWe_MEM_WB <= regWe_MEM;    
+    if(!hlt) begin
+      pcNext_MEM_WB <= pcNext_EX_MEM;
+      memData_MEM_WB <= memData_MEM;
+      aluResult_MEM_WB <= aluResult_EX_MEM;
+      regAddr_MEM_WB <= regAddr_EX_MEM;
+      jal_MEM_WB <= jal_EX_MEM;
+      memToReg_MEM_WB <= memToReg_EX_MEM;      
+      regWe_MEM_WB <= regWe_MEM;    
+    end
   end
 
 
