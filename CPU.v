@@ -289,7 +289,7 @@ module cpu(clk, rst_n, hlt, pc);
   // EX_MEM/MEM -> WB
   //
   //*****************************************************
-  always @(posedge clk) begin
+  always @(posedge clk or negedge rst_n) begin
     pcNext_MEM_WB <= pcNext_EX_MEM;
     memData_MEM_WB <= memData_MEM;
     aluResult_MEM_WB <= aluResult_EX_MEM;
@@ -301,9 +301,7 @@ module cpu(clk, rst_n, hlt, pc);
     ovEn_MEM_WB <= ovEn_EX_MEM;
     zrEn_MEM_WB <= zrEn_EX_MEM;
     neEn_MEM_WB <= neEn_EX_MEM; 
-  end
 
-  always @(posedge clk or negedge rst_n) begin
     if(!rst_n) begin
       zr_MEM_WB <= 1'b0; 
       ne_MEM_WB <= 1'b0;  
