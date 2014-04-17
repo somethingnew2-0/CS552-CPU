@@ -53,7 +53,7 @@ module cpu(clk, rst_n, hlt, pc);
     if(!flush) begin
       instr_IF_ID <= instr_IF;
     end else begin
-      instr_IF_ID <= 16'hB0FF;
+      instr_IF_ID <= 16'hB0FF; // Send a NOP through the pipe
     end
     //Used in id end
 
@@ -144,6 +144,8 @@ module cpu(clk, rst_n, hlt, pc);
       regWe_ID_EX <= regWe_ID;
       memWe_ID_EX <= memWe_ID;
       branch_ID_EX <= branch_ID;
+      jal_ID_EX <= jal_ID;
+      jr_ID_EX <= jr_ID;
 
       ovEn_ID_EX <= ovEn_ID;
       zrEn_ID_EX <= zrEn_ID;
@@ -153,6 +155,8 @@ module cpu(clk, rst_n, hlt, pc);
       regWe_ID_EX <= 1'b0;
       memWe_ID_EX <= 1'b0;
       branch_ID_EX <= 1'b0;
+      jal_ID_EX <= 1'b0;
+      jr_ID_EX <= 1'b0;
 
       ovEn_ID_EX <= 1'b0;
       zrEn_ID_EX <= 1'b0;
@@ -162,9 +166,6 @@ module cpu(clk, rst_n, hlt, pc);
     memRe_ID_EX <= memRe_ID;      
     memToReg_ID_EX <= memToReg_ID;
     addz_ID_EX <= addz_ID;
-
-    jal_ID_EX <= jal_ID;
-    jr_ID_EX <= jr_ID;
     //Just passing through ex end
   end
 
@@ -233,8 +234,10 @@ module cpu(clk, rst_n, hlt, pc);
 
     if(!flush) begin
       memWe_EX_MEM <= memWe_ID_EX;
-      branch_EX_MEM <= branch_ID_EX;
       regWe_EX_MEM <= regWe_ID_EX;
+      branch_EX_MEM <= branch_ID_EX;
+      jal_EX_MEM <= jal_ID_EX;
+      jr_EX_MEM <= jr_ID_EX;      
 
       ovEn_EX_MEM <= ovEn_ID_EX;
       zrEn_EX_MEM <= zrEn_ID_EX;
@@ -242,8 +245,10 @@ module cpu(clk, rst_n, hlt, pc);
     end
     else begin
       memWe_EX_MEM <= 1'b0;
-      branch_EX_MEM <= 1'b0;
       regWe_EX_MEM <= 1'b0;
+      branch_EX_MEM <= 1'b0;
+      jal_EX_MEM <= 1'b0;
+      jr_EX_MEM <= 1'b0; 
 
       ovEn_EX_MEM <= 1'b0;
       zrEn_EX_MEM <= 1'b0;
@@ -251,8 +256,6 @@ module cpu(clk, rst_n, hlt, pc);
     end
 
     addz_EX_MEM <= addz_ID_EX;
-    jal_EX_MEM <= jal_ID_EX;
-    jr_EX_MEM <= jr_ID_EX;
     //Used in mem end    
   
     //Just passing through mem start
