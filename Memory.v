@@ -16,8 +16,6 @@ module Memory(clk, hlt, memAddr, memRe, memWe, regWe, wrtData, zr, ne, ov, addz,
   localparam ovfl   = 3'b110;
   localparam uncond = 3'b111;
 
-
-
   assign finalWe = !flush & !hlt & memWe; 
 
   DM dm(.clk(clk),

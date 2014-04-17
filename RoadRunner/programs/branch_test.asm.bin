@@ -29,10 +29,10 @@
 @001c BFFF	// LLB R15, 255
 @001d AFFF	// LHB R15, 255
 @001e 0011	// check_000:	ADD R0, R1, R1
-@001f C23F	// b eq, broked
-@0020 C63E	// b lt, broked
-@0021 CC3D	// b ovfl, broked
-@0022 CA3C	// b lte, broked
+@001f C23D	// b eq, broked
+@0020 C63C	// b lt, broked
+@0021 CC3B	// b ovfl, broked
+@0022 CA3A	// b lte, broked
 @0023 C001	// b neq, skip1
 @0024 F000	// HLT
 @0025 C401	// skip1:	b gt, skip2
@@ -41,10 +41,10 @@
 @0028 F000	// HLT
 @0029 CE00	// skip3:	b uncond, check_001
 @002a 2012	// check_001:	SUB R0, R1, R2
-@002b C233	// b eq, broked
-@002c C432	// b gt, broked
-@002d CC31	// b ovfl, broked
-@002e C830	// b gte, broked
+@002b C231	// b eq, broked
+@002c C430	// b gt, broked
+@002d CC2F	// b ovfl, broked
+@002e C82E	// b gte, broked
 @002f C601	// b lt, skip4
 @0030 F000	// HLT
 @0031 CA01	// skip4:	b lte, skip5
@@ -53,10 +53,10 @@
 @0034 F000	// HLT
 @0035 CE00	// skip6:	b uncond, check_010
 @0036 2011	// check_010:	SUB R0, R1, R1
-@0037 C627	// b lt, broked
-@0038 CC26	// b ovfl, broked
-@0039 C025	// b neq, broked
-@003a C424	// b gt, broked
+@0037 C625	// b lt, broked
+@0038 CC24	// b ovfl, broked
+@0039 C023	// b neq, broked
+@003a C422	// b gt, broked
 @003b C201	// b eq, skip7
 @003c F000	// HLT
 @003d CA01	// skip7:	b lte, skip8
@@ -65,9 +65,9 @@
 @0040 F000	// HLT
 @0041 CE00	// skip9:	b uncond, check_100
 @0042 0077	// check_100:	ADD R0, R7, R7
-@0043 C21B	// b eq, broked
-@0044 C61A	// b lt, broked
-@0045 CA19	// b lte, broked
+@0043 C219	// b eq, broked
+@0044 C618	// b lt, broked
+@0045 CA17	// b lte, broked
 @0046 CC01	// b ovfl, skip10
 @0047 F000	// HLT
 @0048 C001	// skip10:	b neq, skip11
@@ -78,9 +78,9 @@
 @004d F000	// HLT
 @004e CE00	// skip13:	b uncond, check_101
 @004f 0099	// check_101:	ADD R0, R9, R9
-@0050 C20E	// b eq, broked
-@0051 C40D	// b gt, broked
-@0052 C80C	// b gte, broked
+@0050 C20C	// b eq, broked
+@0051 C40B	// b gt, broked
+@0052 C80A	// b gte, broked
 @0053 C601	// b lt, skip14
 @0054 F000	// HLT
 @0055 CA01	// skip14:	b lte, skip15
@@ -90,8 +90,6 @@
 @0059 C001	// skip16:	b neq, skip17
 @005a F000	// HLT
 @005b CE00	// skip17:	b uncond, check_JAL
-@005c D003	// check_JAL:	JAL test_works
-@005d F000	// HLT
-@005e F000	// HLT
-@005f F000	// broked:		HLT
-@0060 F000	// test_works:	HLT
+@005c F000	// HLT
+@005d F000	// broked:		HLT
+@005e E0F0	// check_return:	JR R15
