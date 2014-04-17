@@ -1,5 +1,5 @@
-module Memory(clk, hlt, memAddr, memRe, memWe, regWe, wrtData, zr, ne, ov, addz, b, jal, jr, jalResult, jrResult, branchResult, branchOp, memData, branchAddr, flush, regWriteEnable, branch);
-  input clk, hlt, memRe, memWe, regWe, zr, ne, ov, addz, b, jal, jr, flush;
+module Memory(clk, memAddr, memRe, memWe, regWe, wrtData, zr, ne, ov, addz, b, jal, jr, jalResult, jrResult, branchResult, branchOp, memData, branchAddr, flush, regWriteEnable, branch);
+  input clk, memRe, memWe, regWe, zr, ne, ov, addz, b, jal, jr, flush;
   input [15:0] memAddr, wrtData, jalResult, jrResult, branchResult;
   input [2:0] branchOp;
 
@@ -16,7 +16,7 @@ module Memory(clk, hlt, memAddr, memRe, memWe, regWe, wrtData, zr, ne, ov, addz,
   localparam ovfl   = 3'b110;
   localparam uncond = 3'b111;
 
-  assign finalWe = !flush & !hlt & memWe; 
+  assign finalWe = !flush & memWe; 
 
   DM dm(.clk(clk),
         .addr(memAddr),
@@ -25,7 +25,7 @@ module Memory(clk, hlt, memAddr, memRe, memWe, regWe, wrtData, zr, ne, ov, addz,
         .wrt_data(wrtData),
         .rd_data(memData));
 
-  assign regWriteEnable = !flush & !hlt & (regWe || (addz & zr));
+  assign regWriteEnable = !flush & (regWe || (addz & zr));
 
   assign branchAddr = jal ? jalResult:
                       jr ? jrResult: // Set to P0

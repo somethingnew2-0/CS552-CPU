@@ -1,4 +1,4 @@
-module ID(instr, rst_n, imm, p0Addr, p1Addr, regAddr, shamt, aluOp, branchOp, regRe0, regRe1, regWe, memRe, memWe, memToReg, addz, branch, jal, jr, hlt, aluSrc0, aluSrc1, ovEn, zrEn, neEn);
+module ID(instr, rst_n, imm, p0Addr, p1Addr, regAddr, shamt, aluOp, branchOp, regRe0, regRe1, regWe, memRe, memWe, memToReg, addz, branch, jal, jr, aluSrc0, aluSrc1, ovEn, zrEn, neEn);
 
   input [15:0] instr;
   input rst_n;
@@ -8,7 +8,7 @@ module ID(instr, rst_n, imm, p0Addr, p1Addr, regAddr, shamt, aluOp, branchOp, re
   output [2:0] aluOp, branchOp;
 
   // Control signals
-  output regRe0, regRe1, regWe, memRe, memWe, memToReg, addz, branch, jal, jr, hlt, aluSrc0, aluSrc1, ovEn, zrEn, neEn;
+  output regRe0, regRe1, regWe, memRe, memWe, memToReg, addz, branch, jal, jr, aluSrc0, aluSrc1, ovEn, zrEn, neEn;
   
   // ALU func for ADD
   localparam aluAdd = 3'b000;
@@ -28,8 +28,6 @@ module ID(instr, rst_n, imm, p0Addr, p1Addr, regAddr, shamt, aluOp, branchOp, re
   assign branch = instr[15:12] == 4'b1100;
   assign jal = instr[15:12] == 4'b1101;
   assign jr = instr[15:12] == 4'b1110;
-  assign hlt = !rst_n ? 1'b0 : 
-               instr[15:12] == 4'b1111;
 
   assign imm = instr[11:0];
 
@@ -54,7 +52,7 @@ module ID(instr, rst_n, imm, p0Addr, p1Addr, regAddr, shamt, aluOp, branchOp, re
   assign shamt = instr[3:0];
   
   // All re are always on
-  assign {regRe0, regRe1} = {!hlt, !hlt};
+  assign {regRe0, regRe1} = {1'b1, 1'b1};
   
   // Set we and memwe
   assign regWe = !addz & !sw & !branch & !jr;  // Everything except these
