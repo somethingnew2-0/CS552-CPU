@@ -58,7 +58,7 @@ module cpu(clk, rst_n, hlt, pc);
       if(!flush) begin
         instr_IF_ID <= instr_IF;
       end else begin
-        instr_IF_ID <= 16'hB0FF; // Send a NOP through the pipe
+        instr_IF_ID <= 16'h0000; // Send a NOP through the pipe
       end
       //Used in id end
 
