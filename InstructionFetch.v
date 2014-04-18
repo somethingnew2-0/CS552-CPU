@@ -19,7 +19,8 @@ module InstructionFetch(clk, rst_n, branch, branchAddr, stall, rd_en, instr, pcN
   assign effectivePc = (branchInit && branch) ? branchAddr:
                        pcNext;
 
-  assign instr = (instrFetched === 16'hXXXX) ? 16'h0000 : instrFetched;
+  // Send a NOP through the pipe on empty instruction
+  assign instr = (instrFetched === 16'hXXXX) ? 16'hB0FF : instrFetched;
 
   always @(posedge clk or negedge rst_n) begin
     if(!rst_n)
