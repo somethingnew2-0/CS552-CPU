@@ -27,9 +27,9 @@ module Memory(clk, flush, memAddr, memRe, memWe, regWe, wrtData, zr, ne, ov, zrE
 
   assign regWriteEnable = !flush & (regWe || (addz & zr));
 
-  assign ovEn_MEM = addz ? (zr ? ovEn_EX_MEM : 0'b0): ovEn_EX_MEM;
-  assign zrEn_MEM = addz ? (zr ? zrEn_EX_MEM : 0'b0): zrEn_EX_MEM;
-  assign neEn_MEM = addz ? (zr ? neEn_EX_MEM : 0'b0): neEn_EX_MEM;
+  assign ovEn_MEM = addz ? zr : ovEn_EX_MEM;
+  assign zrEn_MEM = addz ? zr : zrEn_EX_MEM;
+  assign neEn_MEM = addz ? zr : neEn_EX_MEM;
 
   assign branchAddr = jal ? jalResult:
                       jr ? jrResult: // Set to P0
