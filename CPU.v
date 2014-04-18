@@ -22,7 +22,7 @@ module cpu(clk, rst_n, hlt, pc);
     outputs of the module */
 
   wire hlt_IF;
-  wire [15:0] pcNext_IF, instr_IF;
+  wire [15:0] instr_IF;
 
   InstructionFetch instructionfetch(
                                     // Global inputs
@@ -34,11 +34,10 @@ module cpu(clk, rst_n, hlt, pc);
                                     .rd_en(rd_en),
                                     
                                     // Global outputs
-                                    .pc(pc),
+                                    .pcNext(pc),
                                     .branchInit(branchInit),
 
                                     // Pipeline stage outputs 
-                                    .pcNext(pcNext_IF),
                                     .instr(instr_IF),
                                     .hlt(hlt_IF));
 
@@ -68,7 +67,7 @@ module cpu(clk, rst_n, hlt, pc);
       end
 
       //Just passing through id start
-      pcNext_IF_ID <= pcNext_IF;
+      pcNext_IF_ID <= pc;
       //Just passing through id end
     end
   end
