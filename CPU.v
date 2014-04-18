@@ -9,6 +9,8 @@ module cpu(clk, rst_n, hlt, pc);
 
   HazardControl hazardcontrol(
                               // Global inputs
+                              .clk(clk),
+                              .rst_n(rst_n),
                               .branch(branch),
                               .branchInit(branchInit),
                               .forwardStall(forwardStall),
