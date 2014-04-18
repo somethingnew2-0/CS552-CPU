@@ -6,11 +6,11 @@ module Forwarding(p0, p1, p0Addr, p1Addr, regAddr_EX_MEM, regWe_EX_MEM, aluResul
   output forwardStall;
 
   assign forwardP0 = (p0Addr == 4'b0000) ? p0 : 
-                     (regWe_EX_MEM && (p0Addr == regAddr_EX_MEM)) ? (jal_EX_MEM ? pcNext_EX_MEM : aluResult_EX_MEM) :
+                     (regWe_EX_MEM && (p0Addr == regAddr_EX_MEM) && !(regWe_MEM_WB && memToReg_MEM_WB && (p0Addr == regAddr_MEM_WB))) ? (jal_EX_MEM ? pcNext_EX_MEM : aluResult_EX_MEM) :
                      (regWe_MEM_WB && (p0Addr == regAddr_MEM_WB)) ? (jal_MEM_WB ? pcNext_MEM_WB : (memToReg_MEM_WB ? memData_MEM_WB : aluResult_MEM_WB)) :
                       p0;
   assign forwardP1 = (p1Addr == 4'b0000) ? p1 : 
-                     (regWe_EX_MEM && (p1Addr == regAddr_EX_MEM)) ? (jal_EX_MEM ? pcNext_EX_MEM : aluResult_EX_MEM) :
+                     (regWe_EX_MEM && (p1Addr == regAddr_EX_MEM) && !(regWe_MEM_WB && memToReg_MEM_WB && (p1Addr == regAddr_MEM_WB))) ? (jal_EX_MEM ? pcNext_EX_MEM : aluResult_EX_MEM) :
                      (regWe_MEM_WB && (p1Addr == regAddr_MEM_WB)) ? (jal_MEM_WB ? pcNext_MEM_WB : (memToReg_MEM_WB ? memData_MEM_WB : aluResult_MEM_WB)) :
                       p1;
 
