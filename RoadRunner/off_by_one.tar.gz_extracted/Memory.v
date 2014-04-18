@@ -1,5 +1,5 @@
-module Memory(clk, memAddr, memRe, memWe, regWe, wrtData, zr, ne, ov, addz, b, jal, jr, jalResult, jrResult, branchResult, branchOp, memData, branchAddr, flush, regWriteEnable, branch);
-  input clk, memRe, memWe, regWe, zr, ne, ov, addz, b, jal, jr, flush;
+module Memory(clk, flush, memAddr, memRe, memWe, regWe, wrtData, zr, ne, ov, addz, b, jal, jr, jalResult, jrResult, branchResult, branchOp, memData, branchAddr, regWriteEnable, branch);
+  input clk, flush,  memRe, memWe, regWe, zr, ne, ov, addz, b, jal, jr;
   input [15:0] memAddr, wrtData, jalResult, jrResult, branchResult;
   input [2:0] branchOp;
 
