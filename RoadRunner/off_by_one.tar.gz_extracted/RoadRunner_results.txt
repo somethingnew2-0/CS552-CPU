@@ -1,4 +1,5 @@
 src1_test.asm, fail
+random_test.asm, fail
 basic_tests.asm, pass, 20, 15
 branch_test.asm, fail
 no_hazard_test.asm, pass, 36, 31
