@@ -24,8 +24,8 @@
 # Loading work.ID
 # Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.rf
 # Loading work.rf
-# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.Forwarding
-# Loading work.Forwarding
+# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.ExecuteForwarding
+# Loading work.ExecuteForwarding
 # Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.Execute
 # Loading work.Execute
 # Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.SRC_MUX
@@ -36,6 +36,8 @@
 # Loading work.BranchAdder
 # Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.JumpAdder
 # Loading work.JumpAdder
+# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.MemoryForwarding
+# Loading work.MemoryForwarding
 # Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.Memory
 # Loading work.Memory
 # Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.DM
@@ -43,21 +45,21 @@
 # Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.Writeback
 # Loading work.Writeback
 # run -a 
-# R1 = 0005
-# R2 = 0005
-# R3 = 3732
-# R4 = 0005
+# R1 = xxxx
+# R2 = xxxx
+# R3 = 07xx
+# R4 = xxxx
 # R5 = xxxx
-# R6 = 000a
+# R6 = xxxx
 # R7 = xxxx
 # R8 = xxxx
 # R9 = xxxx
 # Ra = xxxx
 # Rb = xxxx
-# Rc = 2121
-# Rd = 3737
-# Re = 0001
-# Rf = 0001
-# Time:        381
-# Cycles:       39
-# PC:         0021
+# Rc = xxxx
+# Rd = xxxx
+# Re = xxxx
+# Rf = xxxx
+# Time:        181
+# Cycles:       19
+# PC:         000b

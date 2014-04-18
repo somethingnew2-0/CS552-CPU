@@ -19,9 +19,9 @@ w1397686664
 Foff_by_one.tar.gz_extracted/ALU.v
 L0 2
 Z3 OL;L;10.2c;57
-Z4 !s108 1397794204.740287
-Z5 !s107 off_by_one.tar.gz_extracted/RoadRunner.vs|off_by_one.tar.gz_extracted/RoadRunner.sv|off_by_one.tar.gz_extracted/Writeback.v|off_by_one.tar.gz_extracted/unified_mem.v|off_by_one.tar.gz_extracted/SRC_MUX.v|off_by_one.tar.gz_extracted/rf_pipelined.v|off_by_one.tar.gz_extracted/PC.v|off_by_one.tar.gz_extracted/Memory.v|off_by_one.tar.gz_extracted/JumpAdder.v|off_by_one.tar.gz_extracted/InstructionFetch.v|off_by_one.tar.gz_extracted/InstructionDecode.v|off_by_one.tar.gz_extracted/instr_mem.v|off_by_one.tar.gz_extracted/ID.v|off_by_one.tar.gz_extracted/HazardControl.v|off_by_one.tar.gz_extracted/Forwarding.v|off_by_one.tar.gz_extracted/Execute.v|off_by_one.tar.gz_extracted/data_mem.v|off_by_one.tar.gz_extracted/CPU.v|off_by_one.tar.gz_extracted/clk_and_rst_n.v|off_by_one.tar.gz_extracted/cache.v|off_by_one.tar.gz_extracted/BranchAdder.v|off_by_one.tar.gz_extracted/ALU.v|
-Z6 !s90 +incdir+off_by_one.tar.gz_extracted|off_by_one.tar.gz_extracted/ALU.v|off_by_one.tar.gz_extracted/BranchAdder.v|off_by_one.tar.gz_extracted/cache.v|off_by_one.tar.gz_extracted/clk_and_rst_n.v|off_by_one.tar.gz_extracted/CPU.v|off_by_one.tar.gz_extracted/data_mem.v|off_by_one.tar.gz_extracted/Execute.v|off_by_one.tar.gz_extracted/Forwarding.v|off_by_one.tar.gz_extracted/HazardControl.v|off_by_one.tar.gz_extracted/ID.v|off_by_one.tar.gz_extracted/instr_mem.v|off_by_one.tar.gz_extracted/InstructionDecode.v|off_by_one.tar.gz_extracted/InstructionFetch.v|off_by_one.tar.gz_extracted/JumpAdder.v|off_by_one.tar.gz_extracted/Memory.v|off_by_one.tar.gz_extracted/PC.v|off_by_one.tar.gz_extracted/rf_pipelined.v|off_by_one.tar.gz_extracted/SRC_MUX.v|off_by_one.tar.gz_extracted/unified_mem.v|off_by_one.tar.gz_extracted/Writeback.v|off_by_one.tar.gz_extracted/RoadRunner.sv|off_by_one.tar.gz_extracted/RoadRunner.vs|
+Z4 !s108 1397795624.350085
+Z5 !s107 off_by_one.tar.gz_extracted/RoadRunner.vs|off_by_one.tar.gz_extracted/RoadRunner.sv|off_by_one.tar.gz_extracted/Writeback.v|off_by_one.tar.gz_extracted/unified_mem.v|off_by_one.tar.gz_extracted/SRC_MUX.v|off_by_one.tar.gz_extracted/rf_pipelined.v|off_by_one.tar.gz_extracted/PC.v|off_by_one.tar.gz_extracted/Memory.v|off_by_one.tar.gz_extracted/MemoryForwarding.v|off_by_one.tar.gz_extracted/JumpAdder.v|off_by_one.tar.gz_extracted/InstructionFetch.v|off_by_one.tar.gz_extracted/InstructionDecode.v|off_by_one.tar.gz_extracted/instr_mem.v|off_by_one.tar.gz_extracted/ID.v|off_by_one.tar.gz_extracted/HazardControl.v|off_by_one.tar.gz_extracted/Execute.v|off_by_one.tar.gz_extracted/ExecuteForwarding.v|off_by_one.tar.gz_extracted/data_mem.v|off_by_one.tar.gz_extracted/CPU.v|off_by_one.tar.gz_extracted/clk_and_rst_n.v|off_by_one.tar.gz_extracted/cache.v|off_by_one.tar.gz_extracted/BranchAdder.v|off_by_one.tar.gz_extracted/ALU.v|
+Z6 !s90 +incdir+off_by_one.tar.gz_extracted|off_by_one.tar.gz_extracted/ALU.v|off_by_one.tar.gz_extracted/BranchAdder.v|off_by_one.tar.gz_extracted/cache.v|off_by_one.tar.gz_extracted/clk_and_rst_n.v|off_by_one.tar.gz_extracted/CPU.v|off_by_one.tar.gz_extracted/data_mem.v|off_by_one.tar.gz_extracted/ExecuteForwarding.v|off_by_one.tar.gz_extracted/Execute.v|off_by_one.tar.gz_extracted/HazardControl.v|off_by_one.tar.gz_extracted/ID.v|off_by_one.tar.gz_extracted/instr_mem.v|off_by_one.tar.gz_extracted/InstructionDecode.v|off_by_one.tar.gz_extracted/InstructionFetch.v|off_by_one.tar.gz_extracted/JumpAdder.v|off_by_one.tar.gz_extracted/MemoryForwarding.v|off_by_one.tar.gz_extracted/Memory.v|off_by_one.tar.gz_extracted/PC.v|off_by_one.tar.gz_extracted/rf_pipelined.v|off_by_one.tar.gz_extracted/SRC_MUX.v|off_by_one.tar.gz_extracted/unified_mem.v|off_by_one.tar.gz_extracted/Writeback.v|off_by_one.tar.gz_extracted/RoadRunner.sv|off_by_one.tar.gz_extracted/RoadRunner.vs|
 Z7 o-L mtiAvm -L mtiOvm -L mtiUvm -L mtiUPF
 Z8 !s92 +incdir+off_by_one.tar.gz_extracted -L mtiAvm -L mtiOvm -L mtiUvm -L mtiUPF
 n@a@l@u
@@ -51,11 +51,11 @@ n@branch@adder
 !s100 :a@5Gk`<keh[QmfQjzOcT3
 !i111 0
 vcache
-Z10 !s110 1397794204
+Z10 !s110 1397795624
 I25YR>6?Xf?MLlD5dR2]:F1
 R1
 R2
-Z11 w1397794203
+Z11 w1397795622
 8off_by_one.tar.gz_extracted/cache.v
 Foff_by_one.tar.gz_extracted/cache.v
 L0 1
@@ -95,9 +95,9 @@ vcpu
 R1
 r1
 31
-I?If5QQ:42Hc:`4Ic_=V[Q3
+IM=01]PRNM1mhI^]Q=56:53
 R2
-Z12 w1397787746
+Z12 w1397794447
 8off_by_one.tar.gz_extracted/CPU.v
 Foff_by_one.tar.gz_extracted/CPU.v
 L0 1
@@ -109,7 +109,7 @@ R7
 R8
 !s85 0
 !i10b 1
-!s100 b4UO_mXl:FL9fDnSmjWLF2
+!s100 <LaFhU@139aE4cZD1<UHj2
 !i111 0
 vDM
 R1
@@ -153,15 +153,15 @@ n@execute
 !i10b 1
 !s100 Ncb4<CC<jMo6[BXlEiTE63
 !i111 0
-vForwarding
+vExecuteForwarding
 R1
 r1
 31
-Ic1@H3>BcXf[VR4jkVHEJJ3
+ICJD[]eOeYkZdhfA8Vdk;f1
 R2
 R12
-8off_by_one.tar.gz_extracted/Forwarding.v
-Foff_by_one.tar.gz_extracted/Forwarding.v
+8off_by_one.tar.gz_extracted/ExecuteForwarding.v
+Foff_by_one.tar.gz_extracted/ExecuteForwarding.v
 L0 1
 R3
 R4
@@ -169,10 +169,10 @@ R5
 R6
 R7
 R8
-n@forwarding
+n@execute@forwarding
 !s85 0
 !i10b 1
-!s100 ^o`D4N?E2>>0iFm=;VTCL2
+!s100 @@_hk:iMRV9A]<olXH6BO1
 !i111 0
 vHazardControl
 R1
@@ -180,7 +180,7 @@ r1
 31
 IcIkR9RS;aCW_]FaV<1Rlg3
 R2
-R12
+w1397787746
 8off_by_one.tar.gz_extracted/HazardControl.v
 Foff_by_one.tar.gz_extracted/HazardControl.v
 L0 1
@@ -320,6 +320,27 @@ n@memory
 !s85 0
 !i10b 1
 !s100 Xk2L3Z7HF=h2h2]5GQd@92
+!i111 0
+vMemoryForwarding
+R1
+r1
+31
+I0alkR_ZzlcHg@[TGCmOE00
+R2
+R12
+8off_by_one.tar.gz_extracted/MemoryForwarding.v
+Foff_by_one.tar.gz_extracted/MemoryForwarding.v
+L0 1
+R3
+R4
+R5
+R6
+R7
+R8
+n@memory@forwarding
+!s85 0
+!i10b 1
+!s100 [8PbeNB1?Y>ND``I[_<@40
 !i111 0
 vPC
 R10

@@ -94,3 +94,4 @@
 @005d F000	// HLT
 @005e F000	// broked:		HLT
 @005f E0F0	// check_return:	JR R15
+@0060 F000	// HLT

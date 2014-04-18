@@ -28,8 +28,8 @@ Reading pref.tcl
 # Loading work.ID
 # Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.rf
 # Loading work.rf
-# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.Forwarding
-# Loading work.Forwarding
+# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.ExecuteForwarding
+# Loading work.ExecuteForwarding
 # Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.Execute
 # Loading work.Execute
 # Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.SRC_MUX
@@ -40,6 +40,8 @@ Reading pref.tcl
 # Loading work.BranchAdder
 # Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.JumpAdder
 # Loading work.JumpAdder
+# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.MemoryForwarding
+# Loading work.MemoryForwarding
 # Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.Memory
 # Loading work.Memory
 # Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.DM
@@ -47,10 +49,10 @@ Reading pref.tcl
 # Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.Writeback
 # Loading work.Writeback
 # run -a 
-# R1 = 0005
+# R1 = xxxx
 # R2 = 0005
-# R3 = 3732
-# R4 = 0005
+# R3 = xxxx
+# R4 = xxxx
 # R5 = xxxx
 # R6 = 000a
 # R7 = xxxx

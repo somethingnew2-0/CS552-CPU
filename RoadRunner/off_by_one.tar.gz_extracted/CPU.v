@@ -193,13 +193,13 @@ module cpu(clk, rst_n, hlt, pc);
     end
   end
 
-  // Forwarding signals
+  // ExecuteForwarding signals
   wire [15:0] forwardP0_EX, forwardP1_EX;
   reg [15:0] aluResult_EX_MEM, pcNext_EX_MEM, aluResult_MEM_WB, pcNext_MEM_WB, memData_MEM_WB;
   reg [3:0] regAddr_EX_MEM, regAddr_MEM_WB;
   reg regWe_EX_MEM, jal_EX_MEM, regWe_MEM_WB, jal_MEM_WB, memToReg_EX_MEM, memToReg_MEM_WB;
 
-  Forwarding forwarding(
+  ExecuteForwarding executeforwarding(
                   // Forwarding inputs
                   .p0(p0_ID_EX),
                   .p1(p1_ID_EX),
@@ -254,6 +254,7 @@ module cpu(clk, rst_n, hlt, pc);
   // Inputs to Memory from flops
   reg [15:0] branchResult_EX_MEM, jumpResult_EX_MEM, p0_EX_MEM, p1_EX_MEM, memAddr_EX_MEM;
   reg [2:0] branchOp_EX_MEM;
+  reg [3:0] p1Addr_EX_MEM;
   reg memRe_EX_MEM, memWe_EX_MEM, addz_EX_MEM, branch_EX_MEM, jr_EX_MEM, ov_EX_MEM, zr_EX_MEM, ovEn_EX_MEM, ne_EX_MEM, zrEn_EX_MEM, neEn_EX_MEM, hlt_EX_MEM; 
   // From the WB stage
   reg ov_MEM_WB, zr_MEM_WB, ne_MEM_WB;
@@ -273,6 +274,7 @@ module cpu(clk, rst_n, hlt, pc);
       memAddr_EX_MEM <= aluResult_EX; 
       p0_EX_MEM <= forwardP0_EX; 
       p1_EX_MEM <= forwardP1_EX; 
+      p1Addr_EX_MEM <= p1Addr_ID_EX;
       branchOp_EX_MEM <= branchOp_ID_EX;
       memRe_EX_MEM <= memRe_ID_EX;
 
@@ -317,6 +319,24 @@ module cpu(clk, rst_n, hlt, pc);
     end
   end
 
+  wire [15:0] forwardWrtData_MEM;
+
+  MemoryForwarding memoryforwarding(
+    // WB forwarding input
+    .wrtData(p1_EX_MEM),
+    .p1Addr(p1Addr_EX_MEM),
+    .regAddr_MEM_WB(regAddr_MEM_WB), 
+    .regWe_MEM_WB(regWe_MEM_WB),
+    .aluResult_MEM_WB(aluResult_MEM_WB),
+    .jal_MEM_WB(jal_MEM_WB),
+    .pcNext_MEM_WB(pcNext_MEM_WB),
+    .memToReg_MEM_WB(memToReg_MEM_WB),
+    .memData_MEM_WB(memData_MEM_WB),
+
+    // Forwarding output
+    .forwardWrtData(forwardWrtData_MEM)
+  );
+
   wire [15:0] memData_MEM; // Output From Memory
   wire regWe_MEM;
 
@@ -330,7 +350,7 @@ module cpu(clk, rst_n, hlt, pc);
         .memRe(memRe_EX_MEM),
         .memWe(memWe_EX_MEM),
         .regWe(regWe_EX_MEM),
-        .wrtData(p1_EX_MEM),
+        .wrtData(forwardWrtData_MEM),
         .zr(zr_MEM_WB), 
         .ne(ne_MEM_WB), 
         .ov(ov_MEM_WB),  

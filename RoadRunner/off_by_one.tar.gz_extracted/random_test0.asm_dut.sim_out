@@ -49,7 +49,17 @@ Reading pref.tcl
 # Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.Writeback
 # Loading work.Writeback
 # run -a 
+# ** Warning: (vsim-PLI-3410) Illegal character 'r' in data on line 1 of file "instr.hex".    : off_by_one.tar.gz_extracted/instr_mem.v(19)
+#    Time: 0 ns  Iteration: 0  Instance: /clk_and_rst_n/WISC_S14/instructionfetch/im
+# ** Warning: (vsim-PLI-3410) Illegal character 'r' in data on line 1 of file "instr.hex".    : off_by_one.tar.gz_extracted/instr_mem.v(19)
+#    Time: 0 ns  Iteration: 0  Instance: /clk_and_rst_n/WISC_S14/instructionfetch/im
+# ** Warning: (vsim-PLI-3410) Illegal character 'o' in data on line 1 of file "instr.hex".    : off_by_one.tar.gz_extracted/instr_mem.v(19)
+#    Time: 0 ns  Iteration: 0  Instance: /clk_and_rst_n/WISC_S14/instructionfetch/im
+# ** Warning: (vsim-PLI-3410) Illegal character 'r' in data on line 1 of file "instr.hex".    : off_by_one.tar.gz_extracted/instr_mem.v(19)
+#    Time: 0 ns  Iteration: 0  Instance: /clk_and_rst_n/WISC_S14/instructionfetch/im
+# ** Warning: (vsim-PLI-3410) Illegal character ':' in data on line 1 of file "instr.hex".    : off_by_one.tar.gz_extracted/instr_mem.v(19)
+#    Time: 0 ns  Iteration: 0  Instance: /clk_and_rst_n/WISC_S14/instructionfetch/im
 # ERROR at time 1000010: simulation is running for too long; limit of 100000 cycles exceeded!
 # Time:    1000011
 # Cycles:   100002
-# PC:         002X
+# PC:         0001
