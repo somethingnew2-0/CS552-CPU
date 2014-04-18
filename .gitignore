@@ -1,4 +1,5 @@
 work/**
+my_lib/**
 *.mpf
 *.bak
 *.mti
