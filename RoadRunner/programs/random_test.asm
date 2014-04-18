@@ -80,3 +80,5 @@ Park:   ADDz R0, R2, R14
         SRA R9, R1, 6
         LW R11, R10, 9
         ADDz R9, R6, R3
+
+	HLT

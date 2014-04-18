@@ -49,7 +49,21 @@ Reading pref.tcl
 # Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.Writeback
 # Loading work.Writeback
 # run -a 
-# ERROR at time 1000010: simulation is running for too long; limit of 100000 cycles exceeded!
-# Time:    1000011
-# Cycles:   100002
-# PC:         002X
+# R1 = xxxx
+# R2 = xxxx
+# R3 = 07xx
+# R4 = xxxx
+# R5 = xxxx
+# R6 = xxxx
+# R7 = xxxx
+# R8 = xxxx
+# R9 = xxxx
+# Ra = xxxx
+# Rb = xxxx
+# Rc = xxxx
+# Rd = xxxx
+# Re = xxxx
+# Rf = xxxx
+# Time:        181
+# Cycles:       19
+# PC:         000b
