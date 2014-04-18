@@ -25,7 +25,7 @@ module Memory(clk, flush, memAddr, memRe, memWe, regWe, wrtData, zr, ne, ov, zrE
         .wrt_data(wrtData),
         .rd_data(memData));
 
-  assign regWriteEnable = !flush & (regWe || (addz & zr));
+  assign regWriteEnable = (!flush || jal) && (regWe || (addz && zr));
 
   assign ovEn_MEM = addz ? zr : ovEn_EX_MEM;
   assign zrEn_MEM = addz ? zr : zrEn_EX_MEM;

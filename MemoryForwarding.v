@@ -8,6 +8,4 @@ module MemoryForwarding(wrtData, p1Addr, regAddr_MEM_WB, regWe_MEM_WB, aluResult
                           (regWe_MEM_WB && (p1Addr == regAddr_MEM_WB)) ? (jal_MEM_WB ? pcNext_MEM_WB : (memToReg_MEM_WB ? memData_MEM_WB : aluResult_MEM_WB)) :
                           wrtData;
 
-  assign memForward = !(p1Addr == 4'b0000) && (regWe_MEM_WB && (p1Addr == regAddr_MEM_WB)); // Is Memory forwarding ever used?
-
 endmodule

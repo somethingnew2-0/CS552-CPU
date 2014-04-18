@@ -115,6 +115,4 @@ check_JAL:	JAL check_return
 
 broked:		HLT # Broken
 
-check_return:	JR R15
-
-		HLT
+check_return: JR R15
