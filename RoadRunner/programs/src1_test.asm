@@ -80,5 +80,4 @@ AND R0, R0, R0	# Filler leave this one uncommented so you are testing a differen
 SW	R6, R12, 0	# Store it somewhere else
 LW	R6, R12, 0	# R6 = 10
 
-
-
+HLT
