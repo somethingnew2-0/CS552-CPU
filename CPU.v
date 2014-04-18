@@ -253,7 +253,7 @@ module cpu(clk, rst_n, hlt, pc);
   // Inputs to Memory from flops
   reg [15:0] branchResult_EX_MEM, jumpResult_EX_MEM, p0_EX_MEM, p1_EX_MEM, memAddr_EX_MEM;
   reg [2:0] branchOp_EX_MEM;
-  reg memRe_EX_MEM, memWe_EX_MEM, addz_EX_MEM, branch_EX_MEM, jr_EX_MEM, ov_EX_MEM, zr_EX_MEM, ovEn_EX_MEM, ne_EX_MEM, zrEn_EX_MEM, neEn_EX_MEM; 
+  reg memRe_EX_MEM, memWe_EX_MEM, addz_EX_MEM, branch_EX_MEM, jr_EX_MEM, ov_EX_MEM, zr_EX_MEM, ovEn_EX_MEM, ne_EX_MEM, zrEn_EX_MEM, neEn_EX_MEM, hlt_EX_MEM; 
   // From the WB stage
   reg ov_MEM_WB, zr_MEM_WB, ne_MEM_WB;
 
@@ -298,14 +298,6 @@ module cpu(clk, rst_n, hlt, pc);
         neEn_EX_MEM <= 1'b0; 
       end
 
-      if(!rst_n) begin
-        hlt <= 1'b0;
-      end else if(!branch) begin
-        hlt <= hlt_ID_EX;
-      end else begin 
-        hlt <= 1'b0;
-      end
-
       addz_EX_MEM <= addz_ID_EX;
 
       //Used in mem end    
@@ -314,6 +306,8 @@ module cpu(clk, rst_n, hlt, pc);
       pcNext_EX_MEM <= pcNext_ID_EX;
       regAddr_EX_MEM <= regAddr_ID_EX;
       memToReg_EX_MEM <= memToReg_ID_EX;
+
+      hlt_EX_MEM <= hlt_ID_EX;
 
       ov_EX_MEM <= ov_EX;
       zr_EX_MEM <= zr_EX;
@@ -369,28 +363,41 @@ module cpu(clk, rst_n, hlt, pc);
     regAddr_MEM_WB <= regAddr_EX_MEM;
     jal_MEM_WB <= jal_EX_MEM;
     memToReg_MEM_WB <= memToReg_EX_MEM;      
-    regWe_MEM_WB <= regWe_MEM;    
+    regWe_MEM_WB <= regWe_MEM;      
 
     if(!rst_n) begin
       zr_MEM_WB <= 1'b0; 
       ne_MEM_WB <= 1'b0;  
-      ov_MEM_WB <= 1'b0;  
+      ov_MEM_WB <= 1'b0; 
+      hlt <= 1'b0; 
     end
     else begin
-      if(ovEn_EX_MEM)
+      if(ovEn_EX_MEM) begin
         ov_MEM_WB <= ov_EX_MEM; 
-      else
+      end
+      else begin
         ov_MEM_WB <= ov_MEM_WB;
+      end
 
-      if (zrEn_EX_MEM)
+      if (zrEn_EX_MEM) begin
         zr_MEM_WB <= zr_EX_MEM; 
-      else
+      end
+      else begin
         zr_MEM_WB <= zr_MEM_WB;
+      end
 
-      if (neEn_EX_MEM)
+      if (neEn_EX_MEM) begin
         ne_MEM_WB <= ne_EX_MEM; 
-      else
+      end
+      else begin
         ne_MEM_WB <= ne_MEM_WB; 
+      end
+
+      if(!branch) begin
+        hlt <= hlt_EX_MEM;
+      end else begin 
+        hlt <= 1'b0;
+      end
     end
   end
 
