@@ -65,6 +65,8 @@ LLB R12, 33		# Initialize
 #ADD R0, R0, R0
 #ADD R0, R0, R0
 LHB R12, 33		# 	value
+#ADD R0, R0, R0
+#ADD R0, R0, R0
 
 LW	R5, R13, 0	# Load 10		
 #ADD R0, R0, R0
