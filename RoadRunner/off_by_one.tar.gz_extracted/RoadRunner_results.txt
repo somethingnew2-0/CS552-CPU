@@ -1,5 +1,5 @@
-src1_test.asm, pass, 33, 32
-branch_test.asm, pass, 76, 75
-src0_test.asm, pass, 33, 32
-no_hazard_test.asm, pass, 29, 28
-basic_tests.asm, pass, 18, 17
+src1_test.asm, fail
+src0_test.asm, fail
+basic_tests.asm, fail
+branch_test.asm, fail
+no_hazard_test.asm, fail

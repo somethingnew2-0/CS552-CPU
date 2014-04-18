@@ -16,6 +16,8 @@ Reading pref.tcl
 # Loading work.clk_and_rst_n
 # Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.cpu
 # Loading work.cpu
+# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.HazardControl
+# Loading work.HazardControl
 # Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.InstructionFetch
 # Loading work.InstructionFetch
 # Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.IM
@@ -26,6 +28,8 @@ Reading pref.tcl
 # Loading work.ID
 # Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.rf
 # Loading work.rf
+# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.Forwarding
+# Loading work.Forwarding
 # Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.Execute
 # Loading work.Execute
 # Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.SRC_MUX
@@ -47,7 +51,7 @@ Reading pref.tcl
 # R2 = 2222
 # R3 = 3333
 # R4 = 4444
-# R5 = 5555
+# R5 = 5858
 # R6 = 6666
 # R7 = 7777
 # R8 = 8888
@@ -58,6 +62,6 @@ Reading pref.tcl
 # Rd = dddd
 # Re = eeee
 # Rf = ffff
-# Time:        756
-# Cycles:       76
-# PC:         005c
+# Time:        366
+# Cycles:       37
+# PC:         0024
