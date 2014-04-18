@@ -1,7 +1,7 @@
 module cpu(clk, rst_n, hlt, pc);
   input clk; 
   input rst_n;
-  output hlt; //Assuming these are current flag states
+  output reg hlt; //Assuming these are current flag states
   output [15:0] pc;
 
   wire [15:0] branchAddr;
@@ -20,6 +20,7 @@ module cpu(clk, rst_n, hlt, pc);
   /* The pipeline. Each blank line separates inputs from
     outputs of the module */
 
+  wire hlt_IF;
   wire [15:0] pcNext_IF, instr_IF;
 
   InstructionFetch instructionfetch(
@@ -33,14 +34,15 @@ module cpu(clk, rst_n, hlt, pc);
                                     
                                     // Global outputs
                                     .pc(pc),
-                                    .hlt(hlt),
                                     .branchInit(branchInit),
 
                                     // Pipeline stage outputs 
                                     .pcNext(pcNext_IF),
-                                    .instr(instr_IF));
+                                    .instr(instr_IF),
+                                    .hlt(hlt_IF));
 
   reg [15:0] instr_IF_ID, pcNext_IF_ID;
+  reg hlt_IF_ID;
 
   //******************************************************
   // IF_ID
@@ -56,6 +58,12 @@ module cpu(clk, rst_n, hlt, pc);
       instr_IF_ID <= 16'hB0FF; // Send a NOP through the pipe
     end
     //Used in id end
+
+    if(!branch) begin
+      hlt_IF_ID <= hlt_IF;
+    end else begin
+      hlt_IF_ID <= 1'b0;
+    end
 
     //Just passing through id start
     pcNext_IF_ID <= pcNext_IF;
@@ -118,7 +126,7 @@ module cpu(clk, rst_n, hlt, pc);
   // Just passing through signals
   reg [3:0] regAddr_ID_EX;
   reg [2:0] branchOp_ID_EX;
-  reg regWe_ID_EX, memRe_ID_EX, memWe_ID_EX, memToReg_ID_EX, addz_ID_EX, branch_ID_EX, jal_ID_EX, jr_ID_EX, ovEn_ID_EX, zrEn_ID_EX, neEn_ID_EX;
+  reg regWe_ID_EX, memRe_ID_EX, memWe_ID_EX, memToReg_ID_EX, addz_ID_EX, branch_ID_EX, jal_ID_EX, jr_ID_EX, ovEn_ID_EX, zrEn_ID_EX, neEn_ID_EX, hlt_ID_EX;
 
   //******************************************************
   // ID_EX
@@ -166,6 +174,12 @@ module cpu(clk, rst_n, hlt, pc);
       zrEn_ID_EX <= 1'b0;
       neEn_ID_EX <= 1'b0;
     end 
+
+    if(!branch) begin
+      hlt_ID_EX <= hlt_IF_ID;
+    end else begin
+      hlt_ID_EX <= 1'b0;
+    end
 
     memRe_ID_EX <= memRe_ID;      
     memToReg_ID_EX <= memToReg_ID;
@@ -241,7 +255,7 @@ module cpu(clk, rst_n, hlt, pc);
   // ID_EX/EX -> MEM
   //
   //******************************************************
-  always @(posedge clk) begin 
+  always @(posedge clk or negedge rst_n) begin 
     //Used in mem start
     aluResult_EX_MEM <= aluResult_EX; 
     branchResult_EX_MEM <= branchResult_EX;
@@ -275,7 +289,16 @@ module cpu(clk, rst_n, hlt, pc);
       neEn_EX_MEM <= 1'b0; 
     end
 
+    if(!rst_n) begin
+      hlt <= 1'b0;
+    end else if(!branch) begin
+      hlt <= hlt_ID_EX;
+    end else begin 
+      hlt <= 1'b0;
+    end
+
     addz_EX_MEM <= addz_ID_EX;
+
     //Used in mem end    
   
     //Just passing through mem start
@@ -295,6 +318,7 @@ module cpu(clk, rst_n, hlt, pc);
   Memory memory(
         // Global inputs       
         .clk(clk),
+        .flush(flush),
 
         // Pipeline stage inputs
         .memAddr(memAddr_EX_MEM),
@@ -308,13 +332,12 @@ module cpu(clk, rst_n, hlt, pc);
         .addz(addz_EX_MEM),
         .b(branch_EX_MEM),
         .jal(jal_EX_MEM),
-        .jr(jr_EX_MEM),        
+        .jr(jr_EX_MEM),       
         .jalResult(jumpResult_EX_MEM),
         .jrResult(p0_EX_MEM),
         .branchResult(branchResult_EX_MEM),
-        .branchOp(branchOp_EX_MEM), 
-        .flush(flush),
-
+        .branchOp(branchOp_EX_MEM),      
+        
         // Pipeline stage outputs
         .memData(memData_MEM),
         .regWriteEnable(regWe_MEM),
