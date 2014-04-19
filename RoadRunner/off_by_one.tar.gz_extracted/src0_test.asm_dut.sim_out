@@ -53,7 +53,7 @@ Reading pref.tcl
 # R2 = 0005
 # R3 = xxxx
 # R4 = xxxx
-# R5 = xxxx
+# R5 = 000a
 # R6 = 000a
 # R7 = xxxx
 # R8 = xxxx
