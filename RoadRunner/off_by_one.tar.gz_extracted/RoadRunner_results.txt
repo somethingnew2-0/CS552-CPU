@@ -1,9 +1,15 @@
+NOP_test.asm, pass, 21, 10
 random_test.asm, fail
 basic_tests.asm, pass, 20, 15
 branch_test.asm, pass, 154, 77
 no_hazard_test.asm, pass, 36, 31
+prog1.asm, fail
+BasicOpCodes2.asm, pass, 38, 31
 execute_test.asm, pass, 46, 41
+prog0.asm, fail
 src0_test.asm, fail
 random_test0.asm, fail
 src1_test.asm, fail
+prog5.asm, fail
+BasicOpCodes4.asm, fail
 random_non_branching.asm, pass, 19, 9

@@ -49,21 +49,21 @@ Reading pref.tcl
 # Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.Writeback
 # Loading work.Writeback
 # run -a 
-# R1 = xxxx
-# R2 = 0005
-# R3 = 0000
-# R4 = 0000
-# R5 = 000a
-# R6 = 000a
+# R1 = aaaa
+# R2 = 0011
+# R3 = xxxx
+# R4 = xxxx
+# R5 = xxxx
+# R6 = xxxx
 # R7 = xxxx
 # R8 = xxxx
 # R9 = xxxx
 # Ra = xxxx
 # Rb = xxxx
-# Rc = 2121
-# Rd = 3737
-# Re = 000b
-# Rf = 000b
-# Time:        381
-# Cycles:       39
-# PC:         0021
+# Rc = xxxx
+# Rd = xxxx
+# Re = xxxx
+# Rf = xxxx
+# Time:        201
+# Cycles:       21
+# PC:         000e
