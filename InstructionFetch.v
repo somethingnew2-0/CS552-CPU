@@ -7,6 +7,7 @@ module InstructionFetch(clk, rst_n, branch, branchAddr, stall, rd_en, instr, pcN
   output hlt, branchInit;
 
   reg [15:0] pc;
+  reg wasRst_N;
 
   wire [15:0] effectivePc, instrFetched;
 
@@ -14,7 +15,9 @@ module InstructionFetch(clk, rst_n, branch, branchAddr, stall, rd_en, instr, pcN
 
   assign hlt = (instr[15:12] == 4'b1111) && !branch;
 
-  assign pcNext = stall ? pc : pc + 1; 
+  assign pcNext = !wasRst_N ? 16'h0000 : 
+                  stall ? pc : 
+                  pc + 1; 
 
   assign effectivePc = (branchInit && branch) ? branchAddr:
                        pcNext;
@@ -29,6 +32,13 @@ module InstructionFetch(clk, rst_n, branch, branchAddr, stall, rd_en, instr, pcN
       pc <= effectivePc;
     else
       pc <= pc;
+  end
+
+  always @(posedge clk or negedge rst_n) begin
+    if(!rst_n)
+      wasRst_N <= 1'b0;
+    else if (!wasRst_N)
+      wasRst_N <= 1'b1;
   end
 
   IM im(.addr(pc),

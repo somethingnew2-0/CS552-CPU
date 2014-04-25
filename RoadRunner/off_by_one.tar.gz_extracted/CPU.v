@@ -87,7 +87,6 @@ module cpu(clk, rst_n, hlt, pc);
   InstructionDecode instructiondecode(
         // Global inputs
         .clk(clk),
-        .rst_n(rst_n),
         .hlt(hlt),
         .writeData(writeData),
         .writeAddr(writeAddr),        
