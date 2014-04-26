@@ -431,9 +431,6 @@ module cpu(clk, rst_n, hlt, pc);
   end
 
   Writeback writeback(
-    // Global inputs  
-    .flush(flush),
-
     // Pipeline stage inputs
     .jal(jal_MEM_WB),
     .memToReg(memToReg_MEM_WB),
