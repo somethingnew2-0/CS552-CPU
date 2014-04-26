@@ -7,6 +7,14 @@ module cpu(clk, rst_n, hlt, pc);
   wire [15:0] branchAddr;
   wire flush, stall, branch, branchInit, forwardStall;
 
+  reg wasRst_N;
+  always @(posedge clk or negedge rst_n) begin
+    if(!rst_n)
+      wasRst_N <= 1'b0;
+    else if (!wasRst_N)
+      wasRst_N <= 1'b1;
+  end
+
   HazardControl hazardcontrol(
                               // Global inputs
                               .clk(clk),
@@ -30,6 +38,7 @@ module cpu(clk, rst_n, hlt, pc);
                                     // Global inputs
                                     .clk(clk),
                                     .rst_n(rst_n),
+                                    .wasRst_N(wasRst_N),
                                     .branch(branch),
                                     .branchAddr(branchAddr),
                                     .stall(stall),
@@ -62,7 +71,7 @@ module cpu(clk, rst_n, hlt, pc);
       end
       //Used in id end
 
-      if(flush | !rst_n) begin
+      if(flush || !wasRst_N) begin
         hlt_IF_ID <= 1'b0;
       end else begin 
 				hlt_IF_ID <= hlt_IF;
@@ -178,7 +187,7 @@ module cpu(clk, rst_n, hlt, pc);
         zrEn_ID_EX <= 1'b0;
         neEn_ID_EX <= 1'b0;
       end 
-      if(flush | !rst_n) begin
+      if(flush || !wasRst_N) begin
         hlt_ID_EX <= 1'b0;
       end else begin 
 				hlt_ID_EX <= hlt_IF_ID;
@@ -313,7 +322,7 @@ module cpu(clk, rst_n, hlt, pc);
       memToReg_EX_MEM <= memToReg_ID_EX;
 
 
-      if(flush || (!rst_n)) begin
+      if(flush || !wasRst_N) begin
         hlt_EX_MEM <= 1'b0;
       end else begin 
 				hlt_EX_MEM <= hlt_ID_EX;
@@ -421,7 +430,7 @@ module cpu(clk, rst_n, hlt, pc);
         ne_MEM_WB <= ne_MEM_WB; 
       end
 
-      if(flush | !rst_n) begin
+      if(flush || !wasRst_N) begin
         hlt <= 1'b0;
       end else begin 
 				hlt <= hlt_EX_MEM;
