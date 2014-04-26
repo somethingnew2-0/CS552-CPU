@@ -346,7 +346,7 @@ module cpu(clk, rst_n, hlt, pc);
   );
 
   wire [15:0] memData_MEM; // Output From Memory
-  wire regWe_MEM, ovEn_MEM, zrEn_MEM, neEn_MEM;
+  wire regWe_MEM;
 
   Memory memory(
         // Global inputs       
@@ -362,9 +362,6 @@ module cpu(clk, rst_n, hlt, pc);
         .zr(zr_MEM_WB), 
         .ne(ne_MEM_WB), 
         .ov(ov_MEM_WB),
-        .zrEn_EX_MEM(zrEn_EX_MEM),
-        .neEn_EX_MEM(neEn_EX_MEM),
-        .ovEn_EX_MEM(ovEn_EX_MEM),
         .addz(addz_EX_MEM),
         .b(branch_EX_MEM),
         .jal(jal_EX_MEM),
@@ -377,9 +374,6 @@ module cpu(clk, rst_n, hlt, pc);
         // Pipeline stage outputs
         .memData(memData_MEM),
         .regWriteEnable(regWe_MEM),
-        .ovEn_MEM(ovEn_MEM),
-        .zrEn_MEM(zrEn_MEM),
-        .neEn_MEM(neEn_MEM),
 
         // Global outputs
         .branchAddr(branchAddr),
@@ -407,21 +401,21 @@ module cpu(clk, rst_n, hlt, pc);
       hlt <= 1'b0; 
     end
     else begin
-      if(ovEn_MEM) begin
+      if(ovEn_EX_MEM) begin
         ov_MEM_WB <= ov_EX_MEM; 
       end
       else begin
         ov_MEM_WB <= ov_MEM_WB;
       end
 
-      if (zrEn_MEM) begin
+      if (zrEn_EX_MEM) begin
         zr_MEM_WB <= zr_EX_MEM; 
       end
       else begin
         zr_MEM_WB <= zr_MEM_WB;
       end
 
-      if (neEn_MEM) begin
+      if (neEn_EX_MEM) begin
         ne_MEM_WB <= ne_EX_MEM; 
       end
       else begin
