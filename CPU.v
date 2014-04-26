@@ -52,7 +52,7 @@ module cpu(clk, rst_n, hlt, pc);
   // IF -> ID
   //
   //******************************************************
-  always @(posedge clk) begin  
+  always @(posedge clk or negedge rst_n) begin  
     if(!stall) begin
       //Used in id start
       if(!flush) begin
@@ -62,10 +62,10 @@ module cpu(clk, rst_n, hlt, pc);
       end
       //Used in id end
 
-      if(!branch) begin
-        hlt_IF_ID <= hlt_IF;
-      end else begin
+      if(flush | !rst_n) begin
         hlt_IF_ID <= 1'b0;
+      end else begin 
+				hlt_IF_ID <= hlt_IF;
       end
 
       //Just passing through id start
@@ -137,7 +137,7 @@ module cpu(clk, rst_n, hlt, pc);
   // ID -> EX
   //
   //******************************************************
-  always @(posedge clk) begin 
+  always @(posedge clk or negedge rst_n) begin 
     if(!stall) begin
       //Used in ex start
       p0_ID_EX <= p0_ID;
@@ -178,11 +178,10 @@ module cpu(clk, rst_n, hlt, pc);
         zrEn_ID_EX <= 1'b0;
         neEn_ID_EX <= 1'b0;
       end 
-
-      if(!branch) begin
-        hlt_ID_EX <= hlt_IF_ID;
-      end else begin
+      if(flush | !rst_n) begin
         hlt_ID_EX <= 1'b0;
+      end else begin 
+				hlt_ID_EX <= hlt_IF_ID;
       end
 
       memRe_ID_EX <= memRe_ID;      
@@ -314,10 +313,10 @@ module cpu(clk, rst_n, hlt, pc);
       memToReg_EX_MEM <= memToReg_ID_EX;
 
 
-      if(!branch) begin
-        hlt_EX_MEM <= hlt_ID_EX;
-      end else begin 
+      if(flush || (!rst_n)) begin
         hlt_EX_MEM <= 1'b0;
+      end else begin 
+				hlt_EX_MEM <= hlt_ID_EX;
       end
 
       ov_EX_MEM <= ov_EX;
@@ -404,7 +403,7 @@ module cpu(clk, rst_n, hlt, pc);
       zr_MEM_WB <= 1'b0; 
       ne_MEM_WB <= 1'b0;  
       ov_MEM_WB <= 1'b0; 
-      hlt <= 1'b0; 
+      
     end
     else begin
       if(ovEn_MEM) begin
@@ -428,10 +427,10 @@ module cpu(clk, rst_n, hlt, pc);
         ne_MEM_WB <= ne_MEM_WB; 
       end
 
-      if(!branch) begin
-        hlt <= hlt_EX_MEM;
-      end else begin 
+      if(flush | !rst_n) begin
         hlt <= 1'b0;
+      end else begin 
+				hlt <= hlt_EX_MEM;
       end
     end
   end

@@ -13,7 +13,7 @@ module InstructionFetch(clk, rst_n, branch, branchAddr, stall, rd_en, instr, pcN
 
   assign branchInit = !((pc == 16'h0000) || (pc == 16'h0001) || (pc == 16'h0002));
 
-  assign hlt = (instr[15:12] == 4'b1111) && !branch;
+  assign hlt = (instr[15:12] == 4'b1111) && ((!(branch)) | !branchInit) & rst_n;
 
   assign pcNext = !wasRst_N ? 16'h0000 : 
                   stall ? pc : 
