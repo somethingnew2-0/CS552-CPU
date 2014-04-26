@@ -10,3 +10,4 @@ wlf*
 *.asm~
 instr.hex
 .metadata/**
+*.asm.bin
