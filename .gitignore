@@ -8,3 +8,5 @@ wlf*
 *.v.bak
 *.txt~
 *.asm~
+instr.hex
+.metadata/**
