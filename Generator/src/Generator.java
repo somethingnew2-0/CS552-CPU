@@ -14,7 +14,7 @@ public class Generator
 	
 	public static void main(String[] args) throws FileNotFoundException
 	{
-		int NUM_INSTRUCTIONS = 1000;
+		int NUM_INSTRUCTIONS = 555555;
 		PrintWriter writer = new PrintWriter("random.asm");
 		
 		for(int i = 0; i < NUM_INSTRUCTIONS; i++)
