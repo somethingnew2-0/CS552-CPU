@@ -32,7 +32,10 @@ module ALU(src0, src1, ctrl, shamt, result, ov, zr, ne);
 	assign op1 = ctrl==sub ? ~src1 + 1'b1 : src1;          
 
   // Positive operands; Negative result
-	assign negativeOverflow =(src0[15] && op1[15] && !unsat[15]);
+  // There is a corner case when subtracting with 0x8000, since the positive complement doesn't exist
+  assign subCornerCase = !(ctrl==sub && src1 == 16'h8000 && src0[15]); 
+  assign negativeOverflow = (src0[15] && op1[15] && !unsat[15] && subCornerCase);
+  
   // Negative operands; Positive result
 	assign positiveOverflow = (!src0[15] && !op1[15] && unsat[15]);
 
