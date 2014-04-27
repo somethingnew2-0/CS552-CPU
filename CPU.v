@@ -204,7 +204,8 @@ module cpu(clk, rst_n, hlt, pc);
   wire [15:0] forwardP0_EX, forwardP1_EX;
   reg [15:0] aluResult_EX_MEM, pcNext_EX_MEM, aluResult_MEM_WB, pcNext_MEM_WB, memData_MEM_WB, writeData_WB;
   reg [3:0] regAddr_EX_MEM, regAddr_MEM_WB, writeAddr_WB;
-  reg regWe_EX_MEM, jal_EX_MEM, regWe_MEM_WB, jal_MEM_WB, memToReg_EX_MEM, memToReg_MEM_WB, writeEnable_WB;
+  reg jal_EX_MEM, regWe_MEM_WB, jal_MEM_WB, memToReg_EX_MEM, memToReg_MEM_WB, writeEnable_WB;
+  wire regWe_MEM;
 
   ExecuteForwarding executeforwarding(
                   // Forwarding inputs
@@ -214,7 +215,7 @@ module cpu(clk, rst_n, hlt, pc);
                   .p1Addr(p1Addr_ID_EX),
                   // Forwarding EX_MEM inputs
                   .regAddr_EX_MEM(regAddr_EX_MEM), 
-                  .regWe_EX_MEM(regWe_EX_MEM),
+                  .regWe_MEM(regWe_MEM),
                   .aluResult_EX_MEM(aluResult_EX_MEM),
                   .jal_EX_MEM(jal_EX_MEM),
                   .pcNext_EX_MEM(pcNext_EX_MEM),
@@ -266,7 +267,7 @@ module cpu(clk, rst_n, hlt, pc);
   reg [15:0] branchResult_EX_MEM, jumpResult_EX_MEM, p0_EX_MEM, p1_EX_MEM, memAddr_EX_MEM;
   reg [2:0] branchOp_EX_MEM;
   reg [3:0] p1Addr_EX_MEM;
-  reg memRe_EX_MEM, memWe_EX_MEM, addz_EX_MEM, branch_EX_MEM, jr_EX_MEM, ov_EX_MEM, zr_EX_MEM, ovEn_EX_MEM, ne_EX_MEM, zrEn_EX_MEM, neEn_EX_MEM, hlt_EX_MEM; 
+  reg memRe_EX_MEM, memWe_EX_MEM, regWe_EX_MEM, addz_EX_MEM, branch_EX_MEM, jr_EX_MEM, ov_EX_MEM, zr_EX_MEM, ovEn_EX_MEM, ne_EX_MEM, zrEn_EX_MEM, neEn_EX_MEM, hlt_EX_MEM; 
   // From the WB stage
   reg ov_MEM_WB, zr_MEM_WB, ne_MEM_WB;
 
@@ -354,7 +355,6 @@ module cpu(clk, rst_n, hlt, pc);
   );
 
   wire [15:0] memData_MEM; // Output From Memory
-  wire regWe_MEM;
 
   Memory memory(
         // Global inputs       
