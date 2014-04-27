@@ -1,5 +1,6 @@
 work/**
 my_lib/**
+.metadata/**
 *.mpf
 *.bak
 *.mti
