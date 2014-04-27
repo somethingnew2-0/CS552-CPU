@@ -50,16 +50,16 @@ Reading pref.tcl
 # Loading work.Writeback
 # run -a 
 # R1 = 8000
-# R2 = da3c
-# R3 = 8ab5
+# R2 = 043c
+# R3 = 8000
 # R4 = 0000
 # R5 = 0000
-# R6 = 3f9f
+# R6 = 7f9f
 # R7 = 8000
-# R8 = 3f9f
-# R9 = 821c
+# R8 = 7f9f
+# R9 = 7fff
 # Ra = 7fff
-# Rb = 6563
+# Rb = 7b63
 # Rc = 0000
 # Rd = 8000
 # Re = 0000
