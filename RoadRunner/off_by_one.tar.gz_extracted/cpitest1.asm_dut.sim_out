@@ -1,3 +1,7 @@
+Reading pref.tcl 
+
+# 10.2c
+
 # vsim -do {run -a; q} -c -novopt work.clk_and_rst_n 
 # //  ModelSim SE-64 10.2c Jul 18 2013 Linux 3.2.0-4-amd64
 # //
@@ -45,10 +49,10 @@
 # Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.Writeback
 # Loading work.Writeback
 # run -a 
-# R1 = 0037
-# R2 = 190a
-# R3 = 0005
-# R4 = 003c
+# R1 = 0000
+# R2 = xxxx
+# R3 = xxxx
+# R4 = xxxx
 # R5 = xxxx
 # R6 = xxxx
 # R7 = xxxx
@@ -59,7 +63,7 @@
 # Rc = xxxx
 # Rd = xxxx
 # Re = xxxx
-# Rf = 0008
-# Time:        481
-# Cycles:       49
-# PC:         0009
+# Rf = xxxx
+# Time:         61
+# Cycles:        7
+# PC:         0002

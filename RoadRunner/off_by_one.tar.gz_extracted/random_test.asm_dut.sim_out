@@ -51,10 +51,10 @@ Reading pref.tcl
 # run -a 
 # R1 = xxxx
 # R2 = ffc4
-# R3 = 4444
-# R4 = 0544
+# R3 = XXXX
+# R4 = f9xx
 # R5 = 0005
-# R6 = 0005
+# R6 = 00f9
 # R7 = xxxx
 # R8 = 02xx
 # R9 = xxxx
@@ -62,7 +62,7 @@ Reading pref.tcl
 # Rb = xxxx
 # Rc = cccc
 # Rd = 003b
-# Re = eeee
+# Re = 0000
 # Rf = 003f
 # Time:       1031
 # Cycles:      104
