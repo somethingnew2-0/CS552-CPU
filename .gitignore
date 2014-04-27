@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 work/**
 my_lib/**
 .metadata/**
@@ -9,3 +10,18 @@ wlf*
 *.v.bak
 *.txt~
 *.asm~
+=======
+work/**
+my_lib/**
+*.mpf
+*.bak
+*.mti
+*.wlf
+wlf*
+*.v.bak
+*.txt~
+*.asm~
+instr.hex
+.metadata/**
+*.asm.bin
+>>>>>>> 02fceb0c9932f1d3c7c7d424ca73cebd524100ff

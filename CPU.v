@@ -7,6 +7,14 @@ module cpu(clk, rst_n, hlt, pc);
   wire [15:0] branchAddr;
   wire flush, stall, branch, branchInit, forwardStall;
 
+  reg wasRst_N;
+  always @(posedge clk or negedge rst_n) begin
+    if(!rst_n)
+      wasRst_N <= 1'b0;
+    else if (!wasRst_N)
+      wasRst_N <= 1'b1;
+  end
+
   HazardControl hazardcontrol(
                               // Global inputs
                               .clk(clk),
@@ -30,6 +38,7 @@ module cpu(clk, rst_n, hlt, pc);
                                     // Global inputs
                                     .clk(clk),
                                     .rst_n(rst_n),
+                                    .wasRst_N(wasRst_N),
                                     .branch(branch),
                                     .branchAddr(branchAddr),
                                     .stall(stall),
@@ -52,7 +61,7 @@ module cpu(clk, rst_n, hlt, pc);
   // IF -> ID
   //
   //******************************************************
-  always @(posedge clk) begin  
+  always @(posedge clk or negedge rst_n) begin  
     if(!stall) begin
       //Used in id start
       if(!flush) begin
@@ -62,10 +71,10 @@ module cpu(clk, rst_n, hlt, pc);
       end
       //Used in id end
 
-      if(!branch) begin
-        hlt_IF_ID <= hlt_IF;
-      end else begin
+      if(flush || !wasRst_N) begin
         hlt_IF_ID <= 1'b0;
+      end else begin 
+				hlt_IF_ID <= hlt_IF;
       end
 
       //Just passing through id start
@@ -137,7 +146,7 @@ module cpu(clk, rst_n, hlt, pc);
   // ID -> EX
   //
   //******************************************************
-  always @(posedge clk) begin 
+  always @(posedge clk or negedge rst_n) begin 
     if(!stall) begin
       //Used in ex start
       p0_ID_EX <= p0_ID;
@@ -178,11 +187,10 @@ module cpu(clk, rst_n, hlt, pc);
         zrEn_ID_EX <= 1'b0;
         neEn_ID_EX <= 1'b0;
       end 
-
-      if(!branch) begin
-        hlt_ID_EX <= hlt_IF_ID;
-      end else begin
+      if(flush || !wasRst_N) begin
         hlt_ID_EX <= 1'b0;
+      end else begin 
+				hlt_ID_EX <= hlt_IF_ID;
       end
 
       memRe_ID_EX <= memRe_ID;      
@@ -196,7 +204,8 @@ module cpu(clk, rst_n, hlt, pc);
   wire [15:0] forwardP0_EX, forwardP1_EX;
   reg [15:0] aluResult_EX_MEM, pcNext_EX_MEM, aluResult_MEM_WB, pcNext_MEM_WB, memData_MEM_WB, writeData_WB;
   reg [3:0] regAddr_EX_MEM, regAddr_MEM_WB, writeAddr_WB;
-  reg regWe_EX_MEM, jal_EX_MEM, regWe_MEM_WB, jal_MEM_WB, memToReg_EX_MEM, memToReg_MEM_WB, writeEnable_WB;
+  reg jal_EX_MEM, regWe_MEM_WB, jal_MEM_WB, memToReg_EX_MEM, memToReg_MEM_WB, writeEnable_WB;
+  wire regWe_MEM;
 
   ExecuteForwarding executeforwarding(
                   // Forwarding inputs
@@ -206,7 +215,7 @@ module cpu(clk, rst_n, hlt, pc);
                   .p1Addr(p1Addr_ID_EX),
                   // Forwarding EX_MEM inputs
                   .regAddr_EX_MEM(regAddr_EX_MEM), 
-                  .regWe_EX_MEM(regWe_EX_MEM),
+                  .regWe_MEM(regWe_MEM),
                   .aluResult_EX_MEM(aluResult_EX_MEM),
                   .jal_EX_MEM(jal_EX_MEM),
                   .pcNext_EX_MEM(pcNext_EX_MEM),
@@ -258,7 +267,7 @@ module cpu(clk, rst_n, hlt, pc);
   reg [15:0] branchResult_EX_MEM, jumpResult_EX_MEM, p0_EX_MEM, p1_EX_MEM, memAddr_EX_MEM;
   reg [2:0] branchOp_EX_MEM;
   reg [3:0] p1Addr_EX_MEM;
-  reg memRe_EX_MEM, memWe_EX_MEM, addz_EX_MEM, branch_EX_MEM, jr_EX_MEM, ov_EX_MEM, zr_EX_MEM, ovEn_EX_MEM, ne_EX_MEM, zrEn_EX_MEM, neEn_EX_MEM, hlt_EX_MEM; 
+  reg memRe_EX_MEM, memWe_EX_MEM, regWe_EX_MEM, addz_EX_MEM, branch_EX_MEM, jr_EX_MEM, ov_EX_MEM, zr_EX_MEM, ovEn_EX_MEM, ne_EX_MEM, zrEn_EX_MEM, neEn_EX_MEM, hlt_EX_MEM; 
   // From the WB stage
   reg ov_MEM_WB, zr_MEM_WB, ne_MEM_WB;
 
@@ -314,10 +323,10 @@ module cpu(clk, rst_n, hlt, pc);
       memToReg_EX_MEM <= memToReg_ID_EX;
 
 
-      if(!branch) begin
-        hlt_EX_MEM <= hlt_ID_EX;
-      end else begin 
+      if(flush || !wasRst_N) begin
         hlt_EX_MEM <= 1'b0;
+      end else begin 
+				hlt_EX_MEM <= hlt_ID_EX;
       end
 
       ov_EX_MEM <= ov_EX;
@@ -346,7 +355,6 @@ module cpu(clk, rst_n, hlt, pc);
   );
 
   wire [15:0] memData_MEM; // Output From Memory
-  wire regWe_MEM, ovEn_MEM, zrEn_MEM, neEn_MEM;
 
   Memory memory(
         // Global inputs       
@@ -362,9 +370,6 @@ module cpu(clk, rst_n, hlt, pc);
         .zr(zr_MEM_WB), 
         .ne(ne_MEM_WB), 
         .ov(ov_MEM_WB),
-        .zrEn_EX_MEM(zrEn_EX_MEM),
-        .neEn_EX_MEM(neEn_EX_MEM),
-        .ovEn_EX_MEM(ovEn_EX_MEM),
         .addz(addz_EX_MEM),
         .b(branch_EX_MEM),
         .jal(jal_EX_MEM),
@@ -377,9 +382,6 @@ module cpu(clk, rst_n, hlt, pc);
         // Pipeline stage outputs
         .memData(memData_MEM),
         .regWriteEnable(regWe_MEM),
-        .ovEn_MEM(ovEn_MEM),
-        .zrEn_MEM(zrEn_MEM),
-        .neEn_MEM(neEn_MEM),
 
         // Global outputs
         .branchAddr(branchAddr),
@@ -404,42 +406,39 @@ module cpu(clk, rst_n, hlt, pc);
       zr_MEM_WB <= 1'b0; 
       ne_MEM_WB <= 1'b0;  
       ov_MEM_WB <= 1'b0; 
-      hlt <= 1'b0; 
+      
     end
     else begin
-      if(ovEn_MEM) begin
+      if(ovEn_EX_MEM) begin
         ov_MEM_WB <= ov_EX_MEM; 
       end
       else begin
         ov_MEM_WB <= ov_MEM_WB;
       end
 
-      if (zrEn_MEM) begin
+      if (zrEn_EX_MEM) begin
         zr_MEM_WB <= zr_EX_MEM; 
       end
       else begin
         zr_MEM_WB <= zr_MEM_WB;
       end
 
-      if (neEn_MEM) begin
+      if (neEn_EX_MEM) begin
         ne_MEM_WB <= ne_EX_MEM; 
       end
       else begin
         ne_MEM_WB <= ne_MEM_WB; 
       end
 
-      if(!branch) begin
-        hlt <= hlt_EX_MEM;
-      end else begin 
+      if(flush || !wasRst_N) begin
         hlt <= 1'b0;
+      end else begin 
+				hlt <= hlt_EX_MEM;
       end
     end
   end
 
   Writeback writeback(
-    // Global inputs  
-    .flush(flush),
-
     // Pipeline stage inputs
     .jal(jal_MEM_WB),
     .memToReg(memToReg_MEM_WB),

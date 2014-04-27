@@ -1,19 +1,18 @@
-ERROR: ref//instr_mem.v:19: $readmemh(instr.hex): Invalid input character: r
-R00000001 = xxxx
-R00000002 = xxxx
-R00000003 = xxxx
-R00000004 = xxxx
-R00000005 = xxxx
-R00000006 = xxxx
+R00000001 = 0005
+R00000002 = 0005
+R00000003 = 0005
+R00000004 = 0005
+R00000005 = 000a
+R00000006 = 000a
 R00000007 = xxxx
 R00000008 = xxxx
 R00000009 = xxxx
 R0000000a = xxxx
 R0000000b = xxxx
-R0000000c = xxxx
-R0000000d = xxxx
-R0000000e = xxxx
-R0000000f = xxxx
-Time:         15
-Cycles:        1
-PC:         0002
+R0000000c = 2121
+R0000000d = 3737
+R0000000e = 0001
+R0000000f = 0001
+Time:        325
+Cycles:       32
+PC:         0021

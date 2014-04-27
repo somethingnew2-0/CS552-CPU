@@ -1,5 +1,5 @@
-module Writeback(flush, jal, memToReg, regWe, regAddr, pcNext, memData, aluResult, writeData, writeAddr, writeEnable);
-  input flush, jal, memToReg, regWe;
+module Writeback(jal, memToReg, regWe, regAddr, pcNext, memData, aluResult, writeData, writeAddr, writeEnable);
+  input jal, memToReg, regWe;
   input [3:0] regAddr;
   input [15:0] pcNext, memData, aluResult;
 
@@ -12,6 +12,6 @@ module Writeback(flush, jal, memToReg, regWe, regAddr, pcNext, memData, aluResul
                       aluResult;
 
   assign writeAddr = regAddr;
-  assign writeEnable = !flush & regWe;
+  assign writeEnable = regWe;
   
 endmodule

@@ -1,6 +1,6 @@
 # 10-15 instruction JAL/ADDz
 
-	LLB R1 55
+	LLB R1, 55
 	SUB R0, R1, R1	# SET Z
 	JAL jump1
 	SUB R0, R3, R1	# SET N
@@ -11,7 +11,7 @@
 	JAL jump4
 	HLT
 
-jump1:	LLB R3 5
+jump1:	LLB R3, 5
 	ADDz R4, R1, R3
 	JR R15
 
