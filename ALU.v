@@ -29,7 +29,8 @@ module ALU(src0, src1, ctrl, shamt, result, ov, zr, ne);
                  17'h00000; // It will never reach here logically
 
   // When checking msbs for overflow, we need the actual bits operated on
-  assign op1 = ctrl==sub ? ~src1 + 1'b1 : src1;          
+  // Complementing 0x8000 => 0x8000, so set it to 0x0000 to make it positive instead
+  assign op1 = ctrl==sub ? ((src1==16'h8000) ? 16'h0000 : ~src1 + 1'b1) : src1;          
 
   // Positive operands; Negative result
   // There is a corner case when subtracting with 0x8000, since the positive complement doesn't exist
