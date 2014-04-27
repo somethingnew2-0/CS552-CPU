@@ -21,4 +21,6 @@ prog5.asm, pass, 640, 256
 BasicOpCodes4.asm, pass, 28, 10
 random_non_branching.asm, pass, 20, 9
 addz_jal.asm, pass, 49, 19
+random.asm, pass, 65021, 65015
 random_test0.asm, fail
+dense_hazards.asm, fail

@@ -1,20 +1,6 @@
-@0000 B137	// LLB R1, 55
-@0001 2011	// SUB R0, R1, R1
-@0002 D006	// JAL jump1
-@0003 2031	// SUB R0, R3, R1
-@0004 D007	// JAL jump2
-@0005 0011	// ADD R0, R1, R1
-@0006 D009	// JAL jump3
-@0007 D00B	// JAL jump4
-@0008 F000	// HLT
-@0009 B305	// jump1:	LLB R3, 5
-@000a 1413	// ADDz R4, R1, R3
-@000b E0F0	// JR R15
-@000c B20A	// jump2:	LLB R2, 10
-@000d A219	// LHB R2, 25
-@000e 1621	// ADDz R6, R2, R1
-@000f E0F0	// JR R15
-@0010 BF07	// jump3:	LLB R15, 7
-@0011 1521	// ADDz R5, R2, R1
-@0012 E0F0	// JR R15
-@0013 E0F0	// jump4:	JR R15
+@0000 B108	// llb r1, 8
+@0001 B209	// llb r2, 9
+@0002 B30A	// llb r3, 10
+@0003 0211	// add r2, r1, r1
+@0004 0122	// add r1, r2, r2
+@0005 0321	// add r3, r2, r1
