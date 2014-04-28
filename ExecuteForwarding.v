@@ -15,7 +15,6 @@ module ExecuteForwarding(p0, p1, p0Addr, p1Addr, regAddr_EX_MEM, regWe_MEM, aluR
                      (regWe_MEM_WB && (p1Addr == regAddr_MEM_WB)) ? (jal_MEM_WB ? pcNext_MEM_WB : (memToReg_MEM_WB ? memData_MEM_WB : aluResult_MEM_WB)) :
                      (writeEnable_WB && (p1Addr == writeAddr_WB)) ? writeData_WB :
                       p1;
-  assign poop = regWe_MEM && (p1Addr == regAddr_EX_MEM);
 
   assign forwardStall = (regWe_MEM && 
                         (((p0Addr == regAddr_EX_MEM) && memToReg_EX_MEM && 
