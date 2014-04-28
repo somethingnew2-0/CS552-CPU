@@ -7,7 +7,7 @@ module ALU(src0, src1, ctrl, shamt, result, ov, zr, ne);
   output [15:0] result;
   output ov, zr, ne;
 
-  wire [15:0] unsat, op1;
+  wire [15:0] unsat, subOp;
 
   localparam add = 3'b000; // Accounts for both add and addz
   localparam lhb = 3'b001;
@@ -30,15 +30,16 @@ module ALU(src0, src1, ctrl, shamt, result, ov, zr, ne);
 
   // When checking msbs for overflow, we need the actual bits operated on
   // Complementing 0x8000 => 0x8000, so set it to 0x0000 to make it positive instead
-  assign op1 = ctrl==sub ? ((src1==16'h8000) ? 16'h0000 : ~src1 + 1'b1) : src1;          
+  assign subOp = ~src1 + 1'b1;
+  assign src1Sign = ctrl==sub ? ((src1==16'h8000) ? 1'b0 : subOp[15]) : src1[15];          
 
   // Positive operands; Negative result
   // There is a corner case when subtracting with 0x8000, since the positive complement doesn't exist
   assign subCornerCase = !(ctrl==sub && src1 == 16'h8000 && src0[15]); 
-  assign negativeOverflow = (src0[15] && op1[15] && !unsat[15] && subCornerCase);
+  assign negativeOverflow = (src0[15] && src1Sign && !unsat[15] && subCornerCase);
   
   // Negative operands; Positive result
-  assign positiveOverflow = (!src0[15] && !op1[15] && unsat[15]);
+  assign positiveOverflow = (!src0[15] && !src1Sign && unsat[15]);
 
   // Set Result
   assign result = (positiveOverflow && (ctrl==add || ctrl==sub)) ? 16'h7fff :
