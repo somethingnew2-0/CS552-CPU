@@ -1,15 +1,17 @@
-module mem_hierarchy (clk, rst_n, i_acc, d_rd_acc, d_wr_acc, i_addr, d_addr, d_wrt_data, stall, instr_rdy, data_rdy, instr, data);
+module mem_hierarchy (clk, rst_n, i_acc, d_rd_acc, d_wr_acc, i_addr, d_addr, d_wrt_data, stall, i_rdy, d_rdy, instr, data);
 
 input clk, rst_n, i_acc, d_rd_acc, d_wr_acc; // Instruction accesses are assumed read
 input [15:0] i_addr, d_addr, d_wrt_data;
 
-output reg stall, instr_rdy, data_rdy;
+output i_rdy, d_rdy;
+output reg stall;
 output [15:0] instr, data;
 
+reg rd, wr, access_d, access_i;
 reg [1:0] offset;
 reg [15:0] wr_data, addr;
 
-wire i_hit, d_hit, d_dirt_out, d_dirt_in, m_we, m_re, i_rdy, d_rdy;
+wire i_hit, d_hit, d_dirt_out, d_dirt_in, m_we, m_re;
 wire [7:0] i_tag, d_tag;
 wire [13:0] m_addr, i_addr_ctrl, d_addr_ctrl;
 wire [63:0] i_line, d_line, m_line, i_data, d_data, m_data;
@@ -51,14 +53,14 @@ unified_mem main_mem(.clk(clk),
 										 .wdata(m_data),
 
 										 .rd_data(m_line),
-										 .rdy(m_rdy_n)); /* Active low */
+										 .rdy(m_rdy_n));
 
 cache_controller controller(.clk(clk),
 														.rst_n(rst_n),
 														.i_hit(i_hit),
 														.d_hit(d_hit),
 														.d_dirt_out(d_dirt_out),
-														.mem_rdy(!m_rdy_n), /* Active high inside controller */
+														.mem_rdy(m_rdy_n),
 														.i_tag(i_tag),
 														.d_tag(d_tag),
 														.i_line(i_line),
@@ -66,10 +68,10 @@ cache_controller controller(.clk(clk),
 														.m_line(m_line),
 														.addr(addr),
 														.wr_data(wr_data),
-														.i_acc(),
-														.d_acc(),
-														.read(),
-														.write(),
+														.i_acc(access_i),
+														.d_acc(access_d),
+														.read(rd),
+														.write(wr),
 
 														.i_we(i_we),
 														.i_re(i_re),
@@ -88,29 +90,40 @@ cache_controller controller(.clk(clk),
 														.d_rdy(d_rdy));
 
 /* Top Level Routing Logic */
-always @(i_addr, d_addr) begin
-	if(d_rd_acc | d_wr_acc) begin
-		addr = d_addr[15:2];
-		offset = d_addr[1:0];
+always @(i_addr, d_addr, i_rdy, d_rdy, rst_n) begin
+
+	// Check for completion (instr_rdy && data_rdy)
+	if(!d_rdy & !i_rdy)
+		stall = 1'b1;
+	else
+		stall = 1'b0;
+
+	// Choose what input we are currently dealing with
+	if((d_rd_acc | d_wr_acc) & !d_rdy) begin
+		addr = d_addr;
+		access_d = 1'b1;
+		access_i = 1'b0;
+		stall = 1'b1;
 		
-		if(d_wr_acc)
+		if(d_wr_acc) begin
 			wr_data = d_wrt_data;
-		else
+			rd = 1'b0;
+			wr = 1'b1;
+		end else begin
 			wr_data = 16'h0000;
+			rd = 1'b1;
+			wr = 1'b0;
+		end
+	end else if(!i_rdy) begin
+		addr = i_addr;
+		access_d = 1'b0;
+		access_i = 1'b1;
+		wr = 1'b0;
+		rd = 1'b1;
+		stall = 1'b1;
 	end else begin
-		addr = i_addr[15:2];
-		offset = i_addr[1:0];
+		stall = 1'b0; // Ready for more accesses
 	end
-end
-
-always @(i_rdy, d_rdy) begin
-	instr_rdy = 1'b0;
-	data_rdy = 1'b0;
-
-	if(i_rdy)
-		instr_rdy = 1'b1;
-	if(d_rdy)
-		data_rdy = 1'b1;
 end
 
 /* Pick off instruction word

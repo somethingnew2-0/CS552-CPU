@@ -12,7 +12,7 @@ output reg [13:0] i_addr, d_addr, m_addr;
 output reg [63:0] i_data, d_data, m_data;
 
 /* Variables */
-reg state, nextState;
+reg [1:0] state, nextState;
 reg [15:0] wiped, dirty_data;
 
 wire [1:0] offset;
@@ -31,9 +31,9 @@ localparam WRITE_BACK = 2'b11;
 
 /* Clock state changes and handle reset */
 always @(posedge clk, negedge rst_n)
-	if(!rst_n)
+	if(!rst_n) begin
 		state = START;
-	else
+	end else
 		state = nextState;
 
 /* FSM Logic */
@@ -63,6 +63,9 @@ always @(state, addr, wr_data, i_hit, d_hit, d_dirt_out, mem_rdy, i_tag, d_tag, 
 				d_re = d_acc & read;
 				i_addr = index;
 				d_addr = index;
+
+				if(!d_acc) // We aren't asking for data, so we are 'done' fetching it
+					d_rdy = 1'b1;
 
 				if(i_acc & i_hit) begin
 					i_rdy = 1'b1; // Outputs of caches are relevant
@@ -103,23 +106,32 @@ always @(state, addr, wr_data, i_hit, d_hit, d_dirt_out, mem_rdy, i_tag, d_tag, 
 			end
 		WRITE_RETURN: // Can this be morphed with SERVICE_MISS to save a cycle? Maybe...
 			begin
-				d_re = 1'b1;
-				d_addr = index;
-				
-				d_rdy = 1'b1;
+				if(!d_acc) begin // We aren't asking for data, so we are 'done' fetching it
+					d_rdy = 1'b1;
+					i_rdy = 1'b1;
+				end else /* d_acc */ begin
+					d_re = 1'b1;
+					d_addr = index;
+					
+					d_rdy = 1'b1;
+				end
 				nextState = START;
 			end
 		SERVICE_MISS: 
 			begin
+				if(!d_acc) // We aren't asking for data, so we are 'done' fetching it
+					d_rdy = 1'b1;
+
 				if(mem_rdy) begin // Wait for the data
 					if(i_acc) begin
-						// Write back to i-cache
+						// Write back to and read from i-cache
 						i_we = 1'b1;
+						i_re = 1'b1;
 						i_data = m_line;
 						i_addr = index;
+		
 
-						i_rdy = 1'b1;
-						nextState = START;
+						nextState = WRITE_RETURN; // Instruction read miss done
 					end	else if(d_acc & read) begin
 						// Write clean data to d-cache
 						d_we = 1'b1;
@@ -148,8 +160,11 @@ always @(state, addr, wr_data, i_hit, d_hit, d_dirt_out, mem_rdy, i_tag, d_tag, 
 					nextState = SERVICE_MISS;
 				end
 			end
-		WRITE_BACK: 
-			begin
+		WRITE_BACK:
+			begin 
+				if(!d_acc) // We aren't asking for data, so we are 'done' fetching it
+					d_rdy = 1'b1;
+
 				if(mem_rdy)
 					if(d_acc & !d_hit & d_dirt_out) begin
 						// Read out fresh data

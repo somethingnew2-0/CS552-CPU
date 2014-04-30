@@ -11,6 +11,7 @@ wlf*
 instr.hex
 .metadata/**
 *.asm.bin
+*.do
 
 *.class
 
