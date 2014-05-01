@@ -11,6 +11,10 @@ wlf*
 instr.hex
 .metadata/**
 *.asm.bin
+default.svf
+sourceFiles
+syn.dc
+
 
 *.class
 
