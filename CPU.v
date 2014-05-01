@@ -61,7 +61,7 @@ module cpu(clk, rst_n, hlt, pc);
   // IF -> ID
   //
   //******************************************************
-  always @(posedge clk or negedge rst_n) begin  
+  always @(posedge clk) begin  
     if(!stall) begin
       //Used in id start
       if(!flush) begin
@@ -146,7 +146,7 @@ module cpu(clk, rst_n, hlt, pc);
   // ID -> EX
   //
   //******************************************************
-  always @(posedge clk or negedge rst_n) begin 
+  always @(posedge clk) begin 
     if(!stall) begin
       //Used in ex start
       p0_ID_EX <= p0_ID;
@@ -277,7 +277,7 @@ module cpu(clk, rst_n, hlt, pc);
   // ID_EX/EX -> MEM
   //
   //******************************************************
-  always @(posedge clk or negedge rst_n) begin 
+  always @(posedge clk) begin 
     if(!stall) begin
       //Used in mem start
       aluResult_EX_MEM <= aluResult_EX; 
@@ -394,21 +394,20 @@ module cpu(clk, rst_n, hlt, pc);
   //
   //*****************************************************
   always @(posedge clk or negedge rst_n) begin
-    pcNext_MEM_WB <= pcNext_EX_MEM;
-    memData_MEM_WB <= memData_MEM;
-    aluResult_MEM_WB <= aluResult_EX_MEM;
-    regAddr_MEM_WB <= regAddr_EX_MEM;
-    jal_MEM_WB <= jal_EX_MEM;
-    memToReg_MEM_WB <= memToReg_EX_MEM;      
-    regWe_MEM_WB <= regWe_MEM;      
-
     if(!rst_n) begin
       zr_MEM_WB <= 1'b0; 
       ne_MEM_WB <= 1'b0;  
       ov_MEM_WB <= 1'b0; 
-      
     end
     else begin
+      pcNext_MEM_WB <= pcNext_EX_MEM;
+      memData_MEM_WB <= memData_MEM;
+      aluResult_MEM_WB <= aluResult_EX_MEM;
+      regAddr_MEM_WB <= regAddr_EX_MEM;
+      jal_MEM_WB <= jal_EX_MEM;
+      memToReg_MEM_WB <= memToReg_EX_MEM;      
+      regWe_MEM_WB <= regWe_MEM;      
+
       if(ovEn_EX_MEM) begin
         ov_MEM_WB <= ov_EX_MEM; 
       end
