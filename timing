@@ -17,7 +17,7 @@ Report : timing
         -max_paths 1
 Design : cpu
 Version: H-2013.03-SP3
-Date   : Thu May  1 15:31:10 2014
+Date   : Thu May  1 15:48:52 2014
 ****************************************
 
 Operating Conditions: NCCOM   Library: tcbn40lpbwptc
@@ -25,21 +25,22 @@ Wire Load Model Mode: segmented
 
   Startpoint: ne_MEM_WB_reg
               (rising edge-triggered flip-flop clocked by clk)
-  Endpoint: aluResult_EX_MEM_reg[2]
+  Endpoint: zr_EX_MEM_reg
             (rising edge-triggered flip-flop clocked by clk)
   Path Group: clk
   Path Type: max
 
   Des/Clust/Port     Wire Load Model       Library
   ------------------------------------------------
-  InstructionFetch   ZeroWireload          tcbn40lpbwptc
   Memory             ZeroWireload          tcbn40lpbwptc
   InstructionDecode  ZeroWireload          tcbn40lpbwptc
+  InstructionFetch   ZeroWireload          tcbn40lpbwptc
   cpu                ZeroWireload          tcbn40lpbwptc
   HazardControl      ZeroWireload          tcbn40lpbwptc
   ExecuteForwarding  ZeroWireload          tcbn40lpbwptc
   SRC_MUX            ZeroWireload          tcbn40lpbwptc
   Execute            ZeroWireload          tcbn40lpbwptc
+  ALU_DW01_sub_3     ZeroWireload          tcbn40lpbwptc
   ALU_DW01_add_1     ZeroWireload          tcbn40lpbwptc
   ALU                ZeroWireload          tcbn40lpbwptc
 
@@ -48,63 +49,59 @@ Wire Load Model Mode: segmented
   clock clk (rise edge)                                   0.00       0.00
   clock network delay (ideal)                             0.00       0.00
   ne_MEM_WB_reg/CP (EDFCNQD4BWP)                          0.00       0.00 r
-  ne_MEM_WB_reg/Q (EDFCNQD4BWP)                           0.11       0.11 f
-  memory/ne (Memory)                                      0.00       0.11 f
-  memory/U21/ZN (ND2D2BWP)                                0.02       0.14 r
-  memory/U25/ZN (AOI21D4BWP)                              0.02       0.16 f
-  memory/U24/ZN (AOI21D4BWP)                              0.03       0.19 r
-  memory/U13/ZN (OAI211D2BWP)                             0.05       0.23 f
-  memory/branch (Memory)                                  0.00       0.23 f
-  hazardcontrol/branch (HazardControl)                    0.00       0.23 f
-  hazardcontrol/U4/ZN (ND2D2BWP)                          0.02       0.26 r
-  hazardcontrol/U3/ZN (INVD2BWP)                          0.02       0.28 f
-  hazardcontrol/flush (HazardControl)                     0.00       0.28 f
-  memory/flush (Memory)                                   0.00       0.28 f
-  memory/U6/ZN (AOI21D4BWP)                               0.04       0.31 r
-  memory/regWriteEnable (Memory)                          0.00       0.31 r
-  executeforwarding/regWe_MEM (ExecuteForwarding)         0.00       0.31 r
-  executeforwarding/U170/ZN (CKND2BWP)                    0.03       0.34 f
-  executeforwarding/U165/ZN (IND2D2BWP)                   0.05       0.39 f
-  executeforwarding/U91/ZN (INVD4BWP)                     0.03       0.41 r
-  executeforwarding/U144/ZN (IND3D4BWP)                   0.03       0.45 f
-  executeforwarding/U97/ZN (INVD6BWP)                     0.03       0.48 r
-  executeforwarding/U6/ZN (CKND2D3BWP)                    0.02       0.50 f
-  executeforwarding/U95/Z (AN3XD1BWP)                     0.04       0.53 f
-  executeforwarding/U30/ZN (OAI221D2BWP)                  0.03       0.56 r
-  executeforwarding/forwardP1[8] (ExecuteForwarding)      0.00       0.56 r
-  execute/p1[8] (Execute)                                 0.00       0.56 r
-  execute/srcmux/p1[8] (SRC_MUX)                          0.00       0.56 r
-  execute/srcmux/U28/ZN (IOA21D2BWP)                      0.07       0.63 r
-  execute/srcmux/src1[8] (SRC_MUX)                        0.00       0.63 r
-  execute/alu/src1[8] (ALU)                               0.00       0.63 r
-  execute/alu/add_21/B[8] (ALU_DW01_add_1)                0.00       0.63 r
-  execute/alu/add_21/U24/ZN (ND2D1BWP)                    0.03       0.66 f
-  execute/alu/add_21/U47/ZN (CKND2BWP)                    0.02       0.68 r
-  execute/alu/add_21/U20/Z (AN3D4BWP)                     0.06       0.75 r
-  execute/alu/add_21/U31/ZN (ND2D2BWP)                    0.02       0.76 f
-  execute/alu/add_21/U143/ZN (INR2D2BWP)                  0.03       0.80 r
-  execute/alu/add_21/U34/ZN (AOI21D4BWP)                  0.02       0.82 f
-  execute/alu/add_21/U127/ZN (IINR4D2BWP)                 0.06       0.88 f
-  execute/alu/add_21/U27/ZN (ND2D1BWP)                    0.03       0.90 r
-  execute/alu/add_21/U121/ZN (CKND2D2BWP)                 0.02       0.93 f
-  execute/alu/add_21/SUM[15] (ALU_DW01_add_1)             0.00       0.93 f
-  execute/alu/U279/Z (AO211D1BWP)                         0.08       1.01 f
-  execute/alu/U247/Z (AO211D4BWP)                         0.12       1.13 f
-  execute/alu/U160/ZN (AOI21D0BWP)                        0.05       1.18 r
-  execute/alu/U133/ZN (INVD1BWP)                          0.03       1.21 f
-  execute/alu/result[2] (ALU)                             0.00       1.21 f
-  execute/aluResult[2] (Execute)                          0.00       1.21 f
-  aluResult_EX_MEM_reg[2]/D (EDFQD1BWP)                   0.00       1.21 f
-  data arrival time                                                  1.21
+  ne_MEM_WB_reg/Q (EDFCNQD4BWP)                           0.12       0.12 r
+  memory/ne (Memory)                                      0.00       0.12 r
+  memory/U7/ZN (CKND2BWP)                                 0.01       0.14 f
+  memory/U22/ZN (NR2XD1BWP)                               0.02       0.16 r
+  memory/U25/ZN (NR2XD1BWP)                               0.02       0.18 f
+  memory/U32/ZN (IND3D2BWP)                               0.02       0.19 r
+  memory/U36/ZN (CKND2BWP)                                0.02       0.21 f
+  memory/U35/ZN (INR3D2BWP)                               0.06       0.27 r
+  memory/U69/ZN (AOI211XD4BWP)                            0.05       0.32 f
+  memory/regWriteEnable (Memory)                          0.00       0.32 f
+  executeforwarding/regWe_MEM (ExecuteForwarding)         0.00       0.32 f
+  executeforwarding/U300/ZN (IND4D1BWP)                   0.03       0.34 r
+  executeforwarding/U98/Z (CKBD2BWP)                      0.04       0.39 r
+  executeforwarding/U147/ZN (CKND2BWP)                    0.02       0.41 f
+  executeforwarding/U146/Z (AN3D4BWP)                     0.05       0.46 f
+  executeforwarding/U61/ZN (AOI222D2BWP)                  0.06       0.52 r
+  executeforwarding/U302/ZN (OAI221D1BWP)                 0.08       0.60 f
+  executeforwarding/forwardP1[6] (ExecuteForwarding)      0.00       0.60 f
+  execute/p1[6] (Execute)                                 0.00       0.60 f
+  execute/srcmux/p1[6] (SRC_MUX)                          0.00       0.60 f
+  execute/srcmux/U10/ZN (IOA21D4BWP)                      0.08       0.68 f
+  execute/srcmux/src1[6] (SRC_MUX)                        0.00       0.68 f
+  execute/alu/src1[6] (ALU)                               0.00       0.68 f
+  execute/alu/add_21/B[6] (ALU_DW01_add_1)                0.00       0.68 f
+  execute/alu/add_21/U90/ZN (ND2D1BWP)                    0.03       0.71 r
+  execute/alu/add_21/U122/ZN (IOA21D2BWP)                 0.03       0.74 f
+  execute/alu/add_21/U47/ZN (ND3D3BWP)                    0.02       0.76 r
+  execute/alu/add_21/U43/ZN (CKND2D2BWP)                  0.02       0.78 f
+  execute/alu/add_21/U175/ZN (IND2D1BWP)                  0.02       0.79 r
+  execute/alu/add_21/U218/ZN (IND2D1BWP)                  0.03       0.82 f
+  execute/alu/add_21/U173/ZN (IND2D4BWP)                  0.05       0.87 f
+  execute/alu/add_21/U11/ZN (IND2D0BWP)                   0.03       0.90 r
+  execute/alu/add_21/U94/ZN (CKND2D2BWP)                  0.02       0.92 f
+  execute/alu/add_21/SUM[9] (ALU_DW01_add_1)              0.00       0.92 f
+  execute/alu/U237/ZN (CKND2BWP)                          0.02       0.94 r
+  execute/alu/U236/ZN (OAI22D2BWP)                        0.03       0.96 f
+  execute/alu/U245/ZN (AOI221D2BWP)                       0.09       1.05 r
+  execute/alu/U319/ZN (IND2D1BWP)                         0.04       1.09 f
+  execute/alu/U40/ZN (CKND2BWP)                           0.02       1.11 r
+  execute/alu/U307/ZN (INR4D1BWP)                         0.08       1.19 r
+  execute/alu/zr (ALU)                                    0.00       1.19 r
+  execute/zr (Execute)                                    0.00       1.19 r
+  zr_EX_MEM_reg/D (EDFQD1BWP)                             0.00       1.19 r
+  data arrival time                                                  1.19
 
   clock clk (rise edge)                                   1.25       1.25
   clock network delay (ideal)                             0.00       1.25
-  aluResult_EX_MEM_reg[2]/CP (EDFQD1BWP)                  0.00       1.25 r
-  library setup time                                     -0.07       1.18
-  data required time                                                 1.18
+  zr_EX_MEM_reg/CP (EDFQD1BWP)                            0.00       1.25 r
+  library setup time                                     -0.09       1.16
+  data required time                                                 1.16
   --------------------------------------------------------------------------
-  data required time                                                 1.18
-  data arrival time                                                 -1.21
+  data required time                                                 1.16
+  data arrival time                                                 -1.19
   --------------------------------------------------------------------------
   slack (VIOLATED)                                                  -0.03
 

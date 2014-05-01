@@ -359,7 +359,6 @@ module cpu(clk, rst_n, hlt, pc);
   Memory memory(
         // Global inputs       
         .clk(clk),
-        .flush(flush),
 
         // Pipeline stage inputs
         .memAddr(memAddr_EX_MEM),
