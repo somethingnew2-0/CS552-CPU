@@ -11,7 +11,7 @@ reg rd, wr, access_d, access_i;
 reg [1:0] offset;
 reg [15:0] wr_data, addr;
 
-wire i_hit, d_hit, d_dirt_out, d_dirt_in, m_we, m_re;
+wire i_hit, d_hit, d_dirt_out, d_dirt_in, m_we, m_re, clean;
 wire [7:0] i_tag, d_tag;
 wire [13:0] m_addr, i_addr_ctrl, d_addr_ctrl;
 wire [63:0] i_line, d_line, m_line, i_data, d_data, m_data;
@@ -23,7 +23,7 @@ cache icache(.clk(clk),
 						 .wr_data(i_data),
 						 .we(i_we),
 						 .re(i_re),
-						 .wdirty(),
+						 .wdirty(clean),
 
 						 .hit(i_hit),
 						 .dirty(),
@@ -90,20 +90,22 @@ cache_controller controller(.clk(clk),
 														.d_rdy(d_rdy));
 
 /* Top Level Routing Logic */
+assign clean = 1'b0; // Instruction writes are always clean
+
 always @(i_addr, d_addr, i_rdy, d_rdy, rst_n) begin
 
-	// Check for completion (instr_rdy && data_rdy)
-	if(!d_rdy & !i_rdy)
+	if(!rst_n) begin
+		stall = 1'b0;
+	end else if(!d_rdy | !i_rdy) // Check for completion (instr_rdy && data_rdy)
 		stall = 1'b1;
 	else
 		stall = 1'b0;
 
 	// Choose what input we are currently dealing with
-	if((d_rd_acc | d_wr_acc) & !d_rdy) begin
+	if((d_rd_acc | d_wr_acc)) begin
 		addr = d_addr;
 		access_d = 1'b1;
 		access_i = 1'b0;
-		stall = 1'b1;
 		
 		if(d_wr_acc) begin
 			wr_data = d_wrt_data;
@@ -114,15 +116,12 @@ always @(i_addr, d_addr, i_rdy, d_rdy, rst_n) begin
 			rd = 1'b1;
 			wr = 1'b0;
 		end
-	end else if(!i_rdy) begin
+	end else begin // There should always be an instruction to deal with
 		addr = i_addr;
 		access_d = 1'b0;
 		access_i = 1'b1;
 		wr = 1'b0;
 		rd = 1'b1;
-		stall = 1'b1;
-	end else begin
-		stall = 1'b0; // Ready for more accesses
 	end
 end
 

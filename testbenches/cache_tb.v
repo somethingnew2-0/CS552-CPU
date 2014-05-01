@@ -22,12 +22,20 @@ end
 always #1 clk = ~clk;
 
 initial begin
-	i_acc = 1'b1;
-	i_addr = 16'h0004;
-	@(instr);
-	@(posedge clk);
-	i_addr = 16'h0007;
-
+	d_wr_acc = 1'b1;
+	d_addr = 16'h0004;
+	d_wrt_data = 16'hB00B;
+	@(data);
+	//@(posedge clk);
+	d_wr_acc = 1'b0;
+	d_rd_acc = 1'b1;
+	d_addr = 16'h5505;
+	//d_wrt_data = 16'hcafe;
+	@(data);
+	//@(data);
+	//i_acc = 1'b1;
+	//d_wr_acc = 1'b0;
+//	i_addr = 16'h0000;
 end
 
 endmodule

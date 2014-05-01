@@ -13,14 +13,16 @@ output reg [63:0] i_data, d_data, m_data;
 
 /* Variables */
 reg [1:0] state, nextState;
-reg [15:0] wiped, dirty_data;
+reg [63:0] wiped, dirty_data;
 
 wire [1:0] offset;
-wire [13:0] index;
+wire [5:0] index;
+wire [7:0] tag;
 
-localparam empty = 16'h0000;
+localparam empty = 16'hFFFF; // Gets shifted in and then all 64 bits are flipped to create masks
 
-assign index = addr[15:2];
+assign tag = addr[15:8];
+assign index = addr[7:2];
 assign offset = addr[1:0];
 
 /* State Definitions*/
@@ -59,10 +61,10 @@ always @(state, addr, wr_data, i_hit, d_hit, d_dirt_out, mem_rdy, i_tag, d_tag, 
 		START: 
 			begin
 				// Apply inputs to caches
-				i_re = i_acc & read;
-				d_re = d_acc & read;
-				i_addr = index;
-				d_addr = index;
+				i_re = i_acc;
+				d_re = d_acc;
+				i_addr = {tag, index};
+				d_addr = {tag, index};
 
 				if(!d_acc) // We aren't asking for data, so we are 'done' fetching it
 					d_rdy = 1'b1;
@@ -72,7 +74,7 @@ always @(state, addr, wr_data, i_hit, d_hit, d_dirt_out, mem_rdy, i_tag, d_tag, 
 					nextState = START; // Immediately move to next request
 				end	else if(i_acc & !i_hit) begin
 					// Apply inputs to main mem
-					m_addr = index;
+					m_addr = {tag, index};
 					m_re = 1'b1;
 					// Go wait until it's done
 					nextState = SERVICE_MISS;
@@ -82,24 +84,23 @@ always @(state, addr, wr_data, i_hit, d_hit, d_dirt_out, mem_rdy, i_tag, d_tag, 
 				end else if(d_acc & write & d_hit) begin
 					// Write dirty data to d-cache
 					d_we = 1'b1;
-					d_addr = index;
-					wiped = d_line & (empty << 16 * offset);  // Mask off current word
-					dirty_data = wiped | (wr_data << 16 * offset); // Mask in new word
-					d_data = dirty_data;
+					d_addr = {tag, index};
+					wiped = d_line & ~(empty << 16 * offset);  // Mask off current word
+					d_data = wiped | (wr_data << 16 * offset); // Mask in new word
 					d_dirt_in = 1'b1; // Mark as dirty
 
-					d_rdy = 1'b1; // Outputs of caches are relevant
-					nextState = START; // Immediately move to next request
-				end else if(d_acc & !d_hit & d_dirt_out) begin // Read or Write
+					d_rdy = 1'b1;
+					nextState = START;
+				end else if(d_acc & !d_hit & d_dirt_out) begin // Read or Write (Dirty Miss)
 					// Write dirty data to main mem
 					m_we = 1'b1;
 					m_data = d_line;
-					m_addr = index;
+					m_addr = {d_tag, index};
 
 					nextState = WRITE_BACK;
-				end else if(d_acc & !d_hit & !d_dirt_out) begin // Read or Write
+				end else if(d_acc & !d_hit & !d_dirt_out) begin // Read or Write (Clean Miss)
 					m_re = 1'b1;
-					m_addr = index;
+					m_addr = {tag, index};
 
 					nextState = SERVICE_MISS;
 				end
@@ -110,11 +111,10 @@ always @(state, addr, wr_data, i_hit, d_hit, d_dirt_out, mem_rdy, i_tag, d_tag, 
 					d_rdy = 1'b1;
 					i_rdy = 1'b1;
 				end else /* d_acc */ begin
-					d_re = 1'b1;
-					d_addr = index;
-					
+					i_rdy = 1'b0;
 					d_rdy = 1'b1;
 				end
+
 				nextState = START;
 			end
 		SERVICE_MISS: 
@@ -128,24 +128,23 @@ always @(state, addr, wr_data, i_hit, d_hit, d_dirt_out, mem_rdy, i_tag, d_tag, 
 						i_we = 1'b1;
 						i_re = 1'b1;
 						i_data = m_line;
-						i_addr = index;
-		
+						i_addr = {tag, index};
 
 						nextState = WRITE_RETURN; // Instruction read miss done
 					end	else if(d_acc & read) begin
-						// Write clean data to d-cache
+						// Write clean data to and read from d-cache
 						d_we = 1'b1;
+						d_re = 1'b1;
 						d_data = m_line;
-						d_addr = index;
+						d_addr = {tag, index};
 		
 						nextState = WRITE_RETURN; // Data Read Miss done
 					end else if(d_acc & write) begin
 						// Write dirty data to d-cache
 						d_we = 1'b1;
-						wiped = d_line & (empty << 16* offset);  // Mask off current word
-						dirty_data = wiped | (wr_data << 16 * offset); // Mask in new word
-						d_data = dirty_data;
-						d_addr = index;
+						wiped = m_line & ~(empty << 16 * offset);  // Mask off current word
+						d_data = wiped | (wr_data << 16 * offset); // Mask in new word
+						d_addr = {tag, index};
 						d_dirt_in = 1'b1;
 
 						d_rdy = 1'b1;
@@ -155,8 +154,13 @@ always @(state, addr, wr_data, i_hit, d_hit, d_dirt_out, mem_rdy, i_tag, d_tag, 
 				end else begin
 					// Make sure to hold the inputs
 					m_re = 1'b1;
-					m_addr = index;
-
+					m_addr = {tag, index};
+/*
+					if(d_acc & !d_hit & d_dirt_out)
+						m_addr = {d_tag, index};
+					else
+						m_addr = {tag, index};
+*/
 					nextState = SERVICE_MISS;
 				end
 			end
@@ -169,13 +173,21 @@ always @(state, addr, wr_data, i_hit, d_hit, d_dirt_out, mem_rdy, i_tag, d_tag, 
 					if(d_acc & !d_hit & d_dirt_out) begin
 						// Read out fresh data
 						m_re = 1'b1;
-						m_addr = index;
+						m_addr = {tag, index};
 
 						nextState = SERVICE_MISS;
 					end else
 						nextState = START; // Don't forget the else case
-				else
+				else begin
+					// Hold inputs until mem is ready
+					d_re = d_acc; // So we continue to have access to tag bits
+					d_addr = {tag, index};
+					m_we = 1'b1;
+					m_data = d_line;
+					m_addr = {d_tag, index};
+
 					nextState = WRITE_BACK;
+				end
 			end
 		default: begin end
 	endcase
