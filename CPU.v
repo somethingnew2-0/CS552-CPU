@@ -243,6 +243,7 @@ module cpu(clk, rst_n, hlt, pc);
 
   wire [15:0] aluResult_EX, branchResult_EX, jumpResult_EX;
   wire ov_EX, zr_EX, ne_EX;
+  reg ov_EX_MEM, zr_EX_MEM, ne_EX_MEM;
 
   Execute execute(
                   // Pipeline stage inputs
@@ -255,21 +256,34 @@ module cpu(clk, rst_n, hlt, pc);
                   .aluSrc0(aluSrc0_ID_EX),
                   .aluSrc1(aluSrc1_ID_EX),
 
+                  .zr(zr_EX_MEM), 
+                  .ne(ne_EX_MEM), 
+                  .ov(ov_EX_MEM),
+                  .addz(addz_ID_EX),
+                  .b(branch_ID_EX),
+                  .jal(jal_ID_EX),
+                  .jr(jr_ID_EX),       
+                  .branchOp(branchOp_ID_EX),      
+                  
+
                   // Pipeline stage outputs
                   .ov(ov_EX),
                   .zr(zr_EX),
                   .ne(ne_EX),
                   .aluResult(aluResult_EX),
                   .branchResult(branchResult_EX),
-                  .jumpResult(jumpResult_EX));
+                  .jumpResult(jumpResult_EX),
+                  .regWriteEnable(regWe_MEM),
+
+                  // Global outputs
+                  .branchAddr(branchAddr),
+                  .branch(branch));
 
   // Inputs to Memory from flops
   reg [15:0] branchResult_EX_MEM, jumpResult_EX_MEM, p0_EX_MEM, p1_EX_MEM, memAddr_EX_MEM;
   reg [2:0] branchOp_EX_MEM;
   reg [3:0] p1Addr_EX_MEM;
-  reg memRe_EX_MEM, memWe_EX_MEM, regWe_EX_MEM, addz_EX_MEM, branch_EX_MEM, jr_EX_MEM, ov_EX_MEM, zr_EX_MEM, ovEn_EX_MEM, ne_EX_MEM, zrEn_EX_MEM, neEn_EX_MEM, hlt_EX_MEM; 
-  // From the WB stage
-  reg ov_MEM_WB, zr_MEM_WB, ne_MEM_WB;
+  reg memRe_EX_MEM, memWe_EX_MEM, regWe_EX_MEM, addz_EX_MEM, branch_EX_MEM, jr_EX_MEM, hlt_EX_MEM;
 
   //******************************************************
   // EX_MEM
@@ -290,16 +304,33 @@ module cpu(clk, rst_n, hlt, pc);
       branchOp_EX_MEM <= branchOp_ID_EX;
       memRe_EX_MEM <= memRe_ID_EX;
 
+      if(ovEn_ID_EX) begin
+        ov_EX_MEM <= ov_EX;
+      end
+      else begin
+        ov_EX_MEM <= ov_EX_MEM;
+      end
+
+      if (zrEn_ID_EX) begin
+        zr_EX_MEM <= zr_EX;
+      end
+      else begin
+        zr_EX_MEM <= zr_EX_MEM;
+      end
+
+      if (neEn_ID_EX) begin
+        ne_EX_MEM <= ne_EX; 
+      end
+      else begin
+        ne_EX_MEM <= ne_EX_MEM;
+      end
+
       if(!flush) begin
         memWe_EX_MEM <= memWe_ID_EX;
         regWe_EX_MEM <= regWe_ID_EX;
         branch_EX_MEM <= branch_ID_EX;
         jal_EX_MEM <= jal_ID_EX;
         jr_EX_MEM <= jr_ID_EX;      
-
-        ovEn_EX_MEM <= ovEn_ID_EX;
-        zrEn_EX_MEM <= zrEn_ID_EX;
-        neEn_EX_MEM <= neEn_ID_EX; 
       end
       else begin
         memWe_EX_MEM <= 1'b0;
@@ -307,10 +338,6 @@ module cpu(clk, rst_n, hlt, pc);
         branch_EX_MEM <= 1'b0;
         jal_EX_MEM <= 1'b0;
         jr_EX_MEM <= 1'b0; 
-
-        ovEn_EX_MEM <= 1'b0;
-        zrEn_EX_MEM <= 1'b0;
-        neEn_EX_MEM <= 1'b0; 
       end
 
       addz_EX_MEM <= addz_ID_EX;
@@ -328,10 +355,6 @@ module cpu(clk, rst_n, hlt, pc);
       end else begin 
 				hlt_EX_MEM <= hlt_ID_EX;
       end
-
-      ov_EX_MEM <= ov_EX;
-      zr_EX_MEM <= zr_EX;
-      ne_EX_MEM <= ne_EX; 
       //Just passing through mem end
     end
   end
@@ -366,25 +389,9 @@ module cpu(clk, rst_n, hlt, pc);
         .memWe(memWe_EX_MEM),
         .regWe(regWe_EX_MEM),
         .wrtData(forwardWrtData_MEM),
-        .zr(zr_MEM_WB), 
-        .ne(ne_MEM_WB), 
-        .ov(ov_MEM_WB),
-        .addz(addz_EX_MEM),
-        .b(branch_EX_MEM),
-        .jal(jal_EX_MEM),
-        .jr(jr_EX_MEM),       
-        .jalResult(jumpResult_EX_MEM),
-        .jrResult(p0_EX_MEM),
-        .branchResult(branchResult_EX_MEM),
-        .branchOp(branchOp_EX_MEM),      
-        
-        // Pipeline stage outputs
-        .memData(memData_MEM),
-        .regWriteEnable(regWe_MEM),
 
-        // Global outputs
-        .branchAddr(branchAddr),
-        .branch(branch));
+        // Pipeline stage outputs
+        .memData(memData_MEM));
 
   //*****************************************************
   // MEM_WB
@@ -392,47 +399,19 @@ module cpu(clk, rst_n, hlt, pc);
   // EX_MEM/MEM -> WB
   //
   //*****************************************************
-  always @(posedge clk or negedge rst_n) begin
-    if(!rst_n) begin
-      zr_MEM_WB <= 1'b0; 
-      ne_MEM_WB <= 1'b0;  
-      ov_MEM_WB <= 1'b0; 
-    end
-    else begin
-      pcNext_MEM_WB <= pcNext_EX_MEM;
-      memData_MEM_WB <= memData_MEM;
-      aluResult_MEM_WB <= aluResult_EX_MEM;
-      regAddr_MEM_WB <= regAddr_EX_MEM;
-      jal_MEM_WB <= jal_EX_MEM;
-      memToReg_MEM_WB <= memToReg_EX_MEM;      
-      regWe_MEM_WB <= regWe_MEM;      
+  always @(posedge clk) begin
+    pcNext_MEM_WB <= pcNext_EX_MEM;
+    memData_MEM_WB <= memData_MEM;
+    aluResult_MEM_WB <= aluResult_EX_MEM;
+    regAddr_MEM_WB <= regAddr_EX_MEM;
+    jal_MEM_WB <= jal_EX_MEM;
+    memToReg_MEM_WB <= memToReg_EX_MEM;      
+    regWe_MEM_WB <= regWe_MEM;      
 
-      if(ovEn_EX_MEM) begin
-        ov_MEM_WB <= ov_EX_MEM; 
-      end
-      else begin
-        ov_MEM_WB <= ov_MEM_WB;
-      end
-
-      if (zrEn_EX_MEM) begin
-        zr_MEM_WB <= zr_EX_MEM; 
-      end
-      else begin
-        zr_MEM_WB <= zr_MEM_WB;
-      end
-
-      if (neEn_EX_MEM) begin
-        ne_MEM_WB <= ne_EX_MEM; 
-      end
-      else begin
-        ne_MEM_WB <= ne_MEM_WB; 
-      end
-
-      if(flush || !wasRst_N) begin
-        hlt <= 1'b0;
-      end else begin 
-				hlt <= hlt_EX_MEM;
-      end
+    if(flush || !wasRst_N) begin
+      hlt <= 1'b0;
+    end else begin 
+			hlt <= hlt_EX_MEM;
     end
   end
 
