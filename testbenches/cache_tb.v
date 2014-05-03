@@ -33,16 +33,18 @@ initial begin
 	//@(posedge clk);
 	//i_addr = 16'h3355;
 
+	i_acc = 1'b1;
 	d_rd_acc = 1'b1;
+	i_addr = 16'h5555;
 	d_addr = 16'h0000;
 	#11; // When it's time
-	d_wr_acc = 1'b1;
-	d_rd_acc = 1'b0;
-	d_wrt_data = 16'hcafe;
-	#2;
-	d_wr_acc = 1'b0;
-	d_rd_acc = 1'b1;
-	d_addr = 16'h3355;
+	//d_wr_acc = 1'b1;
+	//d_rd_acc = 1'b0;
+	//d_wrt_data = 16'hcafe;
+	//#2;
+	//d_wr_acc = 1'b0;
+	//d_rd_acc = 1'b1;
+	//d_addr = 16'h3355;
 	//@(data);
 	//@(data);
 	//i_acc = 1'b1;

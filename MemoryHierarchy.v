@@ -4,12 +4,11 @@ input clk, rst_n, i_acc, d_rd_acc, d_wr_acc; // Instruction accesses are assumed
 input [15:0] i_addr, d_addr, d_wrt_data;
 
 output i_rdy, d_rdy;
-output reg stall;
+output stall;
 output [15:0] instr, data;
 
-reg rd, wr, access_d, access_i;
-reg [1:0] offset;
-reg [15:0] addr;
+wire rd, wr, access_d, access_i;
+wire [15:0] addr;
 
 wire i_hit, d_hit, d_dirt_out, d_dirt_in, m_we, m_re, clean;
 wire [7:0] i_tag, d_tag;
@@ -19,25 +18,25 @@ wire [63:0] i_line, d_line, m_line, i_data, d_data, m_data;
 /* Instruction Cache */
 cache icache(.clk(clk),
 						 .rst_n(rst_n), 
-						 .addr(i_addr_ctrl),
+						 .addr(i_addr[15:2]),
 						 .wr_data(i_data),
 						 .we(i_we),
-						 .re(i_re),
+						 .re(i_acc),
 						 .wdirty(clean),
 
 						 .hit(i_hit),
-						 .dirty(),
+						 .dirty(clean),
 						 .rd_data(i_line),
 						 .tag_out(i_tag));
 
 /* Data Cache */
 cache dcache(.clk(clk),
 						 .rst_n(rst_n),
-						 .addr(d_addr_ctrl),
+						 .addr(d_addr[15:2]),
 						 .wr_data(d_data),
 						 .wdirty(d_dirt_in),
 						 .we(d_we),
-						 .re(d_re),
+						 .re(d_acc),
 
 						 .hit(d_hit),
 						 .dirty(d_dirt_out),
@@ -59,18 +58,19 @@ cache_controller controller(.clk(clk),
 														.rst_n(rst_n),
 														.i_hit(i_hit),
 														.d_hit(d_hit),
-														.d_dirt_out(d_dirt_out),
+														.d_dirt_out(dirty),
 														.mem_rdy(m_rdy_n),
 														.i_tag(i_tag),
 														.d_tag(d_tag),
 														.i_line(i_line),
 														.d_line(d_line),
 														.m_line(m_line),
-														.addr(addr),
-														.wr_data(d_wr_data), /* no such thing as i_wr_data */
-														.i_acc(access_i),
+														.i_addr(i_addr),
+														.d_addr(d_addr),
+														.wr_data(d_wrt_data), /* no such thing as i_wr_data */
+														.i_acc(i_acc),
 														.d_acc(access_d),
-														.read(!d_wr_acc),
+														.read(i_acc | d_rd_acc),
 														.write(d_wr_acc),	/* no such thing as i_wr_acc */
 
 														.i_we(i_we),
@@ -80,55 +80,16 @@ cache_controller controller(.clk(clk),
 														.m_we(m_we),
 														.m_re(m_re),
 														.d_dirt_in(d_dirt_in),
-														.i_addr(i_addr_ctrl),
-														.d_addr(d_addr_ctrl),
 														.m_addr(m_addr),
 														.i_data(i_data),
 														.d_data(d_data),
 														.m_data(m_data),
-														.i_rdy(i_rdy),
-														.d_rdy(d_rdy));
+														.rdy(rdy));
 
 /* Top Level Routing Logic */
 assign clean = 1'b0; // Instruction writes are always clean (can't hook up 1'b0 directly to input/output)
-
-always @(posedge clk, negedge rst_n) begin
-
-	if(!rst_n) begin
-		stall <= 1'b0;
-	end else if(i_rdy && d_rdy) // Check for completion (instr_rdy && data_rdy)
-		stall <= 1'b0;
-	else
-		stall <= 1'b1;	// Not done yet
-
-	// Choose what input we are currently dealing with
-	if((d_rd_acc | d_wr_acc) & !d_rdy) begin // d_rdy is held high by the cache controller when d_rd_acc d_wr_acc are low
-		addr <= d_addr;
-		access_d <= 1'b1;
-		access_i <= 1'b0;
-		
-		if(d_wr_acc) begin
-			wr_data <= d_wrt_data;
-			rd <= 1'b0;
-			wr <= 1'b1;
-		end else begin
-			wr_data = 16'h0000;
-			rd <= 1'b1;
-			wr <= 1'b0;
-		end
-	end else /*if(!i_rdy)*/ begin // not sure if that's needed or not
-		addr <= i_addr;
-		access_d <= 1'b0;
-		access_i <= 1'b1;
-		wr <= 1'b0;
-		rd <= 1'b1;
-	end
-end
-
-/* Give data accesses priority */
-assign addr = ((d_rd_acc | d_wr_acc) & !d_rdy) ? d_addr : i_addr;
-assign access_d = ((d_rd_acc | d_wr_acc) & !d_rdy);
-assign access_i = !((d_rd_acc | d_wr_acc) & !d_rdy);
+assign d_acc = d_rd_acc | d_wr_acc;
+assign stall = !rst_n & rdy;
 
 /* Pick off instruction word
 	if(offset[1])
