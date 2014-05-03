@@ -9,7 +9,7 @@ output [15:0] instr, data;
 
 reg rd, wr, access_d, access_i;
 reg [1:0] offset;
-reg [15:0] wr_data, addr;
+reg [15:0] addr;
 
 wire i_hit, d_hit, d_dirt_out, d_dirt_in, m_we, m_re, clean;
 wire [7:0] i_tag, d_tag;
@@ -67,11 +67,11 @@ cache_controller controller(.clk(clk),
 														.d_line(d_line),
 														.m_line(m_line),
 														.addr(addr),
-														.wr_data(wr_data),
+														.wr_data(d_wr_data), /* no such thing as i_wr_data */
 														.i_acc(access_i),
 														.d_acc(access_d),
-														.read(rd),
-														.write(wr),
+														.read(!d_wr_acc),
+														.write(d_wr_acc),	/* no such thing as i_wr_acc */
 
 														.i_we(i_we),
 														.i_re(i_re),
@@ -90,40 +90,45 @@ cache_controller controller(.clk(clk),
 														.d_rdy(d_rdy));
 
 /* Top Level Routing Logic */
-assign clean = 1'b0; // Instruction writes are always clean
+assign clean = 1'b0; // Instruction writes are always clean (can't hook up 1'b0 directly to input/output)
 
-always @(i_addr, d_addr, i_rdy, d_rdy, rst_n) begin
+always @(posedge clk, negedge rst_n) begin
 
 	if(!rst_n) begin
-		stall = 1'b0;
-	end else if(!d_rdy | !i_rdy) // Check for completion (instr_rdy && data_rdy)
-		stall = 1'b1;
+		stall <= 1'b0;
+	end else if(i_rdy && d_rdy) // Check for completion (instr_rdy && data_rdy)
+		stall <= 1'b0;
 	else
-		stall = 1'b0;
+		stall <= 1'b1;	// Not done yet
 
 	// Choose what input we are currently dealing with
-	if((d_rd_acc | d_wr_acc)) begin
-		addr = d_addr;
-		access_d = 1'b1;
-		access_i = 1'b0;
+	if((d_rd_acc | d_wr_acc) & !d_rdy) begin // d_rdy is held high by the cache controller when d_rd_acc d_wr_acc are low
+		addr <= d_addr;
+		access_d <= 1'b1;
+		access_i <= 1'b0;
 		
 		if(d_wr_acc) begin
-			wr_data = d_wrt_data;
-			rd = 1'b0;
-			wr = 1'b1;
+			wr_data <= d_wrt_data;
+			rd <= 1'b0;
+			wr <= 1'b1;
 		end else begin
 			wr_data = 16'h0000;
-			rd = 1'b1;
-			wr = 1'b0;
+			rd <= 1'b1;
+			wr <= 1'b0;
 		end
-	end else begin // There should always be an instruction to deal with
-		addr = i_addr;
-		access_d = 1'b0;
-		access_i = 1'b1;
-		wr = 1'b0;
-		rd = 1'b1;
+	end else /*if(!i_rdy)*/ begin // not sure if that's needed or not
+		addr <= i_addr;
+		access_d <= 1'b0;
+		access_i <= 1'b1;
+		wr <= 1'b0;
+		rd <= 1'b1;
 	end
 end
+
+/* Give data accesses priority */
+assign addr = ((d_rd_acc | d_wr_acc) & !d_rdy) ? d_addr : i_addr;
+assign access_d = ((d_rd_acc | d_wr_acc) & !d_rdy);
+assign access_i = !((d_rd_acc | d_wr_acc) & !d_rdy);
 
 /* Pick off instruction word
 	if(offset[1])

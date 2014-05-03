@@ -35,6 +35,7 @@ localparam WRITE_BACK = 2'b11;
 always @(posedge clk, negedge rst_n)
 	if(!rst_n) begin
 		state = START;
+		nextState = START;
 	end else
 		state = nextState;
 
@@ -155,12 +156,7 @@ always @(state, addr, wr_data, i_hit, d_hit, d_dirt_out, mem_rdy, i_tag, d_tag, 
 					// Make sure to hold the inputs
 					m_re = 1'b1;
 					m_addr = {tag, index};
-/*
-					if(d_acc & !d_hit & d_dirt_out)
-						m_addr = {d_tag, index};
-					else
-						m_addr = {tag, index};
-*/
+
 					nextState = SERVICE_MISS;
 				end
 			end
@@ -172,8 +168,8 @@ always @(state, addr, wr_data, i_hit, d_hit, d_dirt_out, mem_rdy, i_tag, d_tag, 
 				if(mem_rdy)
 					if(d_acc & !d_hit & d_dirt_out) begin
 						// Read out fresh data
-						m_re = 1'b1;
-						m_addr = {tag, index};
+						m_we = 1'b1;
+						m_addr = {d_tag, index};
 
 						nextState = SERVICE_MISS;
 					end else
