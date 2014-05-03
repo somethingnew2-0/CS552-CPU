@@ -162,10 +162,11 @@ module cpu(clk, rst_n, hlt, pc);
       //Used in ex end
     
       //Just passing through ex start
-      regAddr_ID_EX <= regAddr_ID;
       branchOp_ID_EX <= branchOp_ID;
       
       if(!flush) begin
+        regAddr_ID_EX <= regAddr_ID;
+        memToReg_ID_EX <= memToReg_ID;
         regWe_ID_EX <= regWe_ID;
         memWe_ID_EX <= memWe_ID;
         branch_ID_EX <= branch_ID;
@@ -177,6 +178,8 @@ module cpu(clk, rst_n, hlt, pc);
         neEn_ID_EX <= neEn_ID;
       end
       else begin
+        regAddr_ID_EX <= 1'b0;
+        memToReg_ID_EX <= 1'b0;
         regWe_ID_EX <= 1'b0;
         memWe_ID_EX <= 1'b0;
         branch_ID_EX <= 1'b0;
@@ -194,7 +197,6 @@ module cpu(clk, rst_n, hlt, pc);
       end
 
       memRe_ID_EX <= memRe_ID;      
-      memToReg_ID_EX <= memToReg_ID;
       addz_ID_EX <= addz_ID;
       //Just passing through ex end
     end

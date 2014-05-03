@@ -1,5 +1,5 @@
 BasicOpCodes2.asm, pass, 39, 31
-BasicOpCodes4.asm, fail
+BasicOpCodes4.asm, pass, 24, 10
 NOP_test.asm, pass, 20, 10
 addz_jal.asm, pass, 41, 19
 basic_tests.asm, pass, 21, 15
