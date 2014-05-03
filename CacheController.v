@@ -15,19 +15,10 @@ output reg [63:0] i_data, d_data, m_data;
 reg [1:0] state, nextState;
 reg [63:0] wiped;
 
-//wire [1:0] offset;
-//wire [5:0] index;
-//wire [7:0] tag;
-
 localparam empty = 16'hFFFF; // Gets shifted in and then all 64 bits are flipped to create masks
-
-//assign tag = addr[15:8];
-//assign index = addr[7:2];
-//assign offset = addr[1:0];
 
 /* State Definitions*/
 localparam START = 2'b00;
-localparam WRITE_RETURN = 2'b01;
 localparam SERVICE_MISS = 2'b10;
 localparam WRITE_BACK = 2'b11;
 
@@ -132,7 +123,6 @@ always @(*) begin // Combinational
 			begin 
  				// Hold the inputs to unified mem
 				m_addr = {d_tag, d_addr[7:2]}; // addr of data currently in cache
-				//m_data = d_line;	// current data from d-cache
 				m_we = 1'b1;
 
 				if(mem_rdy) begin

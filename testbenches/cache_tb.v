@@ -47,7 +47,7 @@ initial begin
 	d_addr = 16'h0008;
 	#10; // I Miss, D RD Miss (dirty!) (65 ns)
 	i_addr = 16'h3333;
-	d_addr = 16'h3308;
+	d_addr = 16'h4405;
 	//d_wr_acc = 1'b1;
 	//d_rd_acc = 1'b0;
 	//d_wrt_data = 16'hcafe;
