@@ -240,7 +240,7 @@ module cpu(clk, rst_n, hlt, pc);
                   .forwardStall(forwardStall));
 
 
-  wire [15:0] aluResult_EX, branchResult_EX, jumpResult_EX;
+  wire [15:0] aluResult_EX;
   wire ov_EX, zr_EX, ne_EX, regWe_EX, memWe_EX;
   reg ov_EX_MEM, zr_EX_MEM, ne_EX_MEM;
 
@@ -278,7 +278,7 @@ module cpu(clk, rst_n, hlt, pc);
                   .branch(branch));
 
   // Inputs to Memory from flops
-  reg [15:0] p0_EX_MEM, p1_EX_MEM, memAddr_EX_MEM;
+  reg [15:0] p1_EX_MEM, memAddr_EX_MEM;
   reg [3:0] p1Addr_EX_MEM;
   reg memRe_EX_MEM, memWe_EX_MEM;
 
@@ -293,10 +293,11 @@ module cpu(clk, rst_n, hlt, pc);
       //Used in mem start
       aluResult_EX_MEM <= aluResult_EX; 
       memAddr_EX_MEM <= aluResult_EX; 
-      p0_EX_MEM <= forwardP0_EX; 
       p1_EX_MEM <= forwardP1_EX; 
       p1Addr_EX_MEM <= p1Addr_ID_EX;
       memRe_EX_MEM <= memRe_ID_EX;
+      memWe_EX_MEM <= memWe_EX;
+      jal_EX_MEM <= jal_ID_EX;
 
       if(ovEn_ID_EX) begin
         ov_EX_MEM <= ov_EX;
@@ -318,9 +319,6 @@ module cpu(clk, rst_n, hlt, pc);
       else begin
         ne_EX_MEM <= ne_EX_MEM;
       end
-
-      memWe_EX_MEM <= memWe_EX;
-      jal_EX_MEM <= jal_ID_EX;
 
       //Used in mem end    
     
