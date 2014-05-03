@@ -41,7 +41,7 @@ initial begin
 	i_addr = 16'h5558;
 	#10;	// I Hit, D WR Miss (dirty!)
 	d_addr = 16'h3305;
-	#12; // I Hit, D RD Miss (clean)
+	#16; // I Hit, D RD Miss (clean)
 	d_rd_acc = 1'b1;
 	d_wr_acc = 1'b0;
 	d_addr = 16'h0008;

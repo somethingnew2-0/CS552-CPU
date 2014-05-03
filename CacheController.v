@@ -19,15 +19,16 @@ localparam empty = 16'hFFFF; // Gets shifted in and then all 64 bits are flipped
 
 /* State Definitions*/
 localparam START = 2'b00;
+localparam EXTRA = 2'b01;
 localparam SERVICE_MISS = 2'b10;
 localparam WRITE_BACK = 2'b11;
 
 /* Clock state changes and handle reset */
 always @(posedge clk, negedge rst_n)
 	if(!rst_n) begin
-		state = START;
+		state <= START;
 	end else
-		state = nextState;
+		state <= nextState;
 
 /* FSM Logic */
 always @(*) begin // Combinational
@@ -44,6 +45,7 @@ always @(*) begin // Combinational
 	m_data = d_line;
 	d_dirt_in = 1'b0;
 	rdy = 1'b0;
+	nextState = START;
 	
 	case(state)
 		START: 
@@ -51,7 +53,6 @@ always @(*) begin // Combinational
 				if(d_acc & !d_hit) begin // Prioritize data accesses
 					if(dirty) begin
 						m_addr = {d_tag, d_addr[7:2]};
-						//m_data = d_line;
 						m_we = 1'b1;
 
 						nextState = WRITE_BACK;
@@ -125,11 +126,23 @@ always @(*) begin // Combinational
 				m_we = 1'b1;
 
 				if(mem_rdy) begin
-					nextState = SERVICE_MISS;
+					nextState = EXTRA;
 				end else begin
 					nextState = WRITE_BACK;
 				end
 			end
+
+		/* Only come here for starting mem read after a write back 
+		(otherwise mem_rdy is already high and the wrong line gets
+		written to the d-cache) */
+		EXTRA:
+			begin
+				m_re = 1'b1;
+				m_addr = d_addr[15:2];
+
+				nextState = SERVICE_MISS;
+			end
+
 		default: 
 			begin 
 				// Leave everything at their defaults (see top)
