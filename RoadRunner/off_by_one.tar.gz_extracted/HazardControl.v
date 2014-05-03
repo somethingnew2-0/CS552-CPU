@@ -1,5 +1,5 @@
-module HazardControl(clk, rst_n, branch, branchInit, forwardStall, flush, stall);
-  input clk, rst_n, branch, branchInit, forwardStall;
+module HazardControl(clk, rst_n, branch, branchInit, forwardStall, cacheStall, flush, stall);
+  input clk, rst_n, branch, branchInit, forwardStall, cacheStall;
 
   output flush;
   output reg stall;
@@ -12,10 +12,10 @@ module HazardControl(clk, rst_n, branch, branchInit, forwardStall, flush, stall)
     end 
     else begin
       if(branchInit) begin
-        stall <= forwardStall;
+        stall <= forwardStall | cacheStall;
       end
       else  begin
-        stall <= 1'b0;
+        stall <= cacheStall;
       end
     end
   end

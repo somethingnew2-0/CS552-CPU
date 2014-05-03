@@ -20,8 +20,6 @@ Reading pref.tcl
 # Loading work.HazardControl
 # Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.InstructionFetch
 # Loading work.InstructionFetch
-# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.IM
-# Loading work.IM
 # Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.InstructionDecode
 # Loading work.InstructionDecode
 # Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.ID
@@ -36,34 +34,36 @@ Reading pref.tcl
 # Loading work.SRC_MUX
 # Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.ALU
 # Loading work.ALU
-# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.BranchAdder
-# Loading work.BranchAdder
-# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.JumpAdder
-# Loading work.JumpAdder
+# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.BranchJumpAdder
+# Loading work.BranchJumpAdder
 # Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.MemoryForwarding
 # Loading work.MemoryForwarding
-# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.Memory
-# Loading work.Memory
-# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.DM
-# Loading work.DM
+# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.MemoryHierarchy
+# Loading work.MemoryHierarchy
+# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.cache
+# Loading work.cache
+# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.unified_mem
+# Loading work.unified_mem
+# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.cache_controller
+# Loading work.cache_controller
 # Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.Writeback
 # Loading work.Writeback
 # run -a 
 # R1 = xxxx
 # R2 = ffc4
 # R3 = XXXX
-# R4 = f9xx
+# R4 = f988
 # R5 = 0005
 # R6 = 00f9
 # R7 = xxxx
 # R8 = 02xx
 # R9 = xxxx
-# Ra = 06xx
+# Ra = 0677
 # Rb = xxxx
 # Rc = cccc
 # Rd = 003b
 # Re = 0000
 # Rf = 003f
-# Time:        961
-# Cycles:       97
+# Time:       1991
+# Cycles:      200
 # PC:         0050

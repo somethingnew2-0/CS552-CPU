@@ -20,8 +20,6 @@ Reading pref.tcl
 # Loading work.HazardControl
 # Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.InstructionFetch
 # Loading work.InstructionFetch
-# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.IM
-# Loading work.IM
 # Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.InstructionDecode
 # Loading work.InstructionDecode
 # Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.ID
@@ -36,25 +34,27 @@ Reading pref.tcl
 # Loading work.SRC_MUX
 # Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.ALU
 # Loading work.ALU
-# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.BranchAdder
-# Loading work.BranchAdder
-# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.JumpAdder
-# Loading work.JumpAdder
+# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.BranchJumpAdder
+# Loading work.BranchJumpAdder
 # Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.MemoryForwarding
 # Loading work.MemoryForwarding
-# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.Memory
-# Loading work.Memory
-# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.DM
-# Loading work.DM
+# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.MemoryHierarchy
+# Loading work.MemoryHierarchy
+# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.cache
+# Loading work.cache
+# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.unified_mem
+# Loading work.unified_mem
+# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.cache_controller
+# Loading work.cache_controller
 # Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.Writeback
 # Loading work.Writeback
 # run -a 
 # R1 = 0005
 # R2 = 0005
 # R3 = 0005
-# R4 = 0005
-# R5 = 000a
-# R6 = 000a
+# R4 = xxxx
+# R5 = xxxx
+# R6 = xxxx
 # R7 = xxxx
 # R8 = xxxx
 # R9 = xxxx
@@ -64,6 +64,6 @@ Reading pref.tcl
 # Rd = 3737
 # Re = 0001
 # Rf = 0001
-# Time:        391
-# Cycles:       40
+# Time:       1001
+# Cycles:      101
 # PC:         0021

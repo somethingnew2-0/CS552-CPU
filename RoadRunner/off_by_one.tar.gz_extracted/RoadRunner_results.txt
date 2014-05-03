@@ -1,25 +1,26 @@
-BasicOpCodes2.asm, pass, 39, 31
-BasicOpCodes4.asm, pass, 24, 10
-NOP_test.asm, pass, 20, 10
-addz_jal.asm, pass, 41, 19
-basic_tests.asm, pass, 21, 15
-branch_test.asm, pass, 131, 77
-cpitest1.asm, pass, 7, 1
-dense_hazards.asm, pass, 12, 6
-execute_test.asm, pass, 47, 41
-no_hazard_test.asm, pass, 37, 31
-prog0.asm, pass, 18, 11
-prog1.asm, pass, 12, 5
-prog5.asm, pass, 514, 256
-random.asm, pass, 65021, 65015
-random_10.asm, pass, 31, 25
-random_100.asm, pass, 121, 115
-random_1000.asm, pass, 1021, 1015
-random_25.asm, pass, 46, 40
-random_5.asm, pass, 26, 20
-random_50.asm, pass, 71, 65
-random_500.asm, pass, 521, 515
-random_non_branching.asm, pass, 18, 9
-random_test.asm, pass, 97, 77
-src0_test.asm, pass, 40, 32
-src1_test.asm, pass, 40, 32
+BasicOpCodes2.asm, fail
+BasicOpCodes4.asm, pass, 43, 10
+NOP_test.asm, fail
+addz_jal.asm, pass, 66, 19
+basic_tests.asm, pass, 36, 15
+branch_test.asm, pass, 232, 77
+cpitest1.asm, pass, 10, 1
+cachetest1.asm, fail
+dense_hazards.asm, pass, 19, 6
+execute_test.asm, pass, 90, 41
+no_hazard_test.asm, pass, 72, 31
+prog0.asm, fail
+prog1.asm, fail
+prog5.asm, fail
+random.asm, fail
+random_10.asm, pass, 58, 25
+random_100.asm, fail
+random_1000.asm, fail
+random_25.asm, pass, 89, 40
+random_5.asm, pass, 49, 20
+random_50.asm, fail
+random_500.asm, fail
+random_non_branching.asm, pass, 32, 9
+random_test.asm, fail
+src0_test.asm, fail
+src1_test.asm, fail

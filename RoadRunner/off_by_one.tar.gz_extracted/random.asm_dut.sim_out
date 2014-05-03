@@ -20,8 +20,6 @@ Reading pref.tcl
 # Loading work.HazardControl
 # Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.InstructionFetch
 # Loading work.InstructionFetch
-# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.IM
-# Loading work.IM
 # Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.InstructionDecode
 # Loading work.InstructionDecode
 # Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.ID
@@ -36,34 +34,22 @@ Reading pref.tcl
 # Loading work.SRC_MUX
 # Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.ALU
 # Loading work.ALU
-# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.BranchAdder
-# Loading work.BranchAdder
-# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.JumpAdder
-# Loading work.JumpAdder
+# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.BranchJumpAdder
+# Loading work.BranchJumpAdder
 # Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.MemoryForwarding
 # Loading work.MemoryForwarding
-# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.Memory
-# Loading work.Memory
-# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.DM
-# Loading work.DM
+# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.MemoryHierarchy
+# Loading work.MemoryHierarchy
+# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.cache
+# Loading work.cache
+# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.unified_mem
+# Loading work.unified_mem
+# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.cache_controller
+# Loading work.cache_controller
 # Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.Writeback
 # Loading work.Writeback
 # run -a 
-# R1 = ff00
-# R2 = 8000
-# R3 = 4f01
-# R4 = 0000
-# R5 = 0000
-# R6 = a780
-# R7 = 2780
-# R8 = ff00
-# R9 = 0f2a
-# Ra = 0000
-# Rb = afeb
-# Rc = 8000
-# Rd = 0014
-# Re = 0000
-# Rf = 000f
-# Time:     650201
-# Cycles:    65021
-# PC:         fdf8
+# ERROR at time 1000010: simulation is running for too long; limit of 100000 cycles exceeded!
+# Time:    1000011
+# Cycles:   100002
+# PC:         c350
