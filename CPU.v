@@ -57,6 +57,8 @@ module cpu(clk, rst_n, hlt, pc);
   always @(posedge clk or negedge rst_n) begin  
     if(!rst_n) begin
       hlt_IF_ID <= 1'b0;
+      pcNext_IF_ID <= 16'h0000;
+      instr_IF_ID <= 16'hB0FF;
     end 
     else begin
       if(!stall) begin
@@ -145,6 +147,28 @@ module cpu(clk, rst_n, hlt, pc);
   always @(posedge clk or negedge rst_n) begin 
     if(!rst_n) begin
       hlt_ID_EX <= 1'b0;
+      p0_ID_EX <= 16'h0000;
+      p1_ID_EX <= 16'h0000;
+      pcNext_ID_EX <= 16'h0000;
+      imm_ID_EX <= 12'h000;
+      p0Addr_ID_EX <= 4'h0;
+      p1Addr_ID_EX <= 4'h0;
+      shamt_ID_EX <= 4'h0;
+      aluOp_ID_EX <= 3'b000;
+      aluSrc0_ID_EX <= 1'b1;
+      aluSrc1_ID_EX <= 1'b1;
+      regAddr_ID_EX <= 4'h0;
+      memToReg_ID_EX <= 1'b0;
+      regWe_ID_EX <= 1'b0;
+      memRe_ID_EX <= 1'b0; 
+      memWe_ID_EX <= 1'b0;
+      branch_ID_EX <= 1'b0;
+      jal_ID_EX <= 1'b0;
+      jr_ID_EX <= 1'b0;
+
+      ovEn_ID_EX <= 1'b0;
+      zrEn_ID_EX <= 1'b0;
+      neEn_ID_EX <= 1'b0;
     end 
     else begin
       if(!stall) begin
@@ -167,7 +191,7 @@ module cpu(clk, rst_n, hlt, pc);
         //Just passing through ex start   
         if(flush) begin
           hlt_ID_EX <= 1'b0;
-          regAddr_ID_EX <= 1'b0;
+          regAddr_ID_EX <= 4'h0;
           memToReg_ID_EX <= 1'b0;
           regWe_ID_EX <= 1'b0;
           memRe_ID_EX <= 1'b0; 
@@ -291,6 +315,23 @@ module cpu(clk, rst_n, hlt, pc);
   always @(posedge clk or negedge rst_n) begin 
     if(!rst_n) begin
       hlt_EX_MEM <= 1'b0;
+
+      aluResult_EX_MEM <= 16'h0000;
+      p1_EX_MEM <= 16'h0000; 
+      p1Addr_EX_MEM <= 4'h0;
+      memAddr_EX_MEM <= 16'h0000;
+      memRe_EX_MEM <= 1'b0;
+      memWe_EX_MEM <= 1'b0;
+      jal_EX_MEM <= 1'b0;
+
+      ov_EX_MEM <= 1'b0;
+      zr_EX_MEM <= 1'b0;
+      ne_EX_MEM <= 1'b0;
+
+      pcNext_EX_MEM <= 16'h0000;
+      regAddr_EX_MEM <= 4'h0;
+      memToReg_EX_MEM <= 1'b0;
+      regWe_EX_MEM <= 1'b0;
     end
     else begin
       if(!stall) begin
@@ -384,6 +425,15 @@ module cpu(clk, rst_n, hlt, pc);
   always @(posedge clk or negedge rst_n) begin
     if(!rst_n) begin
       hlt <= 1'b0;
+
+      pcNext_MEM_WB <= 16'h0000;
+      memData_MEM_WB <= 16'h0000;
+      aluResult_MEM_WB <= 16'h0000;
+      
+      regAddr_MEM_WB <= 4'h0;
+      jal_MEM_WB  <= 1'b0;
+      memToReg_MEM_WB <= 1'b0;
+      regWe_MEM_WB <= 1'b0;
     end
     else begin
       pcNext_MEM_WB <= pcNext_EX_MEM;
@@ -417,10 +467,15 @@ module cpu(clk, rst_n, hlt, pc);
     .writeAddr(writeAddr),
     .writeEnable(writeEnable));
 
-  always @(posedge clk) begin
-    writeData_WB <= writeData;
-    writeAddr_WB <= writeAddr;
-    writeEnable_WB <= writeEnable;
+  always @(posedge clk or negedge rst_n) begin
+    if(!rst_n) begin
+      writeEnable_WB <= 1'b0;
+    end
+    else begin
+      writeData_WB <= writeData;
+      writeAddr_WB <= writeAddr;
+      writeEnable_WB <= writeEnable;
+    end
   end  
 
 endmodule

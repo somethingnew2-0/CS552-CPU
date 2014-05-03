@@ -15,7 +15,7 @@ module HazardControl(clk, rst_n, branch, branchInit, forwardStall, cacheStall, f
         stall <= forwardStall | cacheStall;
       end
       else  begin
-        stall <= 1'b0;
+        stall <= cacheStall;
       end
     end
   end
