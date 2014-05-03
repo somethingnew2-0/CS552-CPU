@@ -13,7 +13,7 @@ module Execute(p0, p1, pcNext, imm, shamt, aluOp, branchOp, aluSrc0, aluSrc1, re
   output [15:0] aluResult, branchAddr;
   output branch, regWriteEnable, memoryWriteEnable;
 
-  wire [15:0] src0, src1, branchResult, jumpResult;
+  wire [15:0] src0, src1, branchJumpResult;
 
   SRC_MUX srcmux(.p0(p0),
                  .p1(p1), 
@@ -32,14 +32,11 @@ module Execute(p0, p1, pcNext, imm, shamt, aluOp, branchOp, aluSrc0, aluSrc1, re
           .zr(zr_EX),
           .ne(ne_EX)); 
 
-  BranchAdder branchadder(.pcNext(pcNext),
-                          .offset(imm[8:0]),
-                          .result(branchResult));
-
-  JumpAdder jumpadder(.pcNext(pcNext),
-                      .offset(imm),
-                      .result(jumpResult));
-
+  BranchJumpAdder branchjumpadder(.pcNext(pcNext),
+                          .jal(jal),
+                          .branchOffset(imm[8:0]),
+                          .jumpOffset(imm),
+                          .result(branchJumpResult));
 
   // Branch Codes, straight off the quick reference
   localparam neq    = 3'b000;
@@ -51,9 +48,8 @@ module Execute(p0, p1, pcNext, imm, shamt, aluOp, branchOp, aluSrc0, aluSrc1, re
   localparam ovfl   = 3'b110;
   localparam uncond = 3'b111; 
 
-  assign branchAddr = jal ? jumpResult:
-                      jr ? p0: // Set to P0
-                      branchResult; 
+  assign branchAddr = jr ? p0: // Set to P0
+                      branchJumpResult; 
 
   assign branch = jal | jr |
                     (b &
