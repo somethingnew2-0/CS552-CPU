@@ -18,10 +18,9 @@ module ALU(src0, src1, ctrl, shamt, result, ov, zr, ne);
   localparam srl = 3'b110;
   localparam sra = 3'b111;
 
-  assign subOp = ~src1 + 1'b1;
-
-  assign unsat = (ctrl==add || ctrl==sub) ? src0+((ctrl==add)?src1:subOp):
+  assign unsat = (ctrl==add) ? src0+src1:
                  (ctrl==lhb) ? {src0[7:0], src1[7:0]}:
+                 (ctrl==sub) ? src0-src1:
                  (ctrl==andy)? src0&src1:
                  (ctrl==nory)? ~(src0|src1):
                  (ctrl==sll) ? src0<<shamt:
@@ -31,7 +30,7 @@ module ALU(src0, src1, ctrl, shamt, result, ov, zr, ne);
 
   // When checking msbs for overflow, we need the actual bits operated on
   // Complementing 0x8000 => 0x8000, so set it to 0x0000 to make it positive instead
-
+  assign subOp = ~src1 + 1'b1;
   assign src1Sign = ctrl==sub ? ((src1==16'h8000) ? 1'b0 : subOp[15]) : src1[15];          
 
   // Positive operands; Negative result
