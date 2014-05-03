@@ -6,7 +6,7 @@ module HazardControl(clk, rst_n, branch, branchInit, forwardStall, cacheStall, f
 
   assign flush = branchInit ? branch: 1'b0;
 
-  always @(negedge clk or negedge rst_n) begin
+  always @(posedge clk or negedge rst_n) begin
     if(!rst_n) begin
       stall <= 1'b0;
     end 
