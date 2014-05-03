@@ -85,7 +85,7 @@ cache_controller controller(.clk(clk),
 /* Top Level Routing Logic */
 assign clean = 1'b0; // Instruction writes are always clean (can't hook up 1'b0 directly to input/output)
 assign d_acc = d_rd_acc | d_wr_acc;
-assign stall = !rst_n & rdy;
+assign stall = rst_n & !rdy;
 
 /* Pick off instruction word
 	if(offset[1])

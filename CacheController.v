@@ -51,7 +51,7 @@ always @(*) begin // Combinational
 	m_addr = 14'd0;
 	i_data = 64'd0;
 	d_data = 64'd0;
-	m_data = 64'd0;
+	m_data = d_line;
 	d_dirt_in = 1'b0;
 	rdy = 1'b0;
 	
@@ -61,6 +61,7 @@ always @(*) begin // Combinational
 				if(d_acc & !d_hit) begin // Prioritize data accesses
 					if(dirty) begin
 						m_addr = {d_tag, d_addr[7:2]};
+						//m_data = d_line;
 						m_we = 1'b1;
 
 						nextState = WRITE_BACK;
@@ -77,10 +78,17 @@ always @(*) begin // Combinational
 					nextState = SERVICE_MISS;
 				end else begin // Both caches are hitting
 					if(write) begin 
-						d_we = 1'b1;
-						wiped = m_line & ~(empty << 16 * d_addr[1:0]); // Wipe off word that is there
-						d_data = wiped | (wr_data << 16 * d_addr[1:0]); // Mask in new data 
-						d_dirt_in = 1'b1; // mark dirty
+						if(dirty) begin // Our clean line is m_line
+							d_we = 1'b1;
+							wiped = m_line & ~(empty << 16 * d_addr[1:0]); // Wipe off word that is there
+							d_data = wiped | (wr_data << 16 * d_addr[1:0]); // Mask in new data 
+							d_dirt_in = 1'b1; // mark dirty
+						end else begin // Our clean line is d_line
+							d_we = 1'b1;
+							wiped = d_line & ~(empty << 16 * d_addr[1:0]); // Wipe off word that is there
+							d_data = wiped | (wr_data << 16 * d_addr[1:0]); // Mask in new data 
+							d_dirt_in = 1'b1; // mark dirty
+						end
 					end
 
 					rdy = 1'b1;
@@ -124,7 +132,7 @@ always @(*) begin // Combinational
 			begin 
  				// Hold the inputs to unified mem
 				m_addr = {d_tag, d_addr[7:2]}; // addr of data currently in cache
-				m_data = d_line;	// current data from d-cache
+				//m_data = d_line;	// current data from d-cache
 				m_we = 1'b1;
 
 				if(mem_rdy) begin
