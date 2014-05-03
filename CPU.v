@@ -5,7 +5,7 @@ module cpu(clk, rst_n, hlt, pc);
   output [15:0] pc;
 
   wire [15:0] branchAddr;
-  wire flush, stall, branch, branchInit, forwardStall;
+  wire flush, stall, branch, branchInit, forwardStall, cacheStall;
 
   HazardControl hazardcontrol(
                               // Global inputs
@@ -14,6 +14,7 @@ module cpu(clk, rst_n, hlt, pc);
                               .branch(branch),
                               .branchInit(branchInit),
                               .forwardStall(forwardStall),
+                              .cacheStall(cacheStall),
                               // Global outputs
                               .flush(flush),
                               .stall(stall));
@@ -24,7 +25,7 @@ module cpu(clk, rst_n, hlt, pc);
     outputs of the module */
 
   wire hlt_IF;
-  wire [15:0] instr_IF;
+  wire [15:0] instr_IF, pc_IF;
 
   InstructionFetch instructionfetch(
                                     // Global inputs
@@ -32,6 +33,7 @@ module cpu(clk, rst_n, hlt, pc);
                                     .rst_n(rst_n),
                                     .branch(branch),
                                     .branchAddr(branchAddr),
+                                    .instr(instr_IF),
                                     .stall(stall),
                                     .rd_en(rd_en),
                                     
@@ -40,7 +42,7 @@ module cpu(clk, rst_n, hlt, pc);
                                     .branchInit(branchInit),
 
                                     // Pipeline stage outputs 
-                                    .instr(instr_IF),
+                                    .pc(pc_IF),
                                     .hlt(hlt_IF));
 
   reg [15:0] instr_IF_ID, pcNext_IF_ID;
@@ -360,18 +362,18 @@ module cpu(clk, rst_n, hlt, pc);
 
   wire [15:0] memData_MEM; // Output From Memory
 
-  Memory memory(
-        // Global inputs       
-        .clk(clk),
-
-        // Pipeline stage inputs
-        .memAddr(memAddr_EX_MEM),
-        .memRe(memRe_EX_MEM),
-        .memWe(memWe_EX_MEM),
-        .wrtData(forwardWrtData_MEM),
-
-        // Pipeline stage outputs
-        .memData(memData_MEM));
+  MemoryHierarchy memoryhierarchy(
+    .clk(clk),
+    .rst_n(rst_n),
+    .i_acc(rd_en),
+    .d_rd_acc(memRe_EX_MEM),
+    .d_wr_acc(memWe_EX_MEM),
+    .i_addr(pc_IF),
+    .d_addr(memAddr_EX_MEM),
+    .d_wrt_data(forwardWrtData_MEM),
+    .stall(cacheStall),
+    .instr(instr_IF),
+    .data(memData_MEM));  
 
   //*****************************************************
   // MEM_WB

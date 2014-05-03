@@ -1,4 +1,4 @@
-module mem_hierarchy (clk, rst_n, i_acc, d_rd_acc, d_wr_acc, i_addr, d_addr, d_wrt_data, stall, instr, data);
+module MemoryHierarchy(clk, rst_n, i_acc, d_rd_acc, d_wr_acc, i_addr, d_addr, d_wrt_data, stall, instr, data);
 
 input clk, rst_n, i_acc, d_rd_acc, d_wr_acc; // Instruction accesses are assumed read
 input [15:0] i_addr, d_addr, d_wrt_data;
