@@ -8,7 +8,7 @@ module InstructionFetch(clk, rst_n, wasRst_N, branch, branchAddr, stall, rd_en, 
 
   reg [15:0] pc;
 
-  wire [15:0] effectivePc, instrFetched;
+  wire [15:0] effectivePc;
 
   assign branchInit = !((pc == 16'h0000) || (pc == 16'h0001) || (pc == 16'h0002));
 
@@ -21,8 +21,6 @@ module InstructionFetch(clk, rst_n, wasRst_N, branch, branchAddr, stall, rd_en, 
   assign effectivePc = (branchInit && branch) ? branchAddr:
                        pcNext;
 
-  // Send a NOP through the pipe on empty instruction
-  assign instr = (instrFetched === 16'hXXXX) ? 16'hB0FF : instrFetched;
 
   always @(posedge clk or negedge rst_n) begin
     if(!rst_n)
@@ -37,7 +35,7 @@ module InstructionFetch(clk, rst_n, wasRst_N, branch, branchAddr, stall, rd_en, 
         .clk(clk),
         .rd_en(rd_en),
         
-        .instr(instrFetched));
+        .instr(instr));
 
 endmodule
 

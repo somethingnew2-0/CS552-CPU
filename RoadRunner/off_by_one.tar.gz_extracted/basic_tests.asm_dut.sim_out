@@ -12,41 +12,41 @@ Reading pref.tcl
 # //  WHICH IS THE PROPERTY OF MENTOR GRAPHICS CORPORATION OR ITS
 # //  LICENSORS AND IS SUBJECT TO LICENSE TERMS.
 # //
-# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.clk_and_rst_n
+# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.clk_and_rst_n
 # Loading work.clk_and_rst_n
-# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.cpu
+# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.cpu
 # Loading work.cpu
-# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.HazardControl
+# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.HazardControl
 # Loading work.HazardControl
-# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.InstructionFetch
+# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.InstructionFetch
 # Loading work.InstructionFetch
-# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.IM
+# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.IM
 # Loading work.IM
-# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.InstructionDecode
+# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.InstructionDecode
 # Loading work.InstructionDecode
-# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.ID
+# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.ID
 # Loading work.ID
-# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.rf
+# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.rf
 # Loading work.rf
-# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.ExecuteForwarding
+# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.ExecuteForwarding
 # Loading work.ExecuteForwarding
-# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.Execute
+# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.Execute
 # Loading work.Execute
-# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.SRC_MUX
+# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.SRC_MUX
 # Loading work.SRC_MUX
-# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.ALU
+# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.ALU
 # Loading work.ALU
-# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.BranchAdder
+# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.BranchAdder
 # Loading work.BranchAdder
-# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.JumpAdder
+# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.JumpAdder
 # Loading work.JumpAdder
-# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.MemoryForwarding
+# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.MemoryForwarding
 # Loading work.MemoryForwarding
-# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.Memory
+# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.Memory
 # Loading work.Memory
-# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.DM
+# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.DM
 # Loading work.DM
-# Refreshing /filespace/people/m/mwiemer/ECE552/CS552-CPU/RoadRunner/my_lib.Writeback
+# Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.Writeback
 # Loading work.Writeback
 # run -a 
 # R1 = 000f
@@ -62,8 +62,8 @@ Reading pref.tcl
 # Rb = 0078
 # Rc = 0001
 # Rd = xxxx
-# Re = xxxx
+# Re = 0000
 # Rf = xxxx
-# Time:        201
-# Cycles:       21
+# Time:        191
+# Cycles:       20
 # PC:         0010
