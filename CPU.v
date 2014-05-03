@@ -280,7 +280,7 @@ module cpu(clk, rst_n, hlt, pc);
   // Inputs to Memory from flops
   reg [15:0] p1_EX_MEM, memAddr_EX_MEM;
   reg [3:0] p1Addr_EX_MEM;
-  reg memRe_EX_MEM, memWe_EX_MEM;
+  reg memRe_EX_MEM, memWe_EX_MEM, hlt_EX_MEM;
 
   //******************************************************
   // EX_MEM
@@ -329,9 +329,9 @@ module cpu(clk, rst_n, hlt, pc);
       regWe_EX_MEM <= regWe_EX;
 
       if(flush || !wasRst_N) begin
-        hlt <= 1'b0;
+        hlt_EX_MEM <= 1'b0;
       end else begin 
-				hlt <= hlt_ID_EX;
+				hlt_EX_MEM <= hlt_ID_EX;
       end
       //Just passing through mem end
     end
@@ -384,6 +384,12 @@ module cpu(clk, rst_n, hlt, pc);
     jal_MEM_WB <= jal_EX_MEM;
     memToReg_MEM_WB <= memToReg_EX_MEM;      
     regWe_MEM_WB <= regWe_EX_MEM;      
+
+    if(flush || !wasRst_N) begin
+      hlt <= 1'b0;
+    end else begin 
+      hlt <= hlt_EX_MEM;
+    end
   end
 
   Writeback writeback(
