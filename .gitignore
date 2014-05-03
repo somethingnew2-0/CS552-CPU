@@ -12,6 +12,10 @@ instr.hex
 .metadata/**
 *.asm.bin
 *.do
+*.svf
+sourceFiles
+syn.dc
+
 
 *.class
 
