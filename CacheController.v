@@ -26,7 +26,6 @@ localparam WRITE_BACK = 2'b11;
 always @(posedge clk, negedge rst_n)
 	if(!rst_n) begin
 		state = START;
-		nextState = START;
 	end else
 		state = nextState;
 
