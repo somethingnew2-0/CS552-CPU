@@ -52,7 +52,7 @@ Reading pref.tcl
 # R1 = 0005
 # R2 = xxxx
 # R3 = 0057
-# R4 = xxxx
+# R4 = 0057
 # R5 = xxxx
 # R6 = xxxx
 # R7 = xxxx
@@ -64,6 +64,6 @@ Reading pref.tcl
 # Rd = xxxx
 # Re = xxxx
 # Rf = 0006
-# Time:        171
-# Cycles:       18
+# Time:        181
+# Cycles:       19
 # PC:         xxxx

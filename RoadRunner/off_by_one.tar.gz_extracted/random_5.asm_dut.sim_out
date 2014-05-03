@@ -60,10 +60,10 @@ Reading pref.tcl
 # R9 = 0009
 # Ra = 000a
 # Rb = 000b
-# Rc = 000c
+# Rc = fff8
 # Rd = 0004
 # Re = 000e
 # Rf = 000f
-# Time:        241
-# Cycles:       25
+# Time:        251
+# Cycles:       26
 # PC:         0015

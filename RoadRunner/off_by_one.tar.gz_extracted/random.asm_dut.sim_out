@@ -54,7 +54,7 @@ Reading pref.tcl
 # R3 = 4f01
 # R4 = 0000
 # R5 = 0000
-# R6 = 7fff
+# R6 = a780
 # R7 = 2780
 # R8 = ff00
 # R9 = 0f2a
@@ -64,6 +64,6 @@ Reading pref.tcl
 # Rd = 0014
 # Re = 0000
 # Rf = 000f
-# Time:     650191
-# Cycles:    65020
+# Time:     650201
+# Cycles:    65021
 # PC:         fdf8

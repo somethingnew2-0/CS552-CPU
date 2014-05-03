@@ -57,13 +57,13 @@ Reading pref.tcl
 # R6 = 0022
 # R7 = 0022
 # R8 = ffdd
-# R9 = 9999
+# R9 = 4444
 # Ra = aaaa
 # Rb = bbbb
 # Rc = cccc
 # Rd = dddd
 # Re = eeee
 # Rf = ffff
-# Time:        451
-# Cycles:       46
+# Time:        461
+# Cycles:       47
 # PC:         002a

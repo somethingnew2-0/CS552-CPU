@@ -50,7 +50,7 @@ Reading pref.tcl
 # Loading work.Writeback
 # run -a 
 # R1 = 8000
-# R2 = 0000
+# R2 = 043c
 # R3 = 8000
 # R4 = 0000
 # R5 = 0000
@@ -64,6 +64,6 @@ Reading pref.tcl
 # Rd = 8000
 # Re = 0000
 # Rf = 000f
-# Time:      10191
-# Cycles:     1020
+# Time:      10201
+# Cycles:     1021
 # PC:         03f8

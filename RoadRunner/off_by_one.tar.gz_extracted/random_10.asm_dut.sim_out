@@ -59,11 +59,11 @@ Reading pref.tcl
 # R8 = 0018
 # R9 = fff9
 # Ra = 000a
-# Rb = 000b
+# Rb = 038d
 # Rc = 002c
 # Rd = 000d
 # Re = 000e
 # Rf = 000f
-# Time:        291
-# Cycles:       30
+# Time:        301
+# Cycles:       31
 # PC:         001a

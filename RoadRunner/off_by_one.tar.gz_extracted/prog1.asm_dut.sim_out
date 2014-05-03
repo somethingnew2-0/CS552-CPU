@@ -63,7 +63,7 @@ Reading pref.tcl
 # Rc = xxxx
 # Rd = xxxx
 # Re = xxxx
-# Rf = xxxx
-# Time:        101
-# Cycles:       11
+# Rf = 0006
+# Time:        111
+# Cycles:       12
 # PC:         0006

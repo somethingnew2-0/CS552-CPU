@@ -61,9 +61,9 @@ Reading pref.tcl
 # Ra = 0000
 # Rb = fff8
 # Rc = 0000
-# Rd = c101
+# Rd = 0000
 # Re = 0000
 # Rf = 000f
-# Time:        691
-# Cycles:       70
+# Time:        701
+# Cycles:       71
 # PC:         0042
