@@ -1,12 +1,12 @@
-module InstructionFetch(clk, rst_n, branch, branchAddr, stall, rd_en, instr, pcNext, hlt, branchInit);
+module InstructionFetch(clk, rst_n, branch, branchAddr, instr, stall, rd_en, pc, pcNext, hlt, branchInit);
 
   input clk, rst_n, branch, stall, rd_en;
-  input [15:0] branchAddr;
+  input [15:0] branchAddr, instr;
   
-  output [15:0] instr, pcNext;   
+  output [15:0] pcNext;   
+  output reg [15:0] pc;
   output hlt, branchInit;
-
-  reg [15:0] pc;
+  
   reg wasRst_N;
 
   wire [15:0] effectivePc;
@@ -35,12 +35,6 @@ module InstructionFetch(clk, rst_n, branch, branchAddr, stall, rd_en, instr, pcN
         pc <= pc;
     end
   end
-
-  IM im(.addr(pc),
-        .clk(clk),
-        .rd_en(rd_en),
-        
-        .instr(instr));
 
 endmodule
 
