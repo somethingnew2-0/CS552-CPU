@@ -1,13 +1,12 @@
-module mem_hierarchy (clk, rst_n, i_acc, d_rd_acc, d_wr_acc, i_addr, d_addr, d_wrt_data, stall, i_rdy, d_rdy, instr, data);
+module mem_hierarchy (clk, rst_n, i_acc, d_rd_acc, d_wr_acc, i_addr, d_addr, d_wrt_data, stall, instr, data);
 
 input clk, rst_n, i_acc, d_rd_acc, d_wr_acc; // Instruction accesses are assumed read
 input [15:0] i_addr, d_addr, d_wrt_data;
 
-output i_rdy, d_rdy;
 output stall;
 output [15:0] instr, data;
 
-wire rd, wr, access_d, access_i;
+wire rd, wr;
 wire [15:0] addr;
 
 wire i_hit, d_hit, d_dirt_out, d_dirt_in, m_we, m_re, clean;
@@ -39,7 +38,7 @@ cache dcache(.clk(clk),
 						 .re(d_acc),
 
 						 .hit(d_hit),
-						 .dirty(d_dirt_out),
+						 .dirty(dirty),
 						 .rd_data(d_line),
 						 .tag_out(d_tag));
 
@@ -58,23 +57,20 @@ cache_controller controller(.clk(clk),
 														.rst_n(rst_n),
 														.i_hit(i_hit),
 														.d_hit(d_hit),
-														.d_dirt_out(dirty),
+														.dirty(dirty),
 														.mem_rdy(m_rdy_n),
-														.i_tag(i_tag),
 														.d_tag(d_tag),
-														.i_line(i_line),
 														.d_line(d_line),
 														.m_line(m_line),
 														.i_addr(i_addr),
 														.d_addr(d_addr),
 														.wr_data(d_wrt_data), /* no such thing as i_wr_data */
 														.i_acc(i_acc),
-														.d_acc(access_d),
+														.d_acc(d_acc),
 														.read(i_acc | d_rd_acc),
 														.write(d_wr_acc),	/* no such thing as i_wr_acc */
 
 														.i_we(i_we),
-														.i_re(i_re),
 														.d_we(d_we),
 														.d_re(d_re),
 														.m_we(m_we),

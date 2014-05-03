@@ -6,7 +6,7 @@ reg [15:0] i_addr, d_addr, d_wrt_data;
 wire stall, instr_rdy, data_rdy;
 wire [15:0] instr, data;
 
-mem_hierarchy mem(clk, rst_n, i_acc, d_rd_acc, d_wr_acc, i_addr, d_addr, d_wrt_data, stall, instr_rdy, data_rdy, instr, data);
+mem_hierarchy mem(clk, rst_n, i_acc, d_rd_acc, d_wr_acc, i_addr, d_addr, d_wrt_data, stall, instr, data);
 
 initial begin
 	clk = 1'b0;
