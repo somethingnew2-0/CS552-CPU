@@ -91,7 +91,7 @@ module cpu(clk, rst_n, hlt, pc);
   wire [11:0] imm_ID;
   wire [3:0] p0Addr_ID, p1Addr_ID, regAddr_ID, shamt_ID;
   wire [2:0] aluOp_ID, branchOp_ID;
-  wire regWe_ID, memRe_ID, memWe_ID, memToReg_ID, addz_ID, branch_ID, jal_ID, jr_ID, aluSrc0_ID, aluSrc1_ID, ovEn_ID, zrEn_ID, neEn_ID;
+  wire regWe_ID, memRe_ID, memWe_ID, addz_ID, branch_ID, jal_ID, jr_ID, aluSrc0_ID, aluSrc1_ID, ovEn_ID, zrEn_ID, neEn_ID;
 
   InstructionDecode instructiondecode(
         // Global inputs
@@ -117,7 +117,6 @@ module cpu(clk, rst_n, hlt, pc);
         .regWe(regWe_ID), 
         .memRe(memRe_ID),
         .memWe(memWe_ID),
-        .memToReg(memToReg_ID),
         .addz(addz_ID),
         .branch(branch_ID),
         .jal(jal_ID),
@@ -138,7 +137,7 @@ module cpu(clk, rst_n, hlt, pc);
   // Just passing through signals
   reg [3:0] regAddr_ID_EX;
   reg [2:0] branchOp_ID_EX;
-  reg regWe_ID_EX, memRe_ID_EX, memWe_ID_EX, memToReg_ID_EX, addz_ID_EX, branch_ID_EX, jal_ID_EX, jr_ID_EX, ovEn_ID_EX, zrEn_ID_EX, neEn_ID_EX, hlt_ID_EX;
+  reg regWe_ID_EX, memRe_ID_EX, memWe_ID_EX, addz_ID_EX, branch_ID_EX, jal_ID_EX, jr_ID_EX, ovEn_ID_EX, zrEn_ID_EX, neEn_ID_EX, hlt_ID_EX;
 
   //******************************************************
   // ID_EX
@@ -160,7 +159,6 @@ module cpu(clk, rst_n, hlt, pc);
       aluSrc0_ID_EX <= 1'b1;
       aluSrc1_ID_EX <= 1'b1;
       regAddr_ID_EX <= 4'h0;
-      memToReg_ID_EX <= 1'b0;
       regWe_ID_EX <= 1'b0;
       memRe_ID_EX <= 1'b0; 
       memWe_ID_EX <= 1'b0;
@@ -194,7 +192,6 @@ module cpu(clk, rst_n, hlt, pc);
         if(flush) begin
           hlt_ID_EX <= 1'b0;
           regAddr_ID_EX <= 4'h0;
-          memToReg_ID_EX <= 1'b0;
           regWe_ID_EX <= 1'b0;
           memRe_ID_EX <= 1'b0; 
           memWe_ID_EX <= 1'b0;
@@ -209,7 +206,6 @@ module cpu(clk, rst_n, hlt, pc);
         else begin
           hlt_ID_EX <= hlt_IF_ID;
           regAddr_ID_EX <= regAddr_ID;
-          memToReg_ID_EX <= memToReg_ID;
           regWe_ID_EX <= regWe_ID;
           memRe_ID_EX <= memRe_ID; 
           memWe_ID_EX <= memWe_ID;
@@ -230,7 +226,7 @@ module cpu(clk, rst_n, hlt, pc);
   wire [15:0] forwardP0_EX, forwardP1_EX;
   reg [15:0] aluResult_EX_MEM, pcNext_EX_MEM, aluResult_MEM_WB, pcNext_MEM_WB, memData_MEM_WB, writeData_WB;
   reg [3:0] regAddr_EX_MEM, regAddr_MEM_WB, writeAddr_WB;
-  reg jal_EX_MEM, regWe_MEM_WB, jal_MEM_WB, memToReg_EX_MEM, memToReg_MEM_WB, writeEnable_WB, regWe_EX_MEM;
+  reg jal_EX_MEM, memRe_EX_MEM, regWe_MEM_WB, jal_MEM_WB, memRe_MEM_WB, writeEnable_WB, regWe_EX_MEM;
 
   ExecuteForwarding executeforwarding(
                   // Forwarding inputs
@@ -244,14 +240,14 @@ module cpu(clk, rst_n, hlt, pc);
                   .aluResult_EX_MEM(aluResult_EX_MEM),
                   .jal_EX_MEM(jal_EX_MEM),
                   .pcNext_EX_MEM(pcNext_EX_MEM),
-                  .memToReg_EX_MEM(memToReg_EX_MEM),
+                  .memRe_EX_MEM(memRe_EX_MEM),
                   // Forwarding MEM_WB inputs
                   .regAddr_MEM_WB(regAddr_MEM_WB), 
                   .regWe_MEM_WB(regWe_MEM_WB),
                   .aluResult_MEM_WB(aluResult_MEM_WB),
                   .jal_MEM_WB(jal_MEM_WB),
                   .pcNext_MEM_WB(pcNext_MEM_WB),
-                  .memToReg_MEM_WB(memToReg_MEM_WB),
+                  .memRe_MEM_WB(memRe_MEM_WB),
                   .memData_MEM_WB(memData_MEM_WB),
                   // Forwarding WB inputs
                   .writeData_WB(writeData_WB),
@@ -306,7 +302,7 @@ module cpu(clk, rst_n, hlt, pc);
   // Inputs to Memory from flops
   reg [15:0] p1_EX_MEM, memAddr_EX_MEM;
   reg [3:0] p1Addr_EX_MEM;
-  reg memRe_EX_MEM, memWe_EX_MEM, hlt_EX_MEM;
+  reg memWe_EX_MEM, hlt_EX_MEM;
 
   //******************************************************
   // EX_MEM
@@ -332,7 +328,6 @@ module cpu(clk, rst_n, hlt, pc);
 
       pcNext_EX_MEM <= 16'h0000;
       regAddr_EX_MEM <= 4'h0;
-      memToReg_EX_MEM <= 1'b0;
       regWe_EX_MEM <= 1'b0;
     end
     else begin
@@ -372,7 +367,6 @@ module cpu(clk, rst_n, hlt, pc);
         //Just passing through mem start
         pcNext_EX_MEM <= pcNext_ID_EX;
         regAddr_EX_MEM <= regAddr_ID_EX;
-        memToReg_EX_MEM <= memToReg_ID_EX;
         regWe_EX_MEM <= regWe_EX;
 
         if(flush) begin
@@ -396,7 +390,7 @@ module cpu(clk, rst_n, hlt, pc);
     .aluResult_MEM_WB(aluResult_MEM_WB),
     .jal_MEM_WB(jal_MEM_WB),
     .pcNext_MEM_WB(pcNext_MEM_WB),
-    .memToReg_MEM_WB(memToReg_MEM_WB),
+    .memRe_MEM_WB(memRe_MEM_WB),
     .memData_MEM_WB(memData_MEM_WB),
 
     // Forwarding output
@@ -434,7 +428,7 @@ module cpu(clk, rst_n, hlt, pc);
       
       regAddr_MEM_WB <= 4'h0;
       jal_MEM_WB  <= 1'b0;
-      memToReg_MEM_WB <= 1'b0;
+      memRe_MEM_WB <= 1'b0;
       regWe_MEM_WB <= 1'b0;
     end
     else begin
@@ -444,7 +438,7 @@ module cpu(clk, rst_n, hlt, pc);
         aluResult_MEM_WB <= aluResult_EX_MEM;
         regAddr_MEM_WB <= regAddr_EX_MEM;
         jal_MEM_WB <= jal_EX_MEM;
-        memToReg_MEM_WB <= memToReg_EX_MEM;      
+        memRe_MEM_WB <= memRe_EX_MEM;
         regWe_MEM_WB <= regWe_EX_MEM;      
 
         if(flush) begin
@@ -459,7 +453,7 @@ module cpu(clk, rst_n, hlt, pc);
   Writeback writeback(
     // Pipeline stage inputs
     .jal(jal_MEM_WB),
-    .memToReg(memToReg_MEM_WB),
+    .memRe(memRe_MEM_WB),
     .regWe(regWe_MEM_WB),
     .regAddr(regAddr_MEM_WB),
     .pcNext(pcNext_MEM_WB),

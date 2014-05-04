@@ -1,4 +1,4 @@
-module ID(instr, imm, p0Addr, p1Addr, regAddr, shamt, aluOp, branchOp, regRe0, regRe1, regWe, memRe, memWe, memToReg, addz, branch, jal, jr, aluSrc0, aluSrc1, ovEn, zrEn, neEn);
+module ID(instr, imm, p0Addr, p1Addr, regAddr, shamt, aluOp, branchOp, regRe0, regRe1, regWe, memRe, memWe, addz, branch, jal, jr, aluSrc0, aluSrc1, ovEn, zrEn, neEn);
 
   input [15:0] instr;
 
@@ -7,7 +7,7 @@ module ID(instr, imm, p0Addr, p1Addr, regAddr, shamt, aluOp, branchOp, regRe0, r
   output [2:0] aluOp, branchOp;
 
   // Control signals
-  output regRe0, regRe1, regWe, memRe, memWe, memToReg, addz, branch, jal, jr, aluSrc0, aluSrc1, ovEn, zrEn, neEn;
+  output regRe0, regRe1, regWe, memRe, memWe, addz, branch, jal, jr, aluSrc0, aluSrc1, ovEn, zrEn, neEn;
   
   // ALU func for ADD
   localparam aluAdd = 3'b000;
@@ -59,9 +59,6 @@ module ID(instr, imm, p0Addr, p1Addr, regAddr, shamt, aluOp, branchOp, regRe0, r
   assign memRe = lw;
   assign memWe = sw;
   
-  // Set memToReg
-  assign memToReg = lw;
-
   // Should the flags be updated after EX
   assign ovEn = add | addz | sub;
   assign zrEn = !instr[15];
