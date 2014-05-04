@@ -1,8 +1,19 @@
 LLB R1, 70 #Address
 LHB R1, 0xCC
 LLB R2, 59
+LLB R12, 34
+LLB R13, 45
+LLB R14, 78
+
+#LW R7, R0, 0
+#LW R8, R0, 1
+#HLT
 
 SW R2, R1,0
+SW R12, R1, 1
+SW R13, R1, 2
+SW R14, R1, 3
+
 LW R3, R1, 0
 ADD R4, R2, R2
 LW R4, R1, 1
