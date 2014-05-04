@@ -1,0 +1,112 @@
+Information: Building the design 'IM'. (HDL-193)
+Warning: Cannot find the design 'IM' in the library 'WORK'. (LBR-1)
+Information: Building the design 'rf'. (HDL-193)
+Warning: Cannot find the design 'rf' in the library 'WORK'. (LBR-1)
+Information: Building the design 'DM'. (HDL-193)
+Warning: Cannot find the design 'DM' in the library 'WORK'. (LBR-1)
+Warning: Unable to resolve reference 'IM' in 'InstructionFetch'. (LINK-5)
+Warning: Unable to resolve reference 'rf' in 'InstructionDecode'. (LINK-5)
+Warning: Unable to resolve reference 'DM' in 'Memory'. (LINK-5)
+Warning: Design 'cpu' has '3' unresolved references. For more detailed information, use the "link" command. (UID-341)
+Information: Updating design information... (UID-85)
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 1
+Design : cpu
+Version: H-2013.03-SP3
+Date   : Sat May  3 14:56:29 2014
+****************************************
+
+Operating Conditions: NCCOM   Library: tcbn40lpbwptc
+Wire Load Model Mode: segmented
+
+  Startpoint: regAddr_MEM_WB_reg[1]
+              (rising edge-triggered flip-flop clocked by clk)
+  Endpoint: aluResult_EX_MEM_reg[5]
+            (rising edge-triggered flip-flop clocked by clk)
+  Path Group: clk
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  InstructionFetch   ZeroWireload          tcbn40lpbwptc
+  Memory             ZeroWireload          tcbn40lpbwptc
+  InstructionDecode  ZeroWireload          tcbn40lpbwptc
+  cpu                ZeroWireload          tcbn40lpbwptc
+  HazardControl      ZeroWireload          tcbn40lpbwptc
+  Writeback          ZeroWireload          tcbn40lpbwptc
+  ExecuteForwarding  ZeroWireload          tcbn40lpbwptc
+  SRC_MUX            ZeroWireload          tcbn40lpbwptc
+  Execute            ZeroWireload          tcbn40lpbwptc
+  ALU                ZeroWireload          tcbn40lpbwptc
+  ALU_DW01_add_1     ZeroWireload          tcbn40lpbwptc
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  clock clk (rise edge)                                   0.00       0.00
+  clock network delay (ideal)                             0.00       0.00
+  regAddr_MEM_WB_reg[1]/CP (DFQD4BWP)                     0.00       0.00 r
+  regAddr_MEM_WB_reg[1]/Q (DFQD4BWP)                      0.11       0.11 f
+  executeforwarding/regAddr_MEM_WB[1] (ExecuteForwarding)
+                                                          0.00       0.11 f
+  executeforwarding/U50/ZN (DCCKND4BWP)                   0.02       0.13 r
+  executeforwarding/U271/ZN (CKND2D2BWP)                  0.02       0.15 f
+  executeforwarding/U12/ZN (ND2D3BWP)                     0.02       0.17 r
+  executeforwarding/U7/ZN (INVD2BWP)                      0.02       0.19 f
+  executeforwarding/U268/ZN (IND2D2BWP)                   0.04       0.23 f
+  executeforwarding/U259/ZN (OAI33D2BWP)                  0.07       0.29 r
+  executeforwarding/U180/ZN (IND2D1BWP)                   0.05       0.34 f
+  executeforwarding/U175/ZN (AOI33D1BWP)                  0.06       0.40 r
+  executeforwarding/U80/ZN (CKND2D2BWP)                   0.04       0.44 f
+  executeforwarding/forwardP1[1] (ExecuteForwarding)      0.00       0.44 f
+  execute/p1[1] (Execute)                                 0.00       0.44 f
+  execute/srcmux/p1[1] (SRC_MUX)                          0.00       0.44 f
+  execute/srcmux/U31/ZN (CKND2BWP)                        0.02       0.46 r
+  execute/srcmux/U30/ZN (OAI21D4BWP)                      0.02       0.48 f
+  execute/srcmux/src1[1] (SRC_MUX)                        0.00       0.48 f
+  execute/alu/src1[1] (ALU)                               0.00       0.48 f
+  execute/alu/U15/ZN (CKND4BWP)                           0.03       0.51 r
+  execute/alu/U144/ZN (ND2D4BWP)                          0.02       0.53 f
+  execute/alu/U148/ZN (CKND4BWP)                          0.02       0.55 r
+  execute/alu/U222/ZN (IND2D4BWP)                         0.02       0.57 f
+  execute/alu/U22/ZN (CKND4BWP)                           0.02       0.59 r
+  execute/alu/U431/ZN (OAI33D1BWP)                        0.03       0.62 f
+  execute/alu/U243/ZN (IAO21D2BWP)                        0.05       0.67 r
+  execute/alu/add_23/B[5] (ALU_DW01_add_1)                0.00       0.67 r
+  execute/alu/add_23/U99/ZN (NR2XD1BWP)                   0.03       0.69 f
+  execute/alu/add_23/U91/ZN (NR2XD1BWP)                   0.03       0.72 r
+  execute/alu/add_23/U15/ZN (ND2D2BWP)                    0.02       0.74 f
+  execute/alu/add_23/U117/Z (AN2XD1BWP)                   0.03       0.78 f
+  execute/alu/add_23/U107/ZN (IOA21D2BWP)                 0.05       0.83 f
+  execute/alu/add_23/U88/ZN (AOI21D4BWP)                  0.03       0.86 r
+  execute/alu/add_23/U87/ZN (AOI21D4BWP)                  0.03       0.89 f
+  execute/alu/add_23/U173/ZN (OAI21D4BWP)                 0.03       0.91 r
+  execute/alu/add_23/U172/ZN (XNR3D4BWP)                  0.10       1.01 f
+  execute/alu/add_23/SUM[15] (ALU_DW01_add_1)             0.00       1.01 f
+  execute/alu/U173/ZN (CKND4BWP)                          0.02       1.03 r
+  execute/alu/U5/ZN (CKND2D3BWP)                          0.02       1.05 f
+  execute/alu/U226/ZN (INR2D4BWP)                         0.04       1.09 f
+  execute/alu/U4/ZN (CKND4BWP)                            0.02       1.11 r
+  execute/alu/U25/ZN (IND2D4BWP)                          0.02       1.12 f
+  execute/alu/U438/Z (AO31D1BWP)                          0.07       1.20 f
+  execute/alu/result[5] (ALU)                             0.00       1.20 f
+  execute/aluResult[5] (Execute)                          0.00       1.20 f
+  aluResult_EX_MEM_reg[5]/D (EDFQD1BWP)                   0.00       1.20 f
+  data arrival time                                                  1.20
+
+  clock clk (rise edge)                                   1.25       1.25
+  clock network delay (ideal)                             0.00       1.25
+  aluResult_EX_MEM_reg[5]/CP (EDFQD1BWP)                  0.00       1.25 r
+  library setup time                                     -0.07       1.18
+  data required time                                                 1.18
+  --------------------------------------------------------------------------
+  data required time                                                 1.18
+  data arrival time                                                 -1.20
+  --------------------------------------------------------------------------
+  slack (VIOLATED)                                                  -0.02
+
+
+1
