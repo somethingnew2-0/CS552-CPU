@@ -69,12 +69,7 @@ always @(*) begin // Combinational
 					nextState = SERVICE_MISS;
 				end else begin // Both caches are hitting
 					if(write) begin 
-						if(!dirty) begin // Our clean line is m_line
-							d_we = 1'b1;
-							wiped = m_line & ~(empty << 16 * d_addr[1:0]); // Wipe off word that is there
-							d_data = wiped | (wr_data << 16 * d_addr[1:0]); // Mask in new data 
-							d_dirt_in = 1'b1; // mark dirty
-						end else begin // Our clean line is d_line
+						begin // Our clean line is d_line
 							d_we = 1'b1;
 							wiped = d_line & ~(empty << 16 * d_addr[1:0]); // Wipe off word that is there
 							d_data = wiped | (wr_data << 16 * d_addr[1:0]); // Mask in new data 
