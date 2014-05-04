@@ -36,6 +36,7 @@ module cpu(clk, rst_n, hlt, pc);
                                     .branchAddr(branchAddr),
                                     .instr(instr_IF),
                                     .stall(stall),
+                                    .globalStall(globalStall),
                                     .rd_en(rd_en),
                                     
                                     // Global outputs
