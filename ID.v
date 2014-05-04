@@ -56,7 +56,7 @@ module ID(instr, imm, p0Addr, p1Addr, regAddr, shamt, aluOp, branchOp, regRe0, r
   // Set we and memwe
   assign regWe = !addz & !sw & !branch & !jr;  // Everything except these
   
-  assign memRe = !memWe;
+  assign memRe = lw;
   assign memWe = sw;
   
   // Set memToReg
