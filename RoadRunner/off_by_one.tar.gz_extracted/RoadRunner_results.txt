@@ -1,4 +1,4 @@
-BasicOpCodes2.asm, fail
+BasicOpCodes2.asm, pass, 74, 79
 BasicOpCodes4.asm, pass, 43, 44
 NOP_test.asm, pass, 35, 36
 addz_jal.asm, pass, 66, 65
@@ -24,4 +24,4 @@ random_non_branching.asm, pass, 33, 34
 random_test.asm, pass, 200, 200
 src0_test.asm, pass, 83, 85
 src1_test.asm, pass, 83, 85
-cachetest2.asm, pass, 64, 67
+cachetest2.asm, pass, 54, 55
