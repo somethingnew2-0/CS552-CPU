@@ -2,6 +2,7 @@
 
 	LLB R1, 15
 	LLB R2, 20
+	LLB R3, 5
 	LHB R3, 3
 	LLB R4, 15
 
