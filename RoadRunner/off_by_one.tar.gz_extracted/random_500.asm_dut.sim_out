@@ -49,18 +49,18 @@ Reading pref.tcl
 # Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.Writeback
 # Loading work.Writeback
 # run -a 
-# R1 = 86f0
+# R1 = ffff
 # R2 = 0000
-# R3 = 790f
-# R4 = f911
-# R5 = bfff
-# R6 = 8001
-# R7 = 8000
-# R8 = 86f0
+# R3 = 0000
+# R4 = ffda
+# R5 = e307
+# R6 = ffd9
+# R7 = a308
+# R8 = ffff
 # R9 = 3fff
-# Ra = 8000
-# Rb = 0100
-# Rc = 8001
+# Ra = a308
+# Rb = 01ff
+# Rc = ffd9
 # Rd = c000
 # Re = ffff
 # Rf = 000f

@@ -1,6 +1,6 @@
-module InstructionFetch(clk, rst_n, branch, branchAddr, instr, stall, rd_en, pc, pcNext, hlt, branchInit);
+module InstructionFetch(clk, rst_n, branch, branchAddr, instr, stall, globalStall, rd_en, pc, pcNext, hlt, branchInit);
 
-  input clk, rst_n, branch, stall, rd_en;
+  input clk, rst_n, branch, stall, globalStall, rd_en;
   input [15:0] branchAddr, instr;
   
   output [15:0] pcNext;   
@@ -13,10 +13,10 @@ module InstructionFetch(clk, rst_n, branch, branchAddr, instr, stall, rd_en, pc,
 
   assign branchInit = !((pc == 16'h0000) || (pc == 16'h0001) || (pc == 16'h0002));
 
-  assign hlt = (instr[15:12] == 4'b1111) && ((!(branch)) || !branchInit) && rst_n;
+  assign hlt = (instr[15:12] == 4'b1111) && ((!branch) || !branchInit) && rst_n && wasRst_N;
 
   assign pcNext = !wasRst_N ? 16'h0000 : 
-                  stall ? pc : 
+                  stall | globalStall ? pc : 
                   pc + 1; 
 
   assign effectivePc = (branchInit && branch) ? branchAddr:

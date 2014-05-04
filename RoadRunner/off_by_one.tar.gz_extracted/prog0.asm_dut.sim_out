@@ -49,9 +49,9 @@ Reading pref.tcl
 # Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.Writeback
 # Loading work.Writeback
 # run -a 
-# R1 = xxxx
-# R2 = xxxx
-# R3 = xxxx
+# R1 = 0000
+# R2 = 0000
+# R3 = 0000
 # R4 = 000c
 # R5 = 0001
 # R6 = xxxx
@@ -62,8 +62,8 @@ Reading pref.tcl
 # Rb = xxxx
 # Rc = xxxx
 # Rd = xxxx
-# Re = xxxx
+# Re = 0000
 # Rf = xxxx
-# Time:        321
-# Cycles:       33
+# Time:        361
+# Cycles:       37
 # PC:         000c

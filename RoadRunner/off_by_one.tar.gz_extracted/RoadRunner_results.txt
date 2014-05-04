@@ -1,6 +1,6 @@
 BasicOpCodes2.asm, fail
 BasicOpCodes4.asm, pass, 43, 10
-NOP_test.asm, fail
+NOP_test.asm, pass, 35, 10
 addz_jal.asm, pass, 66, 19
 basic_tests.asm, pass, 36, 15
 branch_test.asm, pass, 232, 77
@@ -9,18 +9,19 @@ cachetest1.asm, fail
 dense_hazards.asm, pass, 19, 6
 execute_test.asm, pass, 90, 41
 no_hazard_test.asm, pass, 72, 31
-prog0.asm, fail
-prog1.asm, fail
-prog5.asm, fail
+prog0.asm, pass, 37, 11
+prog1.asm, pass, 23, 5
+prog5.asm, pass, 521, 256
 random.asm, fail
 random_10.asm, pass, 58, 25
-random_100.asm, fail
-random_1000.asm, fail
+random_100.asm, pass, 236, 115
+random_1000.asm, pass, 2036, 1015
 random_25.asm, pass, 89, 40
 random_5.asm, pass, 49, 20
-random_50.asm, fail
-random_500.asm, fail
-random_non_branching.asm, pass, 32, 9
+random_50.asm, pass, 138, 65
+random_500.asm, pass, 1036, 515
+random_non_branching.asm, pass, 33, 9
 random_test.asm, fail
-src0_test.asm, fail
-src1_test.asm, fail
+src0_test.asm, pass, 83, 32
+src1_test.asm, pass, 83, 32
+cachetest2.asm, fail

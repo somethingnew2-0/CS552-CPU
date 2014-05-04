@@ -58,7 +58,7 @@ Reading pref.tcl
 # R7 = fffd
 # R8 = f000
 # R9 = 0002
-# Ra = 002d
+# Ra = 0030
 # Rb = ffe8
 # Rc = 0000
 # Rd = 0000
