@@ -1,4 +1,4 @@
-LLB R1, 70 #Address
+LLB R1, 0x70 #Address
 LHB R1, 0xCC
 LLB R2, 59
 LLB R12, 34
