@@ -34,7 +34,7 @@ ADD R4, R4, R4
 LW R4, R1, 3
 ADD R4, R4, R4
 
-SW R2, R1, 16
+SW R2, R1, 6
 LW R5, R1, 1
 
 LW R6, R1, 3
