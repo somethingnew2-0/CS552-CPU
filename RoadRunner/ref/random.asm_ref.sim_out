@@ -1,18 +1,4 @@
-R00000001 = ff00
-R00000002 = 8000
-R00000003 = 4f01
-R00000004 = 0000
-R00000005 = 0000
-R00000006 = a780
-R00000007 = 2780
-R00000008 = ff00
-R00000009 = 0f2a
-R0000000a = 0000
-R0000000b = afeb
-R0000000c = 8000
-R0000000d = 0014
-R0000000e = 0000
-R0000000f = 000f
-Time:     650155
-Cycles:    65015
-PC:         fdf8
+ERROR at time 1000010: simulation is running for too long; limit of 100000 cycles exceeded!
+Time:    1000011
+Cycles:   100001
+PC:         c350

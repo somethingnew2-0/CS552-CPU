@@ -13,6 +13,6 @@ R0000000c = fff8
 R0000000d = 0004
 R0000000e = 000e
 R0000000f = 000f
-Time:        205
-Cycles:       20
+Time:        491
+Cycles:       49
 PC:         0015

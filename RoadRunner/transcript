@@ -49,7 +49,7 @@
 # R2 = 003b
 # R3 = xxxx
 # R4 = 009c
-# R5 = xxxx
+# R5 = 0022
 # R6 = 004e
 # R7 = xxxx
 # R8 = xxxx
@@ -60,6 +60,6 @@
 # Rd = 002d
 # Re = 004e
 # Rf = xxxx
-# Time:        591
-# Cycles:       60
+# Time:        631
+# Cycles:       64
 # PC:         0015
