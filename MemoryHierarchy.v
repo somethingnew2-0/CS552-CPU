@@ -99,7 +99,7 @@ assign stall = rst_n & !rdy;
 		else
 			select 0th word
 */
-assign instr = i_addr[1] ? (i_addr[0] ? i_line[63:48] : i_line[47:32]) : (i_addr[0] ? i_line[31:16] : i_line[15:0]);
+assign instr = !rst_n ? 16'hB0FF : i_addr[1] ? (i_addr[0] ? i_line[63:48] : i_line[47:32]) : (i_addr[0] ? i_line[31:16] : i_line[15:0]);
 
 /* Pick off data word
 	if(offset[1])
@@ -113,6 +113,6 @@ assign instr = i_addr[1] ? (i_addr[0] ? i_line[63:48] : i_line[47:32]) : (i_addr
 		else
 			select 0th word
 */
-assign data = d_addr[1] ? (d_addr[0] ? d_line[63:48] : d_line[47:32]) : (d_addr[0] ? d_line[31:16] : d_line[15:0]);
+assign data = !rst_n ? 16'h0000 : d_addr[1] ? (d_addr[0] ? d_line[63:48] : d_line[47:32]) : (d_addr[0] ? d_line[31:16] : d_line[15:0]);
 
 endmodule

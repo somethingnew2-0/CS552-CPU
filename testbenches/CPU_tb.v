@@ -10,7 +10,7 @@ initial begin
 	clk = 1'b0;
 
 	rst_n = 1'b0;
-	#1;
+	#2;
 	rst_n = 1'b1;
 end
 
