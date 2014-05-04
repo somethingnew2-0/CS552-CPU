@@ -62,7 +62,7 @@ module cpu(clk, rst_n, hlt, pc);
   //
   //******************************************************
   always @(posedge clk or negedge rst_n) begin  
-    if(!stall) begin
+    if(~stall) begin
       //Used in id start
       if(!flush) begin
         instr_IF_ID <= instr_IF;
