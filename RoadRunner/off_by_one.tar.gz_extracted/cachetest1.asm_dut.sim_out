@@ -49,26 +49,14 @@ Reading pref.tcl
 # Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.Writeback
 # Loading work.Writeback
 # run -a 
-# ** Warning: (vsim-PLI-3410) Illegal character 'r' in data on line 1 of file "instr.hex".    : off_by_one.tar.gz_extracted/unified_mem.v(34)
-#    Time: 0 ns  Iteration: 0  Instance: /clk_and_rst_n/WISC_S14/memoryhierarchy/main_mem
-# ** Warning: (vsim-PLI-3410) Illegal character 'g' in data on line 1 of file "instr.hex".    : off_by_one.tar.gz_extracted/unified_mem.v(34)
-#    Time: 0 ns  Iteration: 0  Instance: /clk_and_rst_n/WISC_S14/memoryhierarchy/main_mem
-# ** Warning: (vsim-PLI-3410) Illegal character 'u' in data on line 1 of file "instr.hex".    : off_by_one.tar.gz_extracted/unified_mem.v(34)
-#    Time: 0 ns  Iteration: 0  Instance: /clk_and_rst_n/WISC_S14/memoryhierarchy/main_mem
-# ** Warning: (vsim-PLI-3410) Illegal character 'm' in data on line 1 of file "instr.hex".    : off_by_one.tar.gz_extracted/unified_mem.v(34)
-#    Time: 0 ns  Iteration: 0  Instance: /clk_and_rst_n/WISC_S14/memoryhierarchy/main_mem
-# ** Warning: (vsim-PLI-3410) Illegal character 'n' in data on line 1 of file "instr.hex".    : off_by_one.tar.gz_extracted/unified_mem.v(34)
-#    Time: 0 ns  Iteration: 0  Instance: /clk_and_rst_n/WISC_S14/memoryhierarchy/main_mem
-# ** Warning: (vsim-PLI-3410) Illegal character 't' in data on line 1 of file "instr.hex".    : off_by_one.tar.gz_extracted/unified_mem.v(34)
-#    Time: 0 ns  Iteration: 0  Instance: /clk_and_rst_n/WISC_S14/memoryhierarchy/main_mem
-# R1 = xxxx
-# R2 = xxxx
-# R3 = xxxx
-# R4 = xxxx
-# R5 = xxxx
-# R6 = xxxx
-# R7 = xxxx
-# R8 = xxxx
+# R1 = cc70
+# R2 = 003b
+# R3 = 003b
+# R4 = 98e0
+# R5 = 8000
+# R6 = 8000
+# R7 = 003b
+# R8 = 003b
 # R9 = xxxx
 # Ra = xxxx
 # Rb = xxxx
@@ -76,6 +64,6 @@ Reading pref.tcl
 # Rd = xxxx
 # Re = xxxx
 # Rf = xxxx
-# Time:         81
-# Cycles:        9
-# PC:         0001
+# Time:        381
+# Cycles:       39
+# PC:         000f

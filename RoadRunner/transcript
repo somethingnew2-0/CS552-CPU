@@ -45,21 +45,21 @@
 # Refreshing /filespace/people/p/pcollins/ece552/CS552-CPU/RoadRunner/my_lib.Writeback
 # Loading work.Writeback
 # run -a 
-# R1 = cc70
-# R2 = 003b
-# R3 = cc70
-# R4 = 03b0
-# R5 = 0022
-# R6 = 004e
-# R7 = 0022
-# R8 = 002d
-# R9 = 004e
-# Ra = xxxx
-# Rb = xxxx
-# Rc = 0022
-# Rd = 002d
-# Re = 004e
+# R1 = 000f
+# R2 = 0014
+# R3 = 0305
+# R4 = 000f
+# R5 = 0023
+# R6 = 0078
+# R7 = 0001
+# R8 = xxxx
+# R9 = xxxx
+# Ra = 0023
+# Rb = 0078
+# Rc = 0001
+# Rd = xxxx
+# Re = 0305
 # Rf = xxxx
-# Time:        531
-# Cycles:       54
-# PC:         0016
+# Time:        441
+# Cycles:       45
+# PC:         0011

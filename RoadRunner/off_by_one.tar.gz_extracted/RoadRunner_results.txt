@@ -2,10 +2,9 @@ BasicOpCodes2.asm, pass, 74, 79
 BasicOpCodes4.asm, pass, 43, 44
 NOP_test.asm, pass, 35, 36
 addz_jal.asm, pass, 66, 65
-basic_tests.asm, fail
 branch_test.asm, pass, 232, 230
 cpitest1.asm, pass, 10, 10
-cachetest1.asm, fail
+cachetest1.asm, pass, 39, 40
 dense_hazards.asm, pass, 19, 19
 execute_test.asm, pass, 90, 90
 no_hazard_test.asm, pass, 72, 77
@@ -25,3 +24,4 @@ random_test.asm, pass, 200, 200
 src0_test.asm, pass, 83, 85
 src1_test.asm, pass, 83, 85
 cachetest2.asm, pass, 54, 55
+basic_tests.asm, pass, 45, 46

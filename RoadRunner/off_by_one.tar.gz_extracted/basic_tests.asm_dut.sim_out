@@ -51,8 +51,8 @@ Reading pref.tcl
 # run -a 
 # R1 = 000f
 # R2 = 0014
-# R3 = 03xx
-# R4 = xxxx
+# R3 = 0305
+# R4 = 000f
 # R5 = 0023
 # R6 = 0078
 # R7 = 0001
@@ -62,8 +62,8 @@ Reading pref.tcl
 # Rb = 0078
 # Rc = 0001
 # Rd = xxxx
-# Re = xxxx
+# Re = 0305
 # Rf = xxxx
-# Time:        351
-# Cycles:       36
-# PC:         0010
+# Time:        441
+# Cycles:       45
+# PC:         0011
