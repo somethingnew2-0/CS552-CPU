@@ -19,3 +19,4 @@ SW R2, R1, 16
 LW R7, R1, 0
 
 LW R8, R1, 16
+HLT

@@ -1,5 +1,5 @@
 LLB R1, 70 #Address
-LHB R1, CC
+LHB R1, 0xCC
 LLB R2, 59
 
 SW R2, R1,0
@@ -16,3 +16,4 @@ SW R2, R1, 16
 LW R5, R1, 1
 
 LW R6, R1, 3
+HLT
