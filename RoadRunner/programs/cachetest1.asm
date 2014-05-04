@@ -1,6 +1,6 @@
 #Tests basic cache stuff
-LLB R1, 70 #Address
-LHB R1, CC
+LLB R1, 0x70 #Address
+LHB R1, 0xCC
 LLB R2, 59
 
 SW R2, R1,0
