@@ -5,7 +5,7 @@ module cpu(clk, rst_n, hlt, pc);
   output [15:0] pc;
 
   wire [15:0] branchAddr;
-  wire flush, stall, branch, branchInit, forwardStall, cacheStall;
+  wire flush, stall, globalStall, branch, branchInit, forwardStall, cacheStall;
 
   HazardControl hazardcontrol(
                               // Global inputs
@@ -17,7 +17,8 @@ module cpu(clk, rst_n, hlt, pc);
                               .cacheStall(cacheStall),
                               // Global outputs
                               .flush(flush),
-                              .stall(stall));
+                              .stall(stall),
+                              .globalStall(globalStall));
 
   assign rd_en = 1'b1; // When should this change?
 
@@ -61,7 +62,7 @@ module cpu(clk, rst_n, hlt, pc);
       instr_IF_ID <= 16'hB0FF;
     end 
     else begin
-      if(!stall) begin
+      if(!stall && !globalStall) begin
         // Flush
         if(flush) begin
           hlt_IF_ID <= 1'b0;
@@ -171,7 +172,7 @@ module cpu(clk, rst_n, hlt, pc);
       neEn_ID_EX <= 1'b0;
     end 
     else begin
-      if(!stall) begin
+      if(!stall && !globalStall) begin
         //Used in ex start
         p0_ID_EX <= p0_ID;
         p1_ID_EX <= p1_ID;
@@ -334,7 +335,7 @@ module cpu(clk, rst_n, hlt, pc);
       regWe_EX_MEM <= 1'b0;
     end
     else begin
-      if(!stall) begin
+      if(!stall && !globalStall) begin
         //Used in mem start
         aluResult_EX_MEM <= aluResult_EX; 
         memAddr_EX_MEM <= aluResult_EX; 
@@ -436,18 +437,20 @@ module cpu(clk, rst_n, hlt, pc);
       regWe_MEM_WB <= 1'b0;
     end
     else begin
-      pcNext_MEM_WB <= pcNext_EX_MEM;
-      memData_MEM_WB <= memData_MEM;
-      aluResult_MEM_WB <= aluResult_EX_MEM;
-      regAddr_MEM_WB <= regAddr_EX_MEM;
-      jal_MEM_WB <= jal_EX_MEM;
-      memToReg_MEM_WB <= memToReg_EX_MEM;      
-      regWe_MEM_WB <= regWe_EX_MEM;      
+      if(!globalStall) begin
+        pcNext_MEM_WB <= pcNext_EX_MEM;
+        memData_MEM_WB <= memData_MEM;
+        aluResult_MEM_WB <= aluResult_EX_MEM;
+        regAddr_MEM_WB <= regAddr_EX_MEM;
+        jal_MEM_WB <= jal_EX_MEM;
+        memToReg_MEM_WB <= memToReg_EX_MEM;      
+        regWe_MEM_WB <= regWe_EX_MEM;      
 
-      if(flush) begin
-        hlt <= 1'b0;
-      end else begin 
-        hlt <= hlt_EX_MEM;
+        if(flush) begin
+          hlt <= 1'b0;
+        end else begin 
+          hlt <= hlt_EX_MEM;
+        end
       end
     end
   end
