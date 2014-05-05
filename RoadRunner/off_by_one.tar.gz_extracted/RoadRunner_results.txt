@@ -1,7 +1,7 @@
 BasicOpCodes2.asm, pass, 74, 79
-BasicOpCodes4.asm, pass, 43, 44
-NOP_test.asm, pass, 35, 36
-addz_jal.asm, pass, 66, 65
+BasicOpCodes4.asm, pass, 43, 43
+NOP_test.asm, pass, 35, 35
+addz_jal.asm, pass, 66, 64
 branch_test.asm, pass, 232, 230
 cpitest1.asm, pass, 10, 10
 cachetest1.asm, pass, 39, 40
@@ -14,7 +14,7 @@ prog5.asm, pass, 521, 521
 random.asm, fail
 random_10.asm, pass, 58, 58
 random_100.asm, pass, 236, 240
-random_1000.asm, fail
+random_1000.asm, pass, 2036, 2040
 random_25.asm, pass, 89, 89
 random_5.asm, pass, 49, 49
 random_50.asm, pass, 138, 138
