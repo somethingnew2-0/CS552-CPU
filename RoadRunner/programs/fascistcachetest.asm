@@ -42,7 +42,6 @@ ADD R4, R4, R4
 SW R2, R1, 0
 LW R5, R1, 1
 LW R6, R1, 3
-HLT
 
 LLB R2, 0x70
 LHB R2, 0x40
@@ -53,3 +52,5 @@ SW R13, R1, 0
 SW R14, R2, 0
 LW R10, R1, 0
 LW R11, R2, 0
+
+HLT
