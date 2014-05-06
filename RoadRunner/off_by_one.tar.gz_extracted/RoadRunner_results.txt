@@ -25,3 +25,4 @@ src0_test.asm, pass, 83, 85
 src1_test.asm, pass, 83, 85
 cachetest2.asm, pass, 54, 55
 basic_tests.asm, pass, 45, 46
+fascistcachetest.asm, pass, 114, 115
