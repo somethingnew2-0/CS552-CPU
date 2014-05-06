@@ -1,0 +1,55 @@
+#Tests most cache stuff
+LLB R1, 0x70 #Address
+LHB R1, 0xCC
+LLB R2, 59
+
+SW R2, R1,0
+LW R3, R1, 0
+
+ADD R4, R1, R1
+SW R4, R1, 1
+LW R5, R1, 1
+
+ADD R5, R4, R4
+SW R5, R1, 16
+LW R6, R1, 16
+
+SW R2, R1, 16
+
+LW R7, R1, 0
+
+LW R8, R1, 16
+
+LLB R2, 59
+LLB R12, 34
+LLB R13, 45
+LLB R14, 78
+
+SW R1, R1, 0
+SW R12, R1, 1
+SW R13, R1, 2
+SW R14, R1, 3
+
+LW R3, R1, 0
+ADD R4, R2, R2
+LW R7, R1, 1
+ADD R4, R4, R4
+LW R8, R1, 2
+ADD R4, R4, R4
+LW R9, R1, 3
+ADD R4, R4, R4
+
+SW R2, R1, 0
+LW R5, R1, 1
+LW R6, R1, 3
+HLT
+
+LLB R2, 0x70
+LHB R2, 0x40
+LLB R13, 0x33
+LLB R14, 0x55
+
+SW R13, R1, 0
+SW R14, R2, 0
+LW R10, R1, 0
+LW R11, R2, 0
